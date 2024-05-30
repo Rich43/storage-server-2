@@ -7,11 +7,22 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "baseUrl": ".",
+    "baseUrl": "./src",
     "outDir": "./dist",
-    "rootDir": "./src",
-    "sourceMap": true
+    "paths": {
+      "*": ["*"]
+    },
+    "sourceMap": true,
+    "resolveJsonModule": true // Add this line
   },
   "include": ["src"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+  "tsc-alias": {
+    "verbose": true,
+    "resolveFullPaths": true,
+    "fileExtensions": {
+      "inputGlob": "{js,jsx,mjs}",
+      "outputCheck": ["js", "json", "jsx", "mjs"]
+    }
+  }
 }

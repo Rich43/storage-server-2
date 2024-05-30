@@ -1,0 +1,39 @@
+schema {
+  query: Query
+}
+
+type Session {
+  userId: Int!
+  sessionId: Int!
+  username: String!
+  avatarPicture: String
+  sessionToken: String!
+  sessionExpireDateTime: String!
+  admin: Boolean!
+}
+
+type Media {
+  id: Int!
+  title: String!
+  url: String!
+  mimetype: String!
+  thumbnail: String
+  userId: Int!
+}
+
+type Album {
+  id: Int!
+  title: String!
+  media: [Media]
+  userId: Int!
+}
+
+type Query {
+  login(username: String!, password: String!): Session
+  logout: Boolean!
+  refreshSession: Session
+  listVideos: [Media]
+  listMusic: [Media]
+  listAlbums: [Album]
+  listPictures: [Media]
+}

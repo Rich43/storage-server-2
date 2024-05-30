@@ -5,22 +5,32 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "clean": "rimraf dist",
     "start": "node dist/index.js",
-    "build": "tsc"
+    "build": "npm run clean && tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
+    "dev": "npm run build && npm start",
+    "generate": "graphql-codegen --config codegen.yml"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@graphql-codegen/cli": "^5.0.2",
+    "@graphql-codegen/typescript": "^4.0.7",
+    "@graphql-codegen/typescript-operations": "^4.2.1",
+    "@graphql-codegen/typescript-resolvers": "^4.1.0",
     "@types/express": "^4.17.21",
     "@types/mysql": "^2.15.26",
     "@types/node": "^20.12.12",
     "@types/winston": "^2.4.4",
+    "rimraf": "^5.0.7",
     "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.10",
     "typescript": "^5.4.5"
   },
   "dependencies": {
     "@apollo/server": "^4.10.4",
+    "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-winston": "^4.2.0",
     "graphql-tag": "^2.12.6",

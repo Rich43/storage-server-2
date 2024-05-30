@@ -6,6 +6,12 @@ import { typeDefs, resolvers } from './schema';
 import { pool } from './db';
 import { logger, requestLogger } from './logger';
 
+// Define the context type
+interface MyContext {
+    pool: typeof pool;
+    token?: string;
+}
+
 const app = express();
 const port = process.env.PORT || 4000;
 
@@ -16,7 +22,7 @@ const port = process.env.PORT || 4000;
         await connection.ping();
         connection.release();
 
-        const server = new ApolloServer({
+        const server = new ApolloServer<MyContext>({
             typeDefs,
             resolvers,
         });
@@ -25,7 +31,11 @@ const port = process.env.PORT || 4000;
 
         app.use(requestLogger);
         app.use('/graphql', express.json(), expressMiddleware(server, {
-            context: async () => ({ pool }),
+            context: async ({ req }): Promise<MyContext> => {
+                // Extract token from the headers
+                const token = req.headers.authorization || '';
+                return { pool, token };
+            },
         }));
 
         app.listen(port, () => {

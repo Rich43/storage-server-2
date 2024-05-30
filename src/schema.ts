@@ -6,8 +6,10 @@ const typeDefs = gql(readFileSync('src/schema.graphql', 'utf8'));
 
 const resolvers: Resolvers = {
     Query: {
-        login: async (_, { username, password }) => {
+        login: async (_, { username, password }, { pool, token }) => {
             // Implement your login logic here
+            console.log('Token:', token);
+            // Use pool to interact with the database
             return {
                 userId: 1,
                 sessionId: 1,
@@ -18,12 +20,14 @@ const resolvers: Resolvers = {
                 admin: false,
             };
         },
-        logout: async () => {
+        logout: async (_, __, { token }) => {
             // Implement your logout logic here
+            console.log('Token:', token);
             return true;
         },
-        refreshSession: async () => {
+        refreshSession: async (_, __, { token }) => {
             // Implement your refreshSession logic here
+            console.log('Token:', token);
             return {
                 userId: 1,
                 sessionId: 1,

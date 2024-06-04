@@ -1,4 +1,11 @@
 import {v4 as uuidv4} from 'uuid';
+import moment from 'moment';
+
+function getDates() {
+    const sessionExpireDateTime = moment().add(1, 'hour').utc().toISOString(); // 1 hour expiration in UTC
+    const sessionExpireDateTimeFormatted = moment(sessionExpireDateTime).utc().format('YYYY-MM-DD HH:mm:ss');
+    return {sessionExpireDateTime, sessionExpireDateTimeFormatted};
+}
 
 const resolvers = {
     Query: {
@@ -11,14 +18,13 @@ const resolvers = {
 
             // Generate session token and expiry date
             const sessionToken = uuidv4(); // Generate a unique session token
-            const sessionExpireDateTime = new Date(Date.now() + 3600000); // 1 hour expiration
-
+            const {sessionExpireDateTime, sessionExpireDateTimeFormatted} = getDates();
             // Create new session
             const [sessionId] = await db('Session')
                 .insert({
                     userId: user.id,
                     sessionToken,
-                    sessionExpireDateTime,
+                    sessionExpireDateTime: sessionExpireDateTimeFormatted,
                 })
                 .returning('id');
 
@@ -31,7 +37,7 @@ const resolvers = {
                 username: user.username,
                 avatarPicture: user.avatar,
                 sessionToken: session.sessionToken,
-                sessionExpireDateTime: session.sessionExpireDateTime,
+                sessionExpireDateTime: sessionExpireDateTime, // Return as ISO string in UTC
                 admin: user.admin, // Use the admin field from the User table
             };
         },
@@ -49,14 +55,13 @@ const resolvers = {
 
             // Generate new session token and expiry date
             const newSessionToken = uuidv4(); // Generate a new unique token
-            const newSessionExpireDateTime = new Date(Date.now() + 3600000); // 1 hour expiration
-
+            const {sessionExpireDateTime, sessionExpireDateTimeFormatted} = getDates();
             // Update session with new token and expiry date
             await db('Session')
                 .where({ sessionToken: token })
                 .update({
                     sessionToken: newSessionToken,
-                    sessionExpireDateTime: newSessionExpireDateTime,
+                    sessionExpireDateTime: sessionExpireDateTimeFormatted,
                 });
 
             // Retrieve user details
@@ -68,7 +73,7 @@ const resolvers = {
                 username: user.username,
                 avatarPicture: user.avatar,
                 sessionToken: newSessionToken,
-                sessionExpireDateTime: newSessionExpireDateTime,
+                sessionExpireDateTime: sessionExpireDateTime, // Return as ISO string in UTC
                 admin: user.admin, // Use the admin field from the User table
             };
         },

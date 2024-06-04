@@ -1,10 +1,9 @@
-import { readFileSync } from 'fs';
-import { gql } from 'graphql-tag';
-import { Resolvers } from './generated/graphql';
+import {readFileSync} from 'fs';
+import {gql} from 'graphql-tag';
 
-const typeDefs = gql(readFileSync('src/schema.graphql', 'utf8'));
+const typeDefs = gql(readFileSync('schema.graphql', 'utf8'));
 
-const resolvers: Resolvers = {
+const resolvers = {
     Query: {
         login: async (_, { username, password }, { pool, token }) => {
             // Implement your login logic here

@@ -1,16 +1,10 @@
 import 'dotenv/config';
 import express from 'express';
-import { ApolloServer } from '@apollo/server';
-import { expressMiddleware } from '@apollo/server/express4';
-import { typeDefs, resolvers } from './schema';
-import { pool } from './db';
-import { logger, requestLogger } from './logger';
-
-// Define the context type
-interface MyContext {
-    pool: typeof pool;
-    token?: string;
-}
+import {ApolloServer} from '@apollo/server';
+import {expressMiddleware} from '@apollo/server/express4';
+import {resolvers, typeDefs} from './schema.mjs';
+import {pool} from './db.mjs';
+import {logger, requestLogger} from './logger.mjs';
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -18,11 +12,16 @@ const port = process.env.PORT || 4000;
 (async () => {
     try {
         // Test database connection
-        const connection = await pool.getConnection();
+        let connection = undefined;
+        let connectionErr = undefined;
+        await pool.getConnection((err, conn) => {
+            connectionErr = err;
+            connection = conn;
+        });
         await connection.ping();
         connection.release();
 
-        const server = new ApolloServer<MyContext>({
+        const server = new ApolloServer({
             typeDefs,
             resolvers,
         });
@@ -31,7 +30,7 @@ const port = process.env.PORT || 4000;
 
         app.use(requestLogger);
         app.use('/graphql', express.json(), expressMiddleware(server, {
-            context: async ({ req }): Promise<MyContext> => {
+            context: async ({ req }) => {
                 // Extract token from the headers
                 const token = req.headers.authorization || '';
                 return { pool, token };

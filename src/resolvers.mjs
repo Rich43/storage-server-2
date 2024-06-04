@@ -8,18 +8,22 @@ const resolvers = {
             if (!user) {
                 throw new Error('Invalid username or password');
             }
+
             // Generate session token and expiry date
             const sessionToken = uuidv4(); // Generate a unique session token
             const sessionExpireDateTime = new Date(Date.now() + 3600000); // 1 hour expiration
 
             // Create new session
-            const [session] = await db('Session')
+            const [sessionId] = await db('Session')
                 .insert({
                     userId: user.id,
                     sessionToken,
                     sessionExpireDateTime,
                 })
-                .returning('*');
+                .returning('id');
+
+            // Retrieve the full session object
+            const session = await db('Session').where({ id: sessionId }).first();
 
             return {
                 userId: user.id,

@@ -1,45 +1,50 @@
-import 'dotenv/config';
 import express from 'express';
 import {ApolloServer} from '@apollo/server';
 import {expressMiddleware} from '@apollo/server/express4';
-import {resolvers, typeDefs} from './schema.mjs';
+import {readFileSync} from 'fs';
+import {gql} from 'graphql-tag';
+import db from './db.mjs';
+import {resolvers} from './resolvers.mjs';
+import bodyParser from 'body-parser';
 import {logger, requestLogger} from './logger.mjs';
 
+// Load schema
+const typeDefs = gql(readFileSync('schema.graphql', 'utf8'));
+
+// Initialize the Express application
 const app = express();
-const port = process.env.PORT || 4000;
 
-(async () => {
-    try {
-        const server = new ApolloServer({
-            typeDefs,
-            resolvers,
-        });
+// Middleware to log requests
+app.use(requestLogger);
 
-        await server.start();
+// Middleware to parse JSON bodies
+app.use(bodyParser.json());
 
-        app.use(requestLogger);
-        app.use('/graphql', express.json(), expressMiddleware(server, {
-            context: async ({ req }) => {
-                // Extract token from the headers
-                const token = req.headers.authorization || '';
-                return { pool, token };
-            },
-        }));
+// Define the context to include the database connection and other context-related information
+const context = ({ req }) => {
+    const token = req.headers.authorization || '';
+    return { db, token };
+};
 
-        app.listen(port, () => {
-            logger.info(`🚀 Server ready at http://localhost:${port}/graphql`);
-        });
+// Create the Apollo Server instance
+const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+});
 
-        // Gracefully close database connections on termination signal
-        process.on('SIGTERM', () => {
-            pool.end().then(() => {
-                logger.info('Database connection pool closed');
-                process.exit(0);
-            });
-        });
+// Start the Apollo server
+await server.start();
 
-    } catch (error) {
-        logger.error('Database connection error:', error);
-        process.exit(1);
-    }
-})();
+// Apply the Apollo GraphQL middleware and set the path to /graphql
+app.use('/graphql', expressMiddleware(server, { context }));
+
+// Define a default route
+app.get('/', (req, res) => {
+    res.send('Hello, this is the GraphQL API server.');
+});
+
+// Start the Express server
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+    logger.info(`🚀 Server ready at http://localhost:${PORT}/graphql`);
+});

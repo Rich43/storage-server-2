@@ -20,7 +20,7 @@ module.exports = {
     },
     seeds: {
       directory: './seeds',
-      stub: './seeds/stub.js' // Add this line to specify the stub template
+      stub: './stub.cjs' // Add this line to specify the stub template
     }
   },
 
@@ -41,7 +41,7 @@ module.exports = {
     },
     seeds: {
       directory: './seeds',
-      stub: './seeds/stub.js' // Add this line to specify the stub template
+      stub: './stub.cjs' // Add this line to specify the stub template
     }
   },
 
@@ -62,7 +62,7 @@ module.exports = {
     },
     seeds: {
       directory: './seeds',
-      stub: './seeds/stub.js' // Add this line to specify the stub template
+      stub: './stub.cjs' // Add this line to specify the stub template
     }
   }
 };

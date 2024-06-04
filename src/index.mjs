@@ -3,7 +3,6 @@ import express from 'express';
 import {ApolloServer} from '@apollo/server';
 import {expressMiddleware} from '@apollo/server/express4';
 import {resolvers, typeDefs} from './schema.mjs';
-import {pool} from './db.mjs';
 import {logger, requestLogger} from './logger.mjs';
 
 const app = express();
@@ -11,16 +10,6 @@ const port = process.env.PORT || 4000;
 
 (async () => {
     try {
-        // Test database connection
-        let connection = undefined;
-        let connectionErr = undefined;
-        await pool.getConnection((err, conn) => {
-            connectionErr = err;
-            connection = conn;
-        });
-        await connection.ping();
-        connection.release();
-
         const server = new ApolloServer({
             typeDefs,
             resolvers,

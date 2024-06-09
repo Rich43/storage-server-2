@@ -1,3 +1,9 @@
+const crypto = require('crypto');
+
+function hashPassword(password) {
+    return crypto.createHash('sha3-512').update(password).digest('hex');
+}
+
 exports.seed = function(knex) {
     // Deletes ALL existing entries
     return knex('Album_Media').del()
@@ -7,10 +13,10 @@ exports.seed = function(knex) {
         .then(() => knex('Media').del())
         .then(() => knex('User').del())
         .then(function () {
-            // Inserts seed entries for User table
+            // Inserts seed entries for User table with hashed passwords
             return knex('User').insert([
-                {username: 'john_doe', password: 'password123', avatar: 'avatar1.png', admin: true},
-                {username: 'jane_doe', password: 'password123', avatar: 'avatar2.png', admin: false}
+                {username: 'john_doe', password: hashPassword('password123'), avatar: 'avatar1.png', admin: true},
+                {username: 'jane_doe', password: hashPassword('password123'), avatar: 'avatar2.png', admin: false}
             ]);
         })
         .then(function () {

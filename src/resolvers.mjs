@@ -1,24 +1,31 @@
-import {v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import moment from 'moment';
+import crypto from 'crypto';
 
 function getDates() {
     const sessionExpireDateTime = moment().add(1, 'hour').utc().toISOString(); // 1 hour expiration in UTC
     const sessionExpireDateTimeFormatted = moment(sessionExpireDateTime).utc().format('YYYY-MM-DD HH:mm:ss');
-    return {sessionExpireDateTime, sessionExpireDateTimeFormatted};
+    return { sessionExpireDateTime, sessionExpireDateTimeFormatted };
+}
+
+function hashPassword(password) {
+    return crypto.createHash('sha3-512').update(password).digest('hex');
 }
 
 const resolvers = {
     Query: {
         login: async (_, { username, password }, { db, token }) => {
-            // Find user by username and password
-            const user = await db('User').where({ username, password }).first();
+            // Hash the password before querying
+            const hashedPassword = hashPassword(password);
+            // Find user by username and hashed password
+            const user = await db('User').where({ username, password: hashedPassword }).first();
             if (!user) {
                 throw new Error('Invalid username or password');
             }
 
             // Generate session token and expiry date
             const sessionToken = uuidv4(); // Generate a unique session token
-            const {sessionExpireDateTime, sessionExpireDateTimeFormatted} = getDates();
+            const { sessionExpireDateTime, sessionExpireDateTimeFormatted } = getDates();
             // Create new session
             const [sessionId] = await db('Session')
                 .insert({
@@ -55,7 +62,7 @@ const resolvers = {
 
             // Generate new session token and expiry date
             const newSessionToken = uuidv4(); // Generate a new unique token
-            const {sessionExpireDateTime, sessionExpireDateTimeFormatted} = getDates();
+            const { sessionExpireDateTime, sessionExpireDateTimeFormatted } = getDates();
             // Update session with new token and expiry date
             await db('Session')
                 .where({ sessionToken: token })

@@ -5,25 +5,36 @@ function hashPassword(password) {
 }
 
 exports.seed = function(knex) {
-    // Deletes ALL existing entries
+    // Deletes ALL existing entries in the correct order
     return knex('Album_Media').del()
         .then(() => knex('Album').del())
         .then(() => knex('Thumbnail').del())
         .then(() => knex('Session').del())
         .then(() => knex('Media').del())
         .then(() => knex('User').del())
+        .then(() => knex('Mimetype').del())
         .then(function () {
-            // Inserts seed entries for User table with hashed passwords
+            // Inserts seed entries for User table
             return knex('User').insert([
                 {username: 'john_doe', password: hashPassword('password123'), avatar: 'avatar1.png', admin: true},
                 {username: 'jane_doe', password: hashPassword('password123'), avatar: 'avatar2.png', admin: false}
             ]);
         })
         .then(function () {
+            // Inserts seed entries for Mimetype table
+            return knex('Mimetype').insert([
+                { type: 'image/jpeg', category: 'IMAGE' },
+                { type: 'image/png', category: 'IMAGE' },
+                { type: 'video/mp4', category: 'VIDEO' },
+                { type: 'audio/mp3', category: 'AUDIO' },
+                { type: 'application/pdf', category: 'OTHER' }
+            ]);
+        })
+        .then(function () {
             // Inserts seed entries for Media table
             return knex('Media').insert([
-                {title: 'Sample Media 1', url: 'http://example.com/media1', mimetype: 'image/jpeg', thumbnail: 'thumbnail1.png', userId: 1},
-                {title: 'Sample Media 2', url: 'http://example.com/media2', mimetype: 'image/png', thumbnail: 'thumbnail2.png', userId: 2}
+                {title: 'Sample Media 1', url: 'http://example.com/media1', thumbnail: 'thumbnail1.png', userId: 1, mimetypeId: 1},
+                {title: 'Sample Media 2', url: 'http://example.com/media2', thumbnail: 'thumbnail2.png', userId: 2, mimetypeId: 2}
             ]);
         })
         .then(function () {

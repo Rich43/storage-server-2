@@ -3,11 +3,11 @@ import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import { readFileSync } from 'fs';
 import { gql } from 'graphql-tag';
-import db from './db.mjs';
-import { resolvers } from './resolvers.mjs';
+import db from './db.js';
+import { resolv } from './resolv.js';
 import bodyParser from 'body-parser';
-import { logger, requestLogger } from './logger.mjs';
-import { sessionCleanupMiddleware } from "./middleware.mjs";
+import { logger, requestLogger } from './logger.js';
+import { sessionCleanupMiddleware } from "./middleware.js";
 
 // Load schema
 const typeDefs = gql(readFileSync('schema.graphql', 'utf8'));
@@ -33,7 +33,7 @@ const context = ({ req }) => {
 // Create the Apollo Server instance
 const server = new ApolloServer({
     typeDefs,
-    resolvers,
+    resolvers: resolv,
 });
 
 // Start the Apollo server

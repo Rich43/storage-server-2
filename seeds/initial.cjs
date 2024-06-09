@@ -9,8 +9,8 @@ exports.seed = function(knex) {
         .then(function () {
             // Inserts seed entries for User table
             return knex('User').insert([
-                {username: 'john_doe', password: 'password123', avatar: 'avatar1.png'},
-                {username: 'jane_doe', password: 'password123', avatar: 'avatar2.png'}
+                {username: 'john_doe', password: 'password123', avatar: 'avatar1.png', admin: true},
+                {username: 'jane_doe', password: 'password123', avatar: 'avatar2.png', admin: false}
             ]);
         })
         .then(function () {
@@ -23,8 +23,8 @@ exports.seed = function(knex) {
         .then(function () {
             // Inserts seed entries for Session table
             return knex('Session').insert([
-                {userId: 1, sessionToken: 'token123', sessionExpireDateTime: '2024-12-31 23:59:59', admin: true},
-                {userId: 2, sessionToken: 'token456', sessionExpireDateTime: '2024-12-31 23:59:59', admin: false}
+                {userId: 1, sessionToken: 'token123', sessionExpireDateTime: '2024-12-31 23:59:59'},
+                {userId: 2, sessionToken: 'token456', sessionExpireDateTime: '2024-12-31 23:59:59'}
             ]);
         })
         .then(function () {

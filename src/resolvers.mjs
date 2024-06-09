@@ -12,9 +12,21 @@ function hashPassword(password) {
     return crypto.createHash('sha3-512').update(password).digest('hex');
 }
 
+async function validateToken(db, token) {
+    const session = await db('Session').where({ sessionToken: token }).first();
+    if (!session) {
+        throw new Error('Invalid session token');
+    }
+    const now = moment().utc().format('YYYY-MM-DD HH:mm:ss');
+    if (session.sessionExpireDateTime < now) {
+        throw new Error('Session token has expired');
+    }
+    return session.userId;
+}
+
 const resolvers = {
     Query: {
-        login: async (_, { username, password }, { db, token }) => {
+        login: async (_, { username, password }, { db }) => {
             // Hash the password before querying
             const hashedPassword = hashPassword(password);
             // Find user by username and hashed password
@@ -84,16 +96,20 @@ const resolvers = {
                 admin: user.admin, // Use the admin field from the User table
             };
         },
-        listVideos: async (_, __, { db }) => {
+        listVideos: async (_, __, { db, token }) => {
+            await validateToken(db, token);
             return db('Media').where({ mimetype: 'video' });
         },
-        listMusic: async (_, __, { db }) => {
+        listMusic: async (_, __, { db, token }) => {
+            await validateToken(db, token);
             return db('Media').where({ mimetype: 'audio' });
         },
-        listAlbums: async (_, __, { db }) => {
+        listAlbums: async (_, __, { db, token }) => {
+            await validateToken(db, token);
             return db('Album').select('*');
         },
-        listPictures: async (_, __, { db }) => {
+        listPictures: async (_, __, { db, token }) => {
+            await validateToken(db, token);
             return db('Media').where({ mimetype: 'image' });
         },
     },

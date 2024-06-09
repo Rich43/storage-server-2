@@ -1,18 +1,22 @@
 import express from 'express';
-import {ApolloServer} from '@apollo/server';
-import {expressMiddleware} from '@apollo/server/express4';
-import {readFileSync} from 'fs';
-import {gql} from 'graphql-tag';
+import { ApolloServer } from '@apollo/server';
+import { expressMiddleware } from '@apollo/server/express4';
+import { readFileSync } from 'fs';
+import { gql } from 'graphql-tag';
 import db from './db.mjs';
-import {resolvers} from './resolvers.mjs';
+import { resolvers } from './resolvers.mjs';
 import bodyParser from 'body-parser';
-import {logger, requestLogger} from './logger.mjs';
+import { logger, requestLogger } from './logger.mjs';
+import { sessionCleanupMiddleware } from "./middleware.mjs";
 
 // Load schema
 const typeDefs = gql(readFileSync('schema.graphql', 'utf8'));
 
 // Initialize the Express application
 const app = express();
+
+// Apply the session cleanup middleware
+app.use(sessionCleanupMiddleware(db));
 
 // Middleware to log requests
 app.use(requestLogger);

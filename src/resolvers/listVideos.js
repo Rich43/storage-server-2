@@ -5,7 +5,7 @@ const listVideos = async (_, __, { db, token }) => {
     return db('Media')
         .join('Mimetype', 'Media.mimetypeId', '=', 'Mimetype.id')
         .where('Mimetype.category', 'VIDEO')
-        .select('Media.*');
+        .select('Media.*', 'Mimetype.type as mimetype');
 };
 
 export default listVideos;

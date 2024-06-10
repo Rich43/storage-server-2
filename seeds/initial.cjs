@@ -39,15 +39,15 @@ exports.seed = function(knex) {
         .then(function () {
             // Inserts seed entries for Media table
             return knex('Media').insert([
-                {title: 'Sample Image 1', url: 'http://example.com/media1.jpg', thumbnail: 'thumbnail1.png', userId: 1, mimetypeId: 1},
-                {title: 'Sample Image 2', url: 'http://example.com/media2.png', thumbnail: 'thumbnail2.png', userId: 2, mimetypeId: 2},
-                {title: 'Sample Image 3', url: 'http://example.com/media3.gif', thumbnail: 'thumbnail3.png', userId: 3, mimetypeId: 3},
-                {title: 'Sample Video 1', url: 'http://example.com/media4.mp4', thumbnail: 'thumbnail4.png', userId: 1, mimetypeId: 4},
-                {title: 'Sample Video 2', url: 'http://example.com/media5.avi', thumbnail: 'thumbnail5.png', userId: 2, mimetypeId: 5},
-                {title: 'Sample Audio 1', url: 'http://example.com/media6.mp3', thumbnail: 'thumbnail6.png', userId: 3, mimetypeId: 6},
-                {title: 'Sample Audio 2', url: 'http://example.com/media7.wav', thumbnail: 'thumbnail7.png', userId: 4, mimetypeId: 7},
-                {title: 'Sample Document 1', url: 'http://example.com/media8.pdf', thumbnail: 'thumbnail8.png', userId: 1, mimetypeId: 8},
-                {title: 'Sample Archive 1', url: 'http://example.com/media9.zip', thumbnail: 'thumbnail9.png', userId: 4, mimetypeId: 9}
+                {title: 'Sample Image 1', url: 'http://example.com/media1.jpg', thumbnail: 'thumbnail1.png', userId: 1, mimetypeId: 1, adminOnly: false},
+                {title: 'Sample Image 2', url: 'http://example.com/media2.png', thumbnail: 'thumbnail2.png', userId: 2, mimetypeId: 2, adminOnly: false},
+                {title: 'Sample Image 3', url: 'http://example.com/media3.gif', thumbnail: 'thumbnail3.png', userId: 3, mimetypeId: 3, adminOnly: false},
+                {title: 'Sample Video 1', url: 'http://example.com/media4.mp4', thumbnail: 'thumbnail4.png', userId: 1, mimetypeId: 4, adminOnly: true},
+                {title: 'Sample Video 2', url: 'http://example.com/media5.avi', thumbnail: 'thumbnail5.png', userId: 2, mimetypeId: 5, adminOnly: true},
+                {title: 'Sample Audio 1', url: 'http://example.com/media6.mp3', thumbnail: 'thumbnail6.png', userId: 3, mimetypeId: 6, adminOnly: false},
+                {title: 'Sample Audio 2', url: 'http://example.com/media7.wav', thumbnail: 'thumbnail7.png', userId: 4, mimetypeId: 7, adminOnly: false},
+                {title: 'Sample Document 1', url: 'http://example.com/media8.pdf', thumbnail: 'thumbnail8.png', userId: 1, mimetypeId: 8, adminOnly: true},
+                {title: 'Sample Archive 1', url: 'http://example.com/media9.zip', thumbnail: 'thumbnail9.png', userId: 4, mimetypeId: 9, adminOnly: true}
             ]);
         })
         .then(function () {

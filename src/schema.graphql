@@ -19,6 +19,7 @@ type Media {
   mimetype: String!
   thumbnail: String
   userId: Int!
+  adminOnly: Boolean!
 }
 
 type Album {

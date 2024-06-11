@@ -5,6 +5,8 @@ import listVideos from './listVideos.js';
 import listMusic from './listMusic.js';
 import listAlbums from './listAlbums.js';
 import listPictures from './listPictures.js';
+import listDocuments from "./listDocuments.js";
+import listOtherFiles from "./listOtherFiles.js";
 
 export default {
     login,
@@ -13,5 +15,7 @@ export default {
     listVideos,
     listMusic,
     listAlbums,
-    listPictures
+    listPictures,
+    listDocuments,
+    listOtherFiles
 }

@@ -11,8 +11,12 @@ exports.seed = function(knex) {
                 { type: 'video/avi', category: 'VIDEO' },
                 { type: 'audio/mp3', category: 'AUDIO' },
                 { type: 'audio/wav', category: 'AUDIO' },
-                { type: 'application/pdf', category: 'OTHER' },
-                { type: 'application/zip', category: 'OTHER' }
+                { type: 'application/pdf', category: 'DOCUMENT' },
+                { type: 'application/msword', category: 'DOCUMENT' },
+                { type: 'application/vnd.ms-powerpoint', category: 'DOCUMENT' },
+                { type: 'application/vnd.ms-excel', category: 'DOCUMENT' },
+                { type: 'application/zip', category: 'OTHER' },
+                { type: 'application/x-rar-compressed', category: 'OTHER' }
             ]);
         });
 };

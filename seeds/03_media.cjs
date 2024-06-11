@@ -30,7 +30,10 @@ exports.seed = function(knex) {
 
                 // Documents
                 {title: 'Sample Document 1', url: 'http://example.com/media19.pdf', thumbnail: 'thumbnail19.png', userId: 1, mimetypeId: 8, adminOnly: true},
-                {title: 'Sample Document 2', url: 'http://example.com/media20.zip', thumbnail: 'thumbnail20.png', userId: 4, mimetypeId: 9, adminOnly: true}
+                {title: 'Sample Document 2', url: 'http://example.com/media20.zip', thumbnail: 'thumbnail20.png', userId: 4, mimetypeId: 9, adminOnly: true},
+                {title: 'Sample Document 3', url: 'http://example.com/media21.doc', thumbnail: 'thumbnail21.png', userId: 2, mimetypeId: 8, adminOnly: false},
+                {title: 'Sample Document 4', url: 'http://example.com/media22.ppt', thumbnail: 'thumbnail22.png', userId: 3, mimetypeId: 8, adminOnly: false},
+                {title: 'Sample Document 5', url: 'http://example.com/media23.xls', thumbnail: 'thumbnail23.png', userId: 4, mimetypeId: 8, adminOnly: true}
             ]);
         });
 };

@@ -23,7 +23,10 @@ exports.seed = function(knex) {
                 {albumId: 1, mediaId: 17},
                 {albumId: 2, mediaId: 18},
                 {albumId: 3, mediaId: 19},
-                {albumId: 4, mediaId: 20}
+                {albumId: 4, mediaId: 20},
+                {albumId: 1, mediaId: 21},
+                {albumId: 2, mediaId: 22},
+                {albumId: 3, mediaId: 23}
             ]);
         });
 };

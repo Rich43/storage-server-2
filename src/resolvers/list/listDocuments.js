@@ -1,8 +1,9 @@
-import { validateToken } from './utils.js';
+import { validateToken } from '../utils.js';
 
-const listMusic = async (_, __, { db, token }) => {
-    await validateToken(db, token);
-// Join Session with User to get the admin flag
+const listDocuments = async (_, __, { db, token }) => {
+    const session = await validateToken(db, token);
+
+    // Join Session with User to get the admin flag
     const userSession = await db('Session')
         .join('User', 'Session.userId', 'User.id')
         .select('User.admin')
@@ -11,7 +12,7 @@ const listMusic = async (_, __, { db, token }) => {
 
     let mediaQuery = db('Media')
         .join('Mimetype', 'Media.mimetypeId', '=', 'Mimetype.id')
-        .where('Mimetype.category', 'AUDIO')
+        .where('Mimetype.category', 'DOCUMENT')
         .select('Media.*', 'Mimetype.type as mimetype');
 
     if (!userSession.admin) {
@@ -21,4 +22,4 @@ const listMusic = async (_, __, { db, token }) => {
     return mediaQuery;
 };
 
-export default listMusic;
+export default listDocuments;

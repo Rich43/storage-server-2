@@ -1,4 +1,4 @@
-import { validateToken } from './utils.js';
+import { validateToken } from '../utils.js';
 
 const listOtherFiles = async (_, __, { db, token }) => {
     const session = await validateToken(db, token);

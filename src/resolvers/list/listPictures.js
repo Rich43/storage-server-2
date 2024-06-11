@@ -1,6 +1,6 @@
-import { validateToken } from './utils.js';
+import { validateToken } from '../utils.js';
 
-const listVideos = async (_, __, { db, token }) => {
+const listPictures = async (_, __, { db, token }) => {
     await validateToken(db, token);
 // Join Session with User to get the admin flag
     const userSession = await db('Session')
@@ -11,7 +11,7 @@ const listVideos = async (_, __, { db, token }) => {
 
     let mediaQuery = db('Media')
         .join('Mimetype', 'Media.mimetypeId', '=', 'Mimetype.id')
-        .where('Mimetype.category', 'VIDEO')
+        .where('Mimetype.category', 'IMAGE')
         .select('Media.*', 'Mimetype.type as mimetype');
 
     if (!userSession.admin) {
@@ -21,4 +21,4 @@ const listVideos = async (_, __, { db, token }) => {
     return mediaQuery;
 };
 
-export default listVideos;
+export default listPictures;

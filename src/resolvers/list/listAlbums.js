@@ -1,4 +1,4 @@
-import { validateToken } from './utils.js';
+import { validateToken } from '../utils.js';
 
 const listAlbums = async (_, __, { db, token }) => {
     await validateToken(db, token);

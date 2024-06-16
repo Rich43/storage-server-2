@@ -33,7 +33,6 @@ input MediaFilter {
   title: String
   mimetype: String
   userId: Int
-  adminOnly: Boolean
 }
 
 input Pagination {

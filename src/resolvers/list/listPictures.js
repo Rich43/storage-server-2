@@ -28,9 +28,6 @@ const listPictures = async (_, { filter, pagination, sorting }, { db, token }) =
         if (filter.userId) {
             mediaQuery = mediaQuery.where('Media.userId', filter.userId);
         }
-        if (filter.adminOnly !== undefined) {
-            mediaQuery = mediaQuery.where('Media.adminOnly', filter.adminOnly);
-        }
     }
 
     if (pagination) {

@@ -1,4 +1,4 @@
-import { validateToken } from './utils.js';
+import { validateToken } from '../utils.js';
 
 const listDocuments = async (_, { filter, pagination, sorting }, { db, token }) => {
     const session = await validateToken(db, token);

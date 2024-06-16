@@ -1,31 +1,53 @@
 import { validateToken } from '../utils.js';
 
-const listAlbums = async (_, __, { db, token }) => {
-    await validateToken(db, token);
-// Join Session with User to get the admin flag
+const listAlbums = async (_, { filter, pagination, sorting }, { db, token }) => {
+    const session = await validateToken(db, token);
+
     const userSession = await db('Session')
         .join('User', 'Session.userId', 'User.id')
         .select('User.admin')
         .where('Session.sessionToken', token)
         .first();
 
-    const albums = await db('Album').select('*');
+    let albumQuery = db('Album')
+        .select('*');
 
-    let albumMediaQuery = db('Album_Media')
-        .join('Media', 'Album_Media.mediaId', '=', 'Media.id')
-        .join('Mimetype', 'Media.mimetypeId', '=', 'Mimetype.id')
-        .select('Album_Media.albumId', 'Media.*', 'Mimetype.type as mimetype');
-
-    if (!userSession.admin) {
-        albumMediaQuery = albumMediaQuery.where('Media.adminOnly', false);
+    if (filter) {
+        if (filter.title) {
+            albumQuery = albumQuery.where('Album.title', 'like', `%${filter.title}%`);
+        }
+        if (filter.userId) {
+            albumQuery = albumQuery.where('Album.userId', filter.userId);
+        }
     }
 
-    const albumMedia = await albumMediaQuery;
+    if (pagination) {
+        const { page, limit } = pagination;
+        albumQuery = albumQuery.limit(limit).offset((page - 1) * limit);
+    }
 
-    return albums.map(album => ({
-        ...album,
-        media: albumMedia.filter(am => am.albumId === album.id)
-    }));
+    if (sorting) {
+        const { field, order } = sorting;
+        albumQuery = albumQuery.orderBy(field, order);
+    }
+
+    const albums = await albumQuery;
+
+    for (const album of albums) {
+        let mediaQuery = db('Media')
+            .join('Album_Media', 'Media.id', '=', 'Album_Media.mediaId')
+            .join('Mimetype', 'Media.mimetypeId', '=', 'Mimetype.id')
+            .where('Album_Media.albumId', album.id)
+            .select('Media.*', 'Mimetype.type as mimetype');
+
+        if (!userSession.admin) {
+            mediaQuery = mediaQuery.where('Media.adminOnly', false);
+        }
+
+        album.media = await mediaQuery;
+    }
+
+    return albums;
 };
 
 export default listAlbums;

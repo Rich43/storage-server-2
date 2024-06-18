@@ -7,6 +7,7 @@ import db from './db.js';
 import bodyParser from 'body-parser';
 import { logger, requestLogger } from './logger.js';
 import { sessionCleanupMiddleware } from "./middleware.js";
+import resolvers from "./resolvers/index.js";
 
 // Load schema
 const typeDefs = gql(readFileSync('schema.graphql', 'utf8'));
@@ -32,7 +33,7 @@ const context = ({ req }) => {
 // Create the Apollo Server instance
 const server = new ApolloServer({
     typeDefs,
-    resolvers: resolv,
+    resolvers,
 });
 
 // Start the Apollo server

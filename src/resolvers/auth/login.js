@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { getDates, hashPassword } from './utils.js';
+import { getDates, hashPassword } from '../utils.js';
 
 const login = async (_, { username, password }, { db }) => {
     // Hash the password before querying

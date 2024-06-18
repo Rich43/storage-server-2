@@ -54,6 +54,15 @@ input CreateMediaInput {
   adminOnly: Boolean
 }
 
+input EditMediaInput {
+  id: Int!
+  title: String
+  url: String
+  mimetype: String
+  thumbnail: String
+  adminOnly: Boolean
+}
+
 type Query {
   login(username: String!, password: String!): Session
   logout: Boolean!
@@ -68,4 +77,6 @@ type Query {
 
 type Mutation {
   createMedia(input: CreateMediaInput!): Media
+  editMedia(input: EditMediaInput!): Media
+  deleteMedia(id: Int!): Boolean
 }

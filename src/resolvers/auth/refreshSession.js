@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { getDates, validateToken } from './utils.js';
+import { getDates, validateToken } from '../utils.js';
 
 const refreshSession = async (_, __, { db, token }) => {
     const session = await validateToken(db, token);

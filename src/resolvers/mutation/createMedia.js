@@ -1,7 +1,7 @@
 import { getUserFromToken, validateToken } from '../utils.js';
 
 const createMedia = async (_, { input }, { db, token }) => {
-    const session = await validateToken(db, token);
+    await validateToken(db, token);
     const user = await getUserFromToken(db, token);
 
     const { title, url, mimetype, thumbnail, adminOnly } = input;
@@ -14,7 +14,7 @@ const createMedia = async (_, { input }, { db, token }) => {
         url,
         mimetypeId: await db('Mimetype').select('id').where('type', mimetype).first(),
         thumbnail,
-        userId: session.userId,
+        userId: user.userId,
         adminOnly: mediaAdminOnly
     }).returning('id');
 

@@ -1,13 +1,15 @@
-import listAlbums from './listAlbums.js';
-import listMusic from './listMusic.js';
-import listPictures from './listPictures.js';
-import listVideos from './listVideos.js';
-import listDocuments from './listDocuments.js';
-import listOtherFiles from './listOtherFiles.js';
-import login from './login.js';
-import logout from './logout.js';
-import refreshSession from './refreshSession.js';
-import createMedia from './createMedia.js';
+import listAlbums from './list/listAlbums.js';
+import listMusic from './list/listMusic.js';
+import listPictures from './list/listPictures.js';
+import listVideos from './list/listVideos.js';
+import listDocuments from './list/listDocuments.js';
+import listOtherFiles from './list/listOtherFiles.js';
+import login from './auth/login.js';
+import logout from './auth/logout.js';
+import refreshSession from './auth/refreshSession.js';
+import createMedia from './mutation/createMedia.js';
+import editMedia from './mutation/editMedia.js';
+import deleteMedia from './mutation/deleteMedia.js';
 
 const resolvers = {
     Query: {
@@ -22,7 +24,9 @@ const resolvers = {
         listOtherFiles,
     },
     Mutation: {
-        createMedia
+        createMedia,
+        editMedia,
+        deleteMedia,
     }
 };
 

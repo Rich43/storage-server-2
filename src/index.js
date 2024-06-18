@@ -4,7 +4,6 @@ import { expressMiddleware } from '@apollo/server/express4';
 import { readFileSync } from 'fs';
 import { gql } from 'graphql-tag';
 import db from './db.js';
-import { resolv } from './resolv.js';
 import bodyParser from 'body-parser';
 import { logger, requestLogger } from './logger.js';
 import { sessionCleanupMiddleware } from "./middleware.js";

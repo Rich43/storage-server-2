@@ -1,5 +1,11 @@
-import { validateToken } from './utils.js';
-import { getMediaQuery, getUserFromToken, performFilter, performPagination, performSorting } from "../utils.js";
+import {
+    getMediaQuery,
+    getUserFromToken,
+    performFilter,
+    performPagination,
+    performSorting,
+    validateToken
+} from '../utils.js';
 
 const listMusic = async (_, { filter, pagination, sorting }, { db, token }) => {
     await validateToken(db, token);

@@ -1,7 +1,7 @@
 import { validateToken } from '../utils.js';
 
 const listAlbums = async (_, { filter, pagination, sorting }, { db, token }) => {
-    const session = await validateToken(db, token);
+    await validateToken(db, token);
 
     const userSession = await db('Session')
         .join('User', 'Session.userId', 'User.id')

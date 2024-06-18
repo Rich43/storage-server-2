@@ -4,6 +4,7 @@ import listPictures from './list/listPictures.js';
 import listVideos from './list/listVideos.js';
 import listDocuments from './list/listDocuments.js';
 import listOtherFiles from './list/listOtherFiles.js';
+import getMediaById from './list/getMediaById.js';
 import login from './auth/login.js';
 import logout from './auth/logout.js';
 import refreshSession from './auth/refreshSession.js';
@@ -22,6 +23,7 @@ const resolvers = {
         listPictures,
         listDocuments,
         listOtherFiles,
+        getMediaById,
     },
     Mutation: {
         createMedia,

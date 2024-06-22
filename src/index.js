@@ -26,7 +26,7 @@ app.use(bodyParser.json());
 
 // Define the context to include the database connection and other context-related information
 const context = ({ req }) => {
-    const token = req.headers.authorization || '';
+    const token = req.headers.authorization.trim().toLowerCase().replaceAll(" ", "").replaceAll("bearer", "") || '';
     return { db, token };
 };
 

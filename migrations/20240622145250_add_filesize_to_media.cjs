@@ -1,11 +1,11 @@
 exports.up = function(knex) {
     return knex.schema.table('Media', function(table) {
-        table.string('filename', 255).defaultTo('');
+        table.bigint('filesize').defaultTo(0);
     });
 };
 
 exports.down = function(knex) {
     return knex.schema.table('Media', function(table) {
-        table.dropColumn('filename');
+        table.dropColumn('filesize');
     });
 };

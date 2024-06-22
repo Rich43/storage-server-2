@@ -15,8 +15,9 @@ type User {
   id: Int!
   username: String!
   email: String!
-  avatarPicture: String
+  avatarPicture: Media
   created: String!
+  activated: Boolean!
 }
 
 type MimeType {
@@ -118,4 +119,6 @@ type Mutation {
   createMedia(input: CreateMediaInput!): Media
   editMedia(input: EditMediaInput!): Media
   deleteMedia(id: Int!): Boolean
+  register(username: String!, email: String!, password: String!): Boolean
+
 }

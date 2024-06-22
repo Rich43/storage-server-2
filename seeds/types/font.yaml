@@ -1,5 +1,5 @@
 ---
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: font/collection
   encoding: base64
   extensions:
@@ -10,7 +10,7 @@
     template:
     - font/collection
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: font/otf
   encoding: base64
   extensions:
@@ -21,7 +21,7 @@
     template:
     - font/otf
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: font/sfnt
   encoding: base64
   xrefs:
@@ -30,7 +30,7 @@
     template:
     - font/sfnt
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: font/ttf
   encoding: base64
   extensions:
@@ -41,7 +41,7 @@
     template:
     - font/ttf
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: font/woff
   encoding: base64
   extensions:
@@ -52,7 +52,7 @@
     template:
     - font/woff
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: font/woff2
   encoding: base64
   extensions:

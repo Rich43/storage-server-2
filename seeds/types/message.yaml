@@ -1,5 +1,5 @@
 ---
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: message/bhttp
   encoding: base64
   xrefs:
@@ -8,7 +8,7 @@
     template:
     - message/bhttp
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: message/CPIM
   encoding: base64
   xrefs:
@@ -17,7 +17,7 @@
     template:
     - message/CPIM
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: message/delivery-status
   encoding: base64
   xrefs:
@@ -26,7 +26,7 @@
     template:
     - message/delivery-status
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: message/disposition-notification
   encoding: base64
   xrefs:
@@ -35,7 +35,7 @@
     template:
     - message/disposition-notification
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: message/example
   encoding: base64
   xrefs:
@@ -44,7 +44,7 @@
     template:
     - message/example
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: message/external-body
   encoding: 8bit
   xrefs:
@@ -52,7 +52,7 @@
     - rfc2045
     - rfc2046
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: message/feedback-report
   encoding: base64
   xrefs:
@@ -61,7 +61,7 @@
     template:
     - message/feedback-report
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: message/global
   encoding: base64
   xrefs:
@@ -70,7 +70,7 @@
     template:
     - message/global
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: message/global-delivery-status
   encoding: base64
   xrefs:
@@ -79,7 +79,7 @@
     template:
     - message/global-delivery-status
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: message/global-disposition-notification
   encoding: base64
   xrefs:
@@ -88,7 +88,7 @@
     template:
     - message/global-disposition-notification
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: message/global-headers
   encoding: base64
   xrefs:
@@ -97,7 +97,7 @@
     template:
     - message/global-headers
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: message/http
   encoding: base64
   xrefs:
@@ -106,7 +106,7 @@
     template:
     - message/http
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: message/imdn+xml
   encoding: base64
   xrefs:
@@ -115,7 +115,7 @@
     template:
     - message/imdn+xml
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: message/mls
   encoding: base64
   xrefs:
@@ -124,7 +124,7 @@
     template:
     - message/mls
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: message/news
   encoding: 8bit
   obsolete: true
@@ -138,7 +138,7 @@
     notes:
     - "(OBSOLETED by )"
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: message/ohttp-req
   encoding: base64
   xrefs:
@@ -147,7 +147,7 @@
     template:
     - message/ohttp-req
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: message/ohttp-res
   encoding: base64
   xrefs:
@@ -156,7 +156,7 @@
     template:
     - message/ohttp-res
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: message/partial
   encoding: 8bit
   xrefs:
@@ -164,7 +164,7 @@
     - rfc2045
     - rfc2046
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: message/rfc822
   friendly:
     en: Email Message
@@ -177,7 +177,7 @@
     - rfc2045
     - rfc2046
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: message/s-http
   encoding: base64
   obsolete: true
@@ -191,7 +191,7 @@
     notes:
     - "(OBSOLETE)"
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: message/sip
   encoding: base64
   xrefs:
@@ -200,7 +200,7 @@
     template:
     - message/sip
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: message/sipfrag
   encoding: base64
   xrefs:
@@ -209,7 +209,7 @@
     template:
     - message/sipfrag
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: message/tracking-status
   encoding: base64
   xrefs:
@@ -218,7 +218,7 @@
     template:
     - message/tracking-status
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: message/vnd.si.simp
   encoding: base64
   obsolete: true
@@ -230,7 +230,7 @@
     notes:
     - "(OBSOLETED by request)"
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: message/vnd.wfa.wsc
   encoding: base64
   xrefs:

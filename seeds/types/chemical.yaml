@@ -1,5 +1,5 @@
 ---
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: chemical/x-cdx
   friendly:
     en: ChemDraw eXchange file
@@ -7,7 +7,7 @@
   extensions:
   - cdx
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: chemical/x-cif
   friendly:
     en: Crystallographic Interchange Format
@@ -15,7 +15,7 @@
   extensions:
   - cif
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: chemical/x-cmdf
   friendly:
     en: CrystalMaker Data Format
@@ -23,7 +23,7 @@
   extensions:
   - cmdf
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: chemical/x-cml
   friendly:
     en: Chemical Markup Language
@@ -31,7 +31,7 @@
   extensions:
   - cml
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: chemical/x-csml
   friendly:
     en: Chemical Style Markup Language
@@ -39,7 +39,7 @@
   extensions:
   - csml
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: chemical/x-pdb
   encoding: base64
   extensions:
@@ -47,7 +47,7 @@
   obsolete: true
   use-instead: x-chemical/x-pdb
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: chemical/x-xyz
   friendly:
     en: XYZ File Format
@@ -57,13 +57,13 @@
   obsolete: true
   use-instead: x-chemical/x-xyz
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: x-chemical/x-pdb
   encoding: base64
   extensions:
   - pdb
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: x-chemical/x-xyz
   encoding: base64
   extensions:

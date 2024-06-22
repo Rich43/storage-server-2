@@ -1,5 +1,5 @@
 ---
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: x-conference/x-cooltalk
   friendly:
     en: CoolTalk

@@ -1,5 +1,5 @@
 ---
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/3mf
   encoding: base64
   xrefs:
@@ -11,7 +11,7 @@
     template:
     - model/3mf
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/e57
   encoding: base64
   xrefs:
@@ -20,7 +20,7 @@
     template:
     - model/e57
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/example
   encoding: base64
   xrefs:
@@ -29,7 +29,7 @@
     template:
     - model/example
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/gltf+json
   encoding: base64
   xrefs:
@@ -39,7 +39,7 @@
     template:
     - model/gltf+json
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/gltf-binary
   encoding: base64
   xrefs:
@@ -49,7 +49,7 @@
     template:
     - model/gltf-binary
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/iges
   friendly:
     en: Initial Graphics Exchange Specification (IGES)
@@ -63,7 +63,7 @@
     template:
     - model/iges
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/JT
   encoding: base64
   xrefs:
@@ -73,7 +73,7 @@
     template:
     - model/JT
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/mesh
   friendly:
     en: Mesh Data Type
@@ -86,7 +86,7 @@
     rfc:
     - rfc2077
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/mtl
   encoding: base64
   xrefs:
@@ -97,7 +97,7 @@
     template:
     - model/mtl
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/obj
   encoding: base64
   xrefs:
@@ -108,7 +108,7 @@
     template:
     - model/obj
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/prc
   encoding: base64
   xrefs:
@@ -118,7 +118,7 @@
     template:
     - model/prc
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/step
   encoding: base64
   xrefs:
@@ -128,7 +128,7 @@
     template:
     - model/step
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/step+xml
   encoding: base64
   xrefs:
@@ -138,7 +138,7 @@
     template:
     - model/step+xml
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/step+zip
   encoding: base64
   xrefs:
@@ -148,7 +148,7 @@
     template:
     - model/step+zip
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/step-xml+zip
   encoding: base64
   xrefs:
@@ -158,7 +158,7 @@
     template:
     - model/step-xml+zip
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/stl
   encoding: base64
   xrefs:
@@ -169,7 +169,7 @@
     template:
     - model/stl
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/u3d
   encoding: base64
   xrefs:
@@ -179,7 +179,7 @@
     template:
     - model/u3d
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/vnd.bary
   encoding: base64
   xrefs:
@@ -188,7 +188,7 @@
     template:
     - model/vnd.bary
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/vnd.cld
   encoding: base64
   xrefs:
@@ -197,7 +197,7 @@
     template:
     - model/vnd.cld
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/vnd.collada+xml
   friendly:
     en: COLLADA
@@ -210,7 +210,7 @@
     template:
     - model/vnd.collada+xml
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/vnd.dwf
   friendly:
     en: Autodesk Design Web Format (DWF)
@@ -223,7 +223,7 @@
     template:
     - model/vnd.dwf
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/vnd.flatland.3dml
   encoding: base64
   xrefs:
@@ -232,7 +232,7 @@
     template:
     - model/vnd.flatland.3dml
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/vnd.gdl
   friendly:
     en: Geometric Description Language (GDL)
@@ -245,7 +245,7 @@
     template:
     - model/vnd.gdl
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/vnd.gs-gdl
   encoding: base64
   xrefs:
@@ -254,7 +254,7 @@
     template:
     - model/vnd.gs-gdl
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/vnd.gtw
   friendly:
     en: Gen-Trix Studio
@@ -267,7 +267,7 @@
     template:
     - model/vnd.gtw
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/vnd.moml+xml
   encoding: base64
   xrefs:
@@ -276,7 +276,7 @@
     template:
     - model/vnd.moml+xml
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/vnd.mts
   friendly:
     en: Virtue MTS
@@ -289,7 +289,7 @@
     template:
     - model/vnd.mts
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/vnd.opengex
   encoding: base64
   xrefs:
@@ -298,7 +298,7 @@
     template:
     - model/vnd.opengex
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/vnd.parasolid.transmit.binary
   encoding: base64
   extensions:
@@ -310,7 +310,7 @@
     template:
     - model/vnd.parasolid.transmit.binary
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/vnd.parasolid.transmit.text
   encoding: quoted-printable
   extensions:
@@ -322,7 +322,7 @@
     template:
     - model/vnd.parasolid.transmit.text
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/vnd.pytha.pyox
   encoding: base64
   xrefs:
@@ -331,7 +331,7 @@
     template:
     - model/vnd.pytha.pyox
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/vnd.rosette.annotated-data-model
   encoding: base64
   xrefs:
@@ -340,7 +340,7 @@
     template:
     - model/vnd.rosette.annotated-data-model
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/vnd.sap.vds
   encoding: base64
   xrefs:
@@ -350,7 +350,7 @@
     template:
     - model/vnd.sap.vds
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/vnd.usda
   encoding: base64
   xrefs:
@@ -359,7 +359,7 @@
     template:
     - model/vnd.usda
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/vnd.usdz+zip
   encoding: base64
   xrefs:
@@ -368,7 +368,7 @@
     template:
     - model/vnd.usdz+zip
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/vnd.valve.source.compiled-map
   encoding: base64
   xrefs:
@@ -377,7 +377,7 @@
     template:
     - model/vnd.valve.source.compiled-map
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/vnd.vtu
   friendly:
     en: Virtue VTU
@@ -390,7 +390,7 @@
     template:
     - model/vnd.vtu
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/vrml
   friendly:
     en: Virtual Reality Modeling Language
@@ -402,14 +402,14 @@
     rfc:
     - rfc2077
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/x3d+binary
   encoding: base64
   extensions:
   - x3db
   - x3dbz
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/x3d+fastinfoset
   encoding: base64
   xrefs:
@@ -418,14 +418,14 @@
     template:
     - model/x3d+fastinfoset
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/x3d+vrml
   encoding: base64
   extensions:
   - x3dv
   - x3dvz
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/x3d+xml
   encoding: base64
   extensions:
@@ -438,7 +438,7 @@
     template:
     - model/x3d+xml
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: model/x3d-vrml
   encoding: base64
   xrefs:

@@ -1,5 +1,5 @@
 ---
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/1d-interleaved-parityfec
   encoding: quoted-printable
   xrefs:
@@ -8,7 +8,7 @@
     template:
     - text/1d-interleaved-parityfec
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/cache-manifest
   encoding: quoted-printable
   extensions:
@@ -21,7 +21,7 @@
     template:
     - text/cache-manifest
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/calendar
   friendly:
     en: iCalendar
@@ -35,7 +35,7 @@
     template:
     - text/calendar
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/comma-separated-values
   encoding: 8bit
   extensions:
@@ -43,7 +43,7 @@
   obsolete: true
   use-instead: text/csv
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/cql
   encoding: quoted-printable
   xrefs:
@@ -53,7 +53,7 @@
     template:
     - text/cql
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/cql-expression
   encoding: quoted-printable
   xrefs:
@@ -63,7 +63,7 @@
     template:
     - text/cql-expression
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/cql-identifier
   encoding: quoted-printable
   xrefs:
@@ -73,7 +73,7 @@
     template:
     - text/cql-identifier
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/css
   friendly:
     en: Cascading Style Sheets (CSS)
@@ -86,7 +86,7 @@
     template:
     - text/css
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/csv
   friendly:
     en: Comma-Separated Values
@@ -100,7 +100,7 @@
     template:
     - text/csv
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/csv-schema
   encoding: quoted-printable
   xrefs:
@@ -110,7 +110,7 @@
     template:
     - text/csv-schema
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/directory
   encoding: quoted-printable
   obsolete: true
@@ -123,7 +123,7 @@
     notes:
     - "- DEPRECATED by RFC6350"
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/dns
   encoding: quoted-printable
   xrefs:
@@ -132,7 +132,7 @@
     template:
     - text/dns
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/ecmascript
   encoding: quoted-printable
   extensions:
@@ -148,7 +148,7 @@
     notes:
     - "(OBSOLETED in favor of text/javascript)"
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/encaprtp
   encoding: quoted-printable
   xrefs:
@@ -157,14 +157,14 @@
     template:
     - text/encaprtp
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/enriched
   encoding: quoted-printable
   xrefs:
     rfc:
     - rfc1896
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/example
   encoding: quoted-printable
   xrefs:
@@ -173,7 +173,7 @@
     template:
     - text/example
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/fhirpath
   encoding: quoted-printable
   xrefs:
@@ -183,7 +183,7 @@
     template:
     - text/fhirpath
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/flexfec
   encoding: quoted-printable
   xrefs:
@@ -192,7 +192,7 @@
     template:
     - text/flexfec
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/fwdred
   encoding: quoted-printable
   xrefs:
@@ -201,7 +201,7 @@
     template:
     - text/fwdred
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/gff3
   encoding: quoted-printable
   xrefs:
@@ -210,7 +210,7 @@
     template:
     - text/gff3
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/grammar-ref-list
   encoding: quoted-printable
   xrefs:
@@ -219,7 +219,7 @@
     template:
     - text/grammar-ref-list
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/hl7v2
   encoding: quoted-printable
   xrefs:
@@ -229,7 +229,7 @@
     template:
     - text/hl7v2
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/html
   friendly:
     en: HyperText Markup Language (HTML)
@@ -247,7 +247,7 @@
     template:
     - text/html
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/javascript
   encoding: quoted-printable
   extensions:
@@ -260,37 +260,37 @@
     template:
     - text/javascript
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/javascript1.0
   encoding: quoted-printable
   obsolete: true
   use-instead: text/javascript
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/javascript1.1
   encoding: quoted-printable
   obsolete: true
   use-instead: text/javascript
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/javascript1.2
   encoding: quoted-printable
   obsolete: true
   use-instead: text/javascript
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/javascript1.3
   encoding: quoted-printable
   obsolete: true
   use-instead: text/javascript
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/javascript1.4
   encoding: quoted-printable
   obsolete: true
   use-instead: text/javascript
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/jcr-cnd
   encoding: quoted-printable
   xrefs:
@@ -299,19 +299,19 @@
     template:
     - text/jcr-cnd
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/jscript
   encoding: quoted-printable
   obsolete: true
   use-instead: text/javascript
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/livescript
   encoding: quoted-printable
   obsolete: true
   use-instead: text/javascript
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/markdown
   encoding: quoted-printable
   extensions:
@@ -324,7 +324,7 @@
     template:
     - text/markdown
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/mizar
   encoding: quoted-printable
   xrefs:
@@ -333,7 +333,7 @@
     template:
     - text/mizar
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/n3
   friendly:
     en: Notation3
@@ -347,7 +347,7 @@
     template:
     - text/n3
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/nfo
   encoding: quoted-printable
   xrefs:
@@ -355,7 +355,7 @@
     - Sean_Leonard
   registered: true
   provisional: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/parameters
   encoding: quoted-printable
   xrefs:
@@ -364,7 +364,7 @@
     template:
     - text/parameters
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/parityfec
   encoding: quoted-printable
   xrefs:
@@ -373,7 +373,7 @@
     template:
     - text/parityfec
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/plain
   friendly:
     en: Text File
@@ -404,7 +404,7 @@
     - rfc3676
     - rfc5147
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/provenance-notation
   encoding: quoted-printable
   xrefs:
@@ -414,7 +414,7 @@
     template:
     - text/provenance-notation
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/prs.fallenstein.rst
   encoding: quoted-printable
   extensions:
@@ -425,7 +425,7 @@
     template:
     - text/prs.fallenstein.rst
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/prs.lines.tag
   friendly:
     en: PRS Lines Tag
@@ -438,7 +438,7 @@
     template:
     - text/prs.lines.tag
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/prs.prop.logic
   encoding: quoted-printable
   xrefs:
@@ -447,7 +447,7 @@
     template:
     - text/prs.prop.logic
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/prs.texi
   encoding: quoted-printable
   xrefs:
@@ -456,7 +456,7 @@
     template:
     - text/prs.texi
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/raptorfec
   encoding: quoted-printable
   xrefs:
@@ -465,7 +465,7 @@
     template:
     - text/raptorfec
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/RED
   encoding: quoted-printable
   xrefs:
@@ -474,7 +474,7 @@
     template:
     - text/RED
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/rfc822-headers
   encoding: quoted-printable
   xrefs:
@@ -483,7 +483,7 @@
     template:
     - text/rfc822-headers
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/richtext
   friendly:
     en: Rich Text Format (RTF)
@@ -495,7 +495,7 @@
     - rfc2045
     - rfc2046
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/rtf
   encoding: 8bit
   extensions:
@@ -506,7 +506,7 @@
     template:
     - text/rtf
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/rtp-enc-aescm128
   encoding: quoted-printable
   xrefs:
@@ -515,7 +515,7 @@
     template:
     - text/rtp-enc-aescm128
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/rtploopback
   encoding: quoted-printable
   xrefs:
@@ -524,7 +524,7 @@
     template:
     - text/rtploopback
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/rtx
   encoding: quoted-printable
   xrefs:
@@ -533,7 +533,7 @@
     template:
     - text/rtx
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/sgml
   friendly:
     en: Standard Generalized Markup Language (SGML)
@@ -547,7 +547,7 @@
     template:
     - text/SGML
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/shaclc
   encoding: quoted-printable
   xrefs:
@@ -557,7 +557,7 @@
     template:
     - text/shaclc
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/shex
   encoding: quoted-printable
   xrefs:
@@ -567,7 +567,7 @@
     template:
     - text/shex
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/spdx
   encoding: quoted-printable
   xrefs:
@@ -577,7 +577,7 @@
     template:
     - text/spdx
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/strings
   encoding: quoted-printable
   xrefs:
@@ -586,7 +586,7 @@
     template:
     - text/strings
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/t140
   encoding: quoted-printable
   xrefs:
@@ -595,7 +595,7 @@
     template:
     - text/t140
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/tab-separated-values
   friendly:
     en: Tab Separated Values
@@ -608,7 +608,7 @@
     template:
     - text/tab-separated-values
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/troff
   friendly:
     en: troff
@@ -627,7 +627,7 @@
     template:
     - text/troff
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/turtle
   friendly:
     en: Turtle (Terse RDF Triple Language)
@@ -641,7 +641,7 @@
     template:
     - text/turtle
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/ulpfec
   encoding: quoted-printable
   xrefs:
@@ -650,7 +650,7 @@
     template:
     - text/ulpfec
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/uri-list
   friendly:
     en: URI Resolution Services
@@ -665,7 +665,7 @@
     template:
     - text/uri-list
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vcard
   encoding: quoted-printable
   extensions:
@@ -677,7 +677,7 @@
     - text/vcard
   registered: true
   signature: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.a
   encoding: quoted-printable
   xrefs:
@@ -686,7 +686,7 @@
     template:
     - text/vnd.a
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.abc
   encoding: quoted-printable
   xrefs:
@@ -695,7 +695,7 @@
     template:
     - text/vnd.abc
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.ascii-art
   encoding: quoted-printable
   xrefs:
@@ -704,7 +704,7 @@
     template:
     - text/vnd.ascii-art
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.curl
   friendly:
     en: Curl - Applet
@@ -717,7 +717,7 @@
     template:
     - text/vnd.curl
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.curl.dcurl
   friendly:
     en: Curl - Detached Applet
@@ -725,7 +725,7 @@
   extensions:
   - dcurl
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.curl.mcurl
   friendly:
     en: Curl - Manifest File
@@ -733,7 +733,7 @@
   extensions:
   - mcurl
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.curl.scurl
   friendly:
     en: Curl - Source Code
@@ -741,7 +741,7 @@
   extensions:
   - scurl
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.debian.copyright
   encoding: quoted-printable
   xrefs:
@@ -750,7 +750,7 @@
     template:
     - text/vnd.debian.copyright
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.DMClientScript
   encoding: quoted-printable
   xrefs:
@@ -759,7 +759,7 @@
     template:
     - text/vnd.DMClientScript
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.dvb.subtitle
   encoding: quoted-printable
   extensions:
@@ -771,7 +771,7 @@
     template:
     - text/vnd.dvb.subtitle
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.esmertec.theme-descriptor
   encoding: quoted-printable
   xrefs:
@@ -780,7 +780,7 @@
     template:
     - text/vnd.esmertec.theme-descriptor
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.exchangeable
   encoding: quoted-printable
   xrefs:
@@ -789,7 +789,7 @@
     template:
     - text/vnd.exchangeable
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.familysearch.gedcom
   encoding: quoted-printable
   xrefs:
@@ -798,7 +798,7 @@
     template:
     - text/vnd.familysearch.gedcom
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.ficlab.flt
   encoding: quoted-printable
   xrefs:
@@ -807,13 +807,13 @@
     template:
     - text/vnd.ficlab.flt
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.flatland.3dml
   encoding: quoted-printable
   obsolete: true
   use-instead: model/vnd.flatland.3dml
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.fly
   friendly:
     en: mod_fly / fly.cgi
@@ -826,7 +826,7 @@
     template:
     - text/vnd.fly
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.fmi.flexstor
   friendly:
     en: FLEXSTOR
@@ -839,7 +839,7 @@
     template:
     - text/vnd.fmi.flexstor
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.gml
   encoding: quoted-printable
   xrefs:
@@ -848,7 +848,7 @@
     template:
     - text/vnd.gml
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.graphviz
   friendly:
     en: Graphviz
@@ -861,7 +861,7 @@
     template:
     - text/vnd.graphviz
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.hans
   encoding: quoted-printable
   xrefs:
@@ -870,7 +870,7 @@
     template:
     - text/vnd.hans
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.hgl
   encoding: quoted-printable
   xrefs:
@@ -879,7 +879,7 @@
     template:
     - text/vnd.hgl
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.in3d.3dml
   friendly:
     en: In3D - 3DML
@@ -892,7 +892,7 @@
     template:
     - text/vnd.in3d.3dml
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.in3d.spot
   friendly:
     en: In3D - 3DML
@@ -905,7 +905,7 @@
     template:
     - text/vnd.in3d.spot
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.IPTC.NewsML
   encoding: quoted-printable
   xrefs:
@@ -914,7 +914,7 @@
     template:
     - text/vnd.IPTC.NewsML
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.IPTC.NITF
   encoding: quoted-printable
   xrefs:
@@ -923,7 +923,7 @@
     template:
     - text/vnd.IPTC.NITF
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.latex-z
   encoding: quoted-printable
   xrefs:
@@ -932,7 +932,7 @@
     template:
     - text/vnd.latex-z
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.motorola.reflex
   encoding: quoted-printable
   xrefs:
@@ -941,7 +941,7 @@
     template:
     - text/vnd.motorola.reflex
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.ms-mediapackage
   encoding: quoted-printable
   xrefs:
@@ -950,7 +950,7 @@
     template:
     - text/vnd.ms-mediapackage
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.net2phone.commcenter.command
   encoding: quoted-printable
   extensions:
@@ -961,7 +961,7 @@
     template:
     - text/vnd.net2phone.commcenter.command
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.radisys.msml-basic-layout
   encoding: quoted-printable
   xrefs:
@@ -970,7 +970,7 @@
     template:
     - text/vnd.radisys.msml-basic-layout
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.senx.warpscript
   encoding: quoted-printable
   xrefs:
@@ -979,7 +979,7 @@
     template:
     - text/vnd.senx.warpscript
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.si.uricatalogue
   encoding: quoted-printable
   obsolete: true
@@ -991,7 +991,7 @@
     notes:
     - "(OBSOLETED by request)"
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.sosi
   encoding: quoted-printable
   xrefs:
@@ -1000,7 +1000,7 @@
     template:
     - text/vnd.sosi
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.sun.j2me.app-descriptor
   friendly:
     en: J2ME App Descriptor
@@ -1013,7 +1013,7 @@
     template:
     - text/vnd.sun.j2me.app-descriptor
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.trolltech.linguist
   encoding: quoted-printable
   xrefs:
@@ -1022,7 +1022,7 @@
     template:
     - text/vnd.trolltech.linguist
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.wap.si
   encoding: quoted-printable
   extensions:
@@ -1033,7 +1033,7 @@
     template:
     - text/vnd.wap.si
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.wap.sl
   encoding: quoted-printable
   extensions:
@@ -1044,7 +1044,7 @@
     template:
     - text/vnd.wap.sl
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.wap.wml
   friendly:
     en: Wireless Markup Language (WML)
@@ -1057,7 +1057,7 @@
     template:
     - text/vnd.wap.wml
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vnd.wap.wmlscript
   friendly:
     en: Wireless Markup Language Script (WMLScript)
@@ -1070,7 +1070,7 @@
     template:
     - text/vnd.wap.wmlscript
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/vtt
   encoding: quoted-printable
   extensions:
@@ -1082,7 +1082,7 @@
     template:
     - text/vtt
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/wgsl
   encoding: quoted-printable
   xrefs:
@@ -1092,7 +1092,7 @@
     template:
     - text/wgsl
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/x-asm
   friendly:
     en: Assembler Source File
@@ -1101,7 +1101,7 @@
   - asm
   - s
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/x-c
   friendly:
     en: C Source File
@@ -1115,25 +1115,25 @@
   - h
   - hh
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/x-coffescript
   encoding: 8bit
   extensions:
   - coffee
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/x-component
   encoding: 8bit
   extensions:
   - htc
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/x-ecmascript
   encoding: quoted-printable
   obsolete: true
   use-instead: text/javascript
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/x-fortran
   friendly:
     en: Fortran Source File
@@ -1144,7 +1144,7 @@
   - f90
   - for
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/x-java-source
   friendly:
     en: Java Source File
@@ -1152,19 +1152,19 @@
   extensions:
   - java
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/x-nfo
   encoding: quoted-printable
   extensions:
   - nfo
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/x-opml
   encoding: quoted-printable
   extensions:
   - opml
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/x-pascal
   friendly:
     en: Pascal Source File
@@ -1173,7 +1173,7 @@
   - p
   - pas
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/x-rtf
   encoding: 8bit
   extensions:
@@ -1181,7 +1181,7 @@
   obsolete: true
   use-instead: text/rtf
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/x-setext
   friendly:
     en: Setext
@@ -1189,13 +1189,13 @@
   extensions:
   - etx
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/x-sfv
   encoding: quoted-printable
   extensions:
   - sfv
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/x-uuencode
   friendly:
     en: UUEncode
@@ -1203,7 +1203,7 @@
   extensions:
   - uu
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/x-vcalendar
   friendly:
     en: vCalendar
@@ -1211,7 +1211,7 @@
   extensions:
   - vcs
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/x-vcard
   friendly:
     en: vCard
@@ -1220,20 +1220,20 @@
   - vcf
   registered: false
   signature: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/x-vnd.flatland.3dml
   encoding: quoted-printable
   obsolete: true
   use-instead: model/vnd.flatland.3dml
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/x-yaml
   encoding: 8bit
   extensions:
   - yaml
   - yml
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/xml
   encoding: 8bit
   extensions:
@@ -1246,7 +1246,7 @@
     template:
     - text/xml
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: text/xml-external-parsed-entity
   encoding: quoted-printable
   xrefs:

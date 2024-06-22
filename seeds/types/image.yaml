@@ -1,5 +1,5 @@
 ---
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/aces
   encoding: base64
   xrefs:
@@ -9,7 +9,7 @@
     template:
     - image/aces
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/apng
   encoding: base64
   xrefs:
@@ -19,7 +19,7 @@
     template:
     - image/apng
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/avci
   encoding: base64
   xrefs:
@@ -29,7 +29,7 @@
     template:
     - image/avci
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/avcs
   encoding: base64
   xrefs:
@@ -39,7 +39,7 @@
     template:
     - image/avcs
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/avif
   encoding: base64
   extensions:
@@ -51,7 +51,7 @@
     template:
     - image/avif
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/bmp
   friendly:
     en: Bitmap Image File
@@ -64,7 +64,7 @@
     template:
     - image/bmp
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/cgm
   friendly:
     en: Computer Graphics Metafile
@@ -77,13 +77,13 @@
     template:
     - image/cgm
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/cmu-raster
   encoding: base64
   obsolete: true
   use-instead: image/x-cmu-raster
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/dicom-rle
   encoding: base64
   xrefs:
@@ -93,7 +93,7 @@
     template:
     - image/dicom-rle
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/dpx
   encoding: base64
   xrefs:
@@ -103,7 +103,7 @@
     template:
     - image/dpx
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/emf
   encoding: base64
   xrefs:
@@ -112,7 +112,7 @@
     template:
     - image/emf
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/example
   encoding: base64
   xrefs:
@@ -121,7 +121,7 @@
     template:
     - image/example
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/fits
   encoding: base64
   xrefs:
@@ -130,7 +130,7 @@
     template:
     - image/fits
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/g3fax
   friendly:
     en: G3 Fax Image
@@ -143,7 +143,7 @@
     template:
     - image/g3fax
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/gif
   friendly:
     en: Graphics Interchange Format
@@ -155,7 +155,7 @@
     - rfc2045
     - rfc2046
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/heic
   encoding: base64
   extensions:
@@ -168,7 +168,7 @@
     template:
     - image/heic
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/heic-sequence
   encoding: base64
   extensions:
@@ -181,7 +181,7 @@
     template:
     - image/heic-sequence
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/heif
   encoding: base64
   extensions:
@@ -194,7 +194,7 @@
     template:
     - image/heif
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/heif-sequence
   encoding: base64
   extensions:
@@ -207,7 +207,7 @@
     template:
     - image/heif-sequence
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/hej2k
   encoding: base64
   xrefs:
@@ -217,7 +217,7 @@
     template:
     - image/hej2k
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/hsj2
   encoding: base64
   xrefs:
@@ -227,7 +227,7 @@
     template:
     - image/hsj2
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/ief
   friendly:
     en: Image Exchange Format
@@ -238,7 +238,7 @@
     rfc:
     - rfc1314
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/j2c
   encoding: base64
   xrefs:
@@ -249,7 +249,7 @@
     template:
     - image/j2c
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/j2is
   encoding: base64
   xrefs:
@@ -257,7 +257,7 @@
     - ISO-IEC_JTC_1-SC_29-WG_1_Convenor
   registered: true
   provisional: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/jls
   encoding: base64
   xrefs:
@@ -267,7 +267,7 @@
     template:
     - image/jls
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/jp2
   encoding: base64
   extensions:
@@ -279,7 +279,7 @@
     template:
     - image/jp2
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/jpeg
   friendly:
     en: JPEG Image
@@ -294,7 +294,7 @@
     - rfc2045
     - rfc2046
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/jph
   encoding: base64
   xrefs:
@@ -304,7 +304,7 @@
     template:
     - image/jph
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/jphc
   encoding: base64
   xrefs:
@@ -314,7 +314,7 @@
     template:
     - image/jphc
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/jpm
   encoding: base64
   extensions:
@@ -326,7 +326,7 @@
     template:
     - image/jpm
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/jpx
   encoding: base64
   extensions:
@@ -340,7 +340,7 @@
     template:
     - image/jpx
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/jxl
   encoding: base64
   xrefs:
@@ -351,7 +351,7 @@
     - image/jxl
   registered: true
   provisional: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/jxr
   encoding: base64
   xrefs:
@@ -361,7 +361,7 @@
     template:
     - image/jxr
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/jxrA
   encoding: base64
   xrefs:
@@ -371,7 +371,7 @@
     template:
     - image/jxrA
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/jxrS
   encoding: base64
   xrefs:
@@ -381,7 +381,7 @@
     template:
     - image/jxrS
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/jxs
   encoding: base64
   xrefs:
@@ -390,7 +390,7 @@
     template:
     - image/jxs
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/jxsc
   encoding: base64
   xrefs:
@@ -399,7 +399,7 @@
     template:
     - image/jxsc
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/jxsi
   encoding: base64
   xrefs:
@@ -408,7 +408,7 @@
     template:
     - image/jxsi
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/jxss
   encoding: base64
   xrefs:
@@ -417,7 +417,7 @@
     template:
     - image/jxss
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/ktx
   friendly:
     en: OpenGL Textures (KTX)
@@ -431,7 +431,7 @@
     template:
     - image/ktx
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/ktx2
   encoding: base64
   xrefs:
@@ -441,7 +441,7 @@
     template:
     - image/ktx2
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/naplps
   encoding: base64
   xrefs:
@@ -450,7 +450,7 @@
     template:
     - image/naplps
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/pdc
   encoding: base64
   xrefs:
@@ -458,12 +458,12 @@
     - Pierre-Anthony_Lemieux
   registered: true
   provisional: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/pjpeg
   docs: Fixes a bug with IE6 and progressive JPEGs
   encoding: base64
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/png
   friendly:
     en: Portable Network Graphics (PNG)
@@ -477,7 +477,7 @@
     template:
     - image/png
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/prs.btif
   friendly:
     en: BTIF
@@ -490,7 +490,7 @@
     template:
     - image/prs.btif
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/prs.pti
   encoding: base64
   xrefs:
@@ -499,7 +499,7 @@
     template:
     - image/prs.pti
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/pwg-raster
   encoding: base64
   xrefs:
@@ -508,13 +508,13 @@
     template:
     - image/pwg-raster
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/sgi
   encoding: base64
   extensions:
   - sgi
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/svg+xml
   friendly:
     en: Scalable Vector Graphics (SVG)
@@ -530,7 +530,7 @@
     template:
     - image/svg+xml
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/t38
   encoding: base64
   xrefs:
@@ -539,7 +539,7 @@
     template:
     - image/t38
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/targa
   encoding: base64
   extensions:
@@ -547,7 +547,7 @@
   obsolete: true
   use-instead: image/x-targa
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/tiff
   friendly:
     en: Tagged Image File Format
@@ -561,7 +561,7 @@
     template:
     - image/tiff
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/tiff-fx
   encoding: base64
   xrefs:
@@ -570,7 +570,7 @@
     template:
     - image/tiff-fx
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/vnd.adobe.photoshop
   friendly:
     en: Photoshop Document
@@ -583,7 +583,7 @@
     template:
     - image/vnd.adobe.photoshop
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/vnd.airzip.accelerator.azv
   encoding: base64
   xrefs:
@@ -592,7 +592,7 @@
     template:
     - image/vnd.airzip.accelerator.azv
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/vnd.cns.inf2
   encoding: base64
   xrefs:
@@ -601,7 +601,7 @@
     template:
     - image/vnd.cns.inf2
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/vnd.dece.graphic
   friendly:
     en: DECE Graphic
@@ -617,7 +617,7 @@
     template:
     - image/vnd.dece.graphic
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/vnd.dgn
   encoding: base64
   extensions:
@@ -625,7 +625,7 @@
   obsolete: true
   use-instead: image/x-vnd.dgn
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/vnd.djvu
   friendly:
     en: DjVu
@@ -639,7 +639,7 @@
     template:
     - image/vnd.djvu
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/vnd.dvb.subtitle
   friendly:
     en: Close Captioning - Subtitle
@@ -653,7 +653,7 @@
     template:
     - image/vnd.dvb.subtitle
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/vnd.dwg
   friendly:
     en: DWG Drawing
@@ -666,7 +666,7 @@
     template:
     - image/vnd.dwg
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/vnd.dxf
   friendly:
     en: AutoCAD DXF
@@ -679,7 +679,7 @@
     template:
     - image/vnd.dxf
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/vnd.fastbidsheet
   friendly:
     en: FastBid Sheet
@@ -692,7 +692,7 @@
     template:
     - image/vnd.fastbidsheet
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/vnd.fpx
   friendly:
     en: FlashPix
@@ -705,7 +705,7 @@
     template:
     - image/vnd.fpx
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/vnd.fst
   friendly:
     en: FAST Search & Transfer ASA
@@ -718,7 +718,7 @@
     template:
     - image/vnd.fst
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/vnd.fujixerox.edmics-mmr
   friendly:
     en: EDMICS 2000
@@ -731,7 +731,7 @@
     template:
     - image/vnd.fujixerox.edmics-mmr
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/vnd.fujixerox.edmics-rlc
   friendly:
     en: EDMICS 2000
@@ -744,7 +744,7 @@
     template:
     - image/vnd.fujixerox.edmics-rlc
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/vnd.globalgraphics.pgb
   encoding: base64
   extensions:
@@ -755,7 +755,7 @@
     template:
     - image/vnd.globalgraphics.pgb
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/vnd.microsoft.icon
   encoding: base64
   extensions:
@@ -766,7 +766,7 @@
     template:
     - image/vnd.microsoft.icon
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/vnd.mix
   encoding: base64
   xrefs:
@@ -775,7 +775,7 @@
     template:
     - image/vnd.mix
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/vnd.mozilla.apng
   encoding: base64
   xrefs:
@@ -784,7 +784,7 @@
     template:
     - image/vnd.mozilla.apng
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/vnd.ms-modi
   friendly:
     en: Microsoft Document Imaging Format
@@ -797,13 +797,13 @@
     template:
     - image/vnd.ms-modi
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/vnd.ms-photo
   encoding: base64
   extensions:
   - wdp
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/vnd.net-fpx
   friendly:
     en: FlashPix
@@ -816,13 +816,13 @@
     template:
     - image/vnd.net-fpx
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/vnd.net.fpx
   encoding: base64
   obsolete: true
   use-instead: image/vnd.net-fpx
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/vnd.pco.b16
   encoding: base64
   xrefs:
@@ -832,7 +832,7 @@
     template:
     - image/vnd.pco.b16
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/vnd.radiance
   encoding: base64
   xrefs:
@@ -842,7 +842,7 @@
     template:
     - image/vnd.radiance
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/vnd.sealed.png
   encoding: base64
   xrefs:
@@ -851,7 +851,7 @@
     template:
     - image/vnd.sealed.png
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/vnd.sealedmedia.softseal.gif
   encoding: base64
   xrefs:
@@ -860,7 +860,7 @@
     template:
     - image/vnd.sealedmedia.softseal.gif
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/vnd.sealedmedia.softseal.jpg
   encoding: base64
   xrefs:
@@ -869,7 +869,7 @@
     template:
     - image/vnd.sealedmedia.softseal.jpg
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/vnd.svf
   encoding: base64
   xrefs:
@@ -878,7 +878,7 @@
     template:
     - image/vnd.svf
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/vnd.tencent.tap
   encoding: base64
   xrefs:
@@ -887,7 +887,7 @@
     template:
     - image/vnd.tencent.tap
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/vnd.valve.source.texture
   encoding: base64
   xrefs:
@@ -896,7 +896,7 @@
     template:
     - image/vnd.valve.source.texture
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/vnd.wap.wbmp
   friendly:
     en: WAP Bitamp (WBMP)
@@ -909,7 +909,7 @@
     template:
     - image/vnd.wap.wbmp
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/vnd.xiff
   friendly:
     en: eXtended Image File Format (XIFF)
@@ -922,7 +922,7 @@
     template:
     - image/vnd.xiff
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/vnd.zbrush.pcx
   encoding: base64
   xrefs:
@@ -931,7 +931,7 @@
     template:
     - image/vnd.zbrush.pcx
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/webp
   friendly:
     en: WebP Image
@@ -944,7 +944,7 @@
     template:
     - image/webp
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/wmf
   encoding: base64
   xrefs:
@@ -953,13 +953,13 @@
     template:
     - image/wmf
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-3ds
   encoding: base64
   extensions:
   - 3ds
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-adobe-dng
   friendly:
     en: Adobe Digital Negative
@@ -967,7 +967,7 @@
   extensions:
   - dng
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-bmp
   encoding: base64
   extensions:
@@ -975,7 +975,7 @@
   obsolete: true
   use-instead: image/bmp
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-canon-cr2
   friendly:
     en: Canon Raw Image
@@ -983,7 +983,7 @@
   extensions:
   - cr2
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-canon-crw
   friendly:
     en: Canon Raw Image
@@ -991,7 +991,7 @@
   extensions:
   - crw
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-cmu-raster
   friendly:
     en: CMU Image
@@ -999,7 +999,7 @@
   extensions:
   - ras
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-cmx
   friendly:
     en: Corel Metafile Exchange (CMX)
@@ -1007,7 +1007,7 @@
   extensions:
   - cmx
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-compressed-xcf
   docs: see-also:image/x-xcf
   encoding: base64
@@ -1015,7 +1015,7 @@
   - xcfbz2
   - xcfgz
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-emf
   encoding: base64
   obsolete: true
@@ -1028,7 +1028,7 @@
     notes:
     - "- DEPRECATED in favor of image/emf"
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-epson-erf
   friendly:
     en: Epson Raw Image
@@ -1036,7 +1036,7 @@
   extensions:
   - erf
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-freehand
   friendly:
     en: FreeHand MX
@@ -1048,7 +1048,7 @@
   - fh7
   - fhc
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-fuji-raf
   friendly:
     en: Fuji Raw Image
@@ -1056,13 +1056,13 @@
   extensions:
   - raf
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-hasselblad-3fr
   encoding: base64
   extensions:
   - 3fr
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-icon
   friendly:
     en: Icon Image
@@ -1070,7 +1070,7 @@
   extensions:
   - ico
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-kodak-dcr
   friendly:
     en: Kodak Raw Image
@@ -1078,7 +1078,7 @@
   extensions:
   - dcr
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-kodak-k25
   friendly:
     en: Kodak Raw Image
@@ -1086,7 +1086,7 @@
   extensions:
   - k25
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-kodak-kdc
   friendly:
     en: Kodak Raw Image
@@ -1094,7 +1094,7 @@
   extensions:
   - kdc
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-minolta-mrw
   friendly:
     en: Minolta Raw Image
@@ -1102,13 +1102,13 @@
   extensions:
   - mrw
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-mrsid-image
   encoding: base64
   extensions:
   - sid
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-ms-bmp
   friendly:
     en: Bitmap Image File
@@ -1117,7 +1117,7 @@
   - bmp
   obsolete: true
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-nikon-nef
   friendly:
     en: Nikon Raw Image
@@ -1125,7 +1125,7 @@
   extensions:
   - nef
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-olympus-orf
   friendly:
     en: Olympus Raw Image
@@ -1133,14 +1133,14 @@
   extensions:
   - orf
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-paintshoppro
   encoding: base64
   extensions:
   - psp
   - pspimage
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-panasonic-raw
   friendly:
     en: Panasonic Raw Image
@@ -1148,7 +1148,7 @@
   extensions:
   - raw
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-pcx
   friendly:
     en: PCX Image
@@ -1156,7 +1156,7 @@
   extensions:
   - pcx
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-pentax-pef
   friendly:
     en: Pentax Raw Image
@@ -1164,7 +1164,7 @@
   extensions:
   - pef
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-pict
   friendly:
     en: PICT Image
@@ -1173,7 +1173,7 @@
   - pct
   - pic
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-portable-anymap
   friendly:
     en: Portable Anymap Image
@@ -1181,7 +1181,7 @@
   extensions:
   - pnm
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-portable-bitmap
   friendly:
     en: Portable Bitmap Format
@@ -1189,7 +1189,7 @@
   extensions:
   - pbm
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-portable-graymap
   friendly:
     en: Portable Graymap Format
@@ -1197,7 +1197,7 @@
   extensions:
   - pgm
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-portable-pixmap
   friendly:
     en: Portable Pixmap Format
@@ -1205,7 +1205,7 @@
   extensions:
   - ppm
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-rgb
   friendly:
     en: Silicon Graphics RGB Bitmap
@@ -1213,7 +1213,7 @@
   extensions:
   - rgb
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-sigma-x3f
   friendly:
     en: Sigma Raw Image
@@ -1221,7 +1221,7 @@
   extensions:
   - x3f
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-sony-arw
   friendly:
     en: Sony Raw Image
@@ -1229,7 +1229,7 @@
   extensions:
   - arw
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-sony-sr2
   friendly:
     en: Sony Raw Image
@@ -1237,7 +1237,7 @@
   extensions:
   - sr2
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-sony-srf
   friendly:
     en: Sony Raw Image
@@ -1245,29 +1245,29 @@
   extensions:
   - srf
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-targa
   encoding: base64
   extensions:
   - tga
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-tga
   encoding: base64
   extensions:
   - tga
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-vnd.dgn
   encoding: base64
   extensions:
   - dgn
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-win-bmp
   encoding: base64
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-wmf
   encoding: base64
   obsolete: true
@@ -1280,7 +1280,7 @@
     notes:
     - "- DEPRECATED in favor of image/wmf"
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-xbitmap
   friendly:
     en: X BitMap
@@ -1288,19 +1288,19 @@
   extensions:
   - xbm
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-xbm
   encoding: 7bit
   extensions:
   - xbm
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-xcf
   encoding: base64
   extensions:
   - xcf
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-xpixmap
   friendly:
     en: X PixMap
@@ -1308,7 +1308,7 @@
   extensions:
   - xpm
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: image/x-xwindowdump
   friendly:
     en: X Window Dump

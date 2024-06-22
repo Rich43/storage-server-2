@@ -1,5 +1,5 @@
 ---
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: drawing/dwf
   encoding: base64
   extensions:
@@ -7,7 +7,7 @@
   obsolete: true
   use-instead: x-drawing/dwf
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: x-drawing/dwf
   encoding: base64
   extensions:

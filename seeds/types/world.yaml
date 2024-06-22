@@ -1,5 +1,5 @@
 ---
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: x-world/x-vrml
   encoding: base64
   extensions:

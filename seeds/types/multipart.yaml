@@ -1,5 +1,5 @@
 ---
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: multipart/alternative
   encoding: 8bit
   xrefs:
@@ -7,7 +7,7 @@
     - rfc2045
     - rfc2046
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: multipart/appledouble
   encoding: 8bit
   xrefs:
@@ -16,7 +16,7 @@
     template:
     - multipart/appledouble
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: multipart/byteranges
   encoding: base64
   xrefs:
@@ -25,7 +25,7 @@
     template:
     - multipart/byteranges
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: multipart/digest
   encoding: 8bit
   xrefs:
@@ -33,7 +33,7 @@
     - rfc2045
     - rfc2046
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: multipart/encrypted
   encoding: base64
   xrefs:
@@ -42,7 +42,7 @@
     template:
     - multipart/encrypted
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: multipart/example
   encoding: base64
   xrefs:
@@ -51,7 +51,7 @@
     template:
     - multipart/example
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: multipart/form-data
   encoding: base64
   xrefs:
@@ -60,7 +60,7 @@
     template:
     - multipart/form-data
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: multipart/header-set
   encoding: base64
   xrefs:
@@ -69,7 +69,7 @@
     template:
     - multipart/header-set
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: multipart/mixed
   encoding: 8bit
   xrefs:
@@ -77,7 +77,7 @@
     - rfc2045
     - rfc2046
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: multipart/multilingual
   encoding: base64
   xrefs:
@@ -86,7 +86,7 @@
     template:
     - multipart/multilingual
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: multipart/parallel
   encoding: 8bit
   xrefs:
@@ -94,7 +94,7 @@
     - rfc2045
     - rfc2046
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: multipart/related
   encoding: base64
   xrefs:
@@ -103,7 +103,7 @@
     template:
     - multipart/related
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: multipart/report
   encoding: base64
   xrefs:
@@ -112,7 +112,7 @@
     template:
     - multipart/report
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: multipart/signed
   encoding: base64
   xrefs:
@@ -121,7 +121,7 @@
     template:
     - multipart/signed
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: multipart/vnd.bint.med-plus
   encoding: base64
   xrefs:
@@ -130,7 +130,7 @@
     template:
     - multipart/vnd.bint.med-plus
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: multipart/voice-message
   encoding: base64
   xrefs:
@@ -139,11 +139,11 @@
     template:
     - multipart/voice-message
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: multipart/x-gzip
   encoding: base64
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: multipart/x-mixed-replace
   encoding: base64
   xrefs:
@@ -153,27 +153,27 @@
     template:
     - multipart/x-mixed-replace
   registered: true
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: multipart/x-parallel
   encoding: base64
   obsolete: true
   use-instead: multipart/parallel
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: multipart/x-tar
   encoding: base64
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: multipart/x-ustar
   encoding: base64
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: multipart/x-www-form-urlencoded
   encoding: base64
   obsolete: true
   use-instead: application/x-www-form-urlencoded
   registered: false
-- !ruby/object:MIME::Type
+- mimetype:
   content-type: multipart/x-zip
   encoding: base64
   registered: false

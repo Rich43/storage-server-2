@@ -15,9 +15,17 @@ type User {
   id: Int!
   username: String!
   email: String!
-  avatarPicture: Media
+  avatar: Media
   created: String!
   activated: Boolean!
+  banned: Boolean!
+}
+
+input EditUserInput {
+  id: Int!
+  username: String
+  email: String
+  password: String
 }
 
 type MimeType {
@@ -101,9 +109,6 @@ input EditMediaInput {
 }
 
 type Query {
-  login(username: String!, password: String!): Session
-  logout: Boolean!
-  refreshSession: Session
   listMedia(filter: MediaFilter, pagination: Pagination, sorting: Sorting): [Media]
   listVideos(filter: MediaFilter, pagination: Pagination, sorting: Sorting): [Media]
   listMusic(filter: MediaFilter, pagination: Pagination, sorting: Sorting): [Media]
@@ -116,9 +121,13 @@ type Query {
 }
 
 type Mutation {
+  login(username: String!, password: String!): Session
+  logout: Boolean!
+  refreshSession: Session
   createMedia(input: CreateMediaInput!): Media
   editMedia(input: EditMediaInput!): Media
   deleteMedia(id: Int!): Boolean
   register(username: String!, email: String!, password: String!): User
-
+  activateAccount(activationCode: String!): Boolean
+  editUser(input: EditUserInput!): User
 }

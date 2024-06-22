@@ -11,6 +11,7 @@ type Session {
   sessionToken: String!
   sessionExpireDateTime: String!
   admin: Boolean!
+  created: String!
 }
 
 type Media {
@@ -18,9 +19,12 @@ type Media {
   title: String!
   url: String!
   mimetype: String!
-  thumbnail: String
+  thumbnail: Media
   userId: Int!
   adminOnly: Boolean!
+  uploaded: Boolean!
+  created: String!
+  fileSize: Int!
 }
 
 type Album {

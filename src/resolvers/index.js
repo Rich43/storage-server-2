@@ -5,8 +5,8 @@ import listVideos from './query/list/listVideos.js';
 import listDocuments from './query/list/listDocuments.js';
 import listOtherFiles from './query/list/listOtherFiles.js';
 import getMediaById from './query/list/getMediaById.js';
-import login from './mutation/auth/login.js';
-import logout from './mutation/auth/logout.js';
+import loginUser from './mutation/auth/loginUser.js';
+import logoutUser from './mutation/auth/logoutUser.js';
 import refreshSession from './mutation/auth/refreshSession.js';
 import createMedia from './mutation/createMedia.js';
 import editMedia from './mutation/editMedia.js';
@@ -23,8 +23,8 @@ const resolvers = {
         getMediaById,
     },
     Mutation: {
-        login,
-        logout,
+        loginUser,
+        logoutUser,
         refreshSession,
         createMedia,
         editMedia,

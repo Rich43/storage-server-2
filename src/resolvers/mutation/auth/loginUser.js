@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { getDates, hashPassword } from '../../utils.js';
 
-const login = async (_, { username, password }, { db }) => {
+const loginUser = async (_, { username, password }, { db }) => {
     // Hash the password before querying
     const hashedPassword = hashPassword(password);
     // Find user by username and hashed password
@@ -36,4 +36,4 @@ const login = async (_, { username, password }, { db }) => {
     };
 };
 
-export default login;
+export default loginUser;

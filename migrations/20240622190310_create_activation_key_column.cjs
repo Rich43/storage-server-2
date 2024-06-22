@@ -1,11 +1,11 @@
 exports.up = function(knex) {
     return knex.schema.table('User', function(table) {
-        table.timestamp('created').notNullable().defaultTo(knex.fn.now());
+        table.uuid('activation_key').notNullable();
     });
 };
 
 exports.down = function(knex) {
     return knex.schema.table('User', function(table) {
-        table.dropColumn('created');
+        table.dropColumn('activation_key');
     });
 };

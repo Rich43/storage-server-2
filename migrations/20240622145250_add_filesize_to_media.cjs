@@ -1,6 +1,6 @@
 exports.up = function(knex) {
     return knex.schema.table('Media', function(table) {
-        table.bigint('filesize').defaultTo(0);
+        table.bigint('filesize').notNullable().defaultTo(-1);
     });
 };
 

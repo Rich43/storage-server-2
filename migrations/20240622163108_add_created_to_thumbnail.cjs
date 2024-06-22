@@ -1,6 +1,6 @@
 exports.up = function(knex) {
     return knex.schema.table('Thumbnail', function(table) {
-        table.timestamp('created').defaultTo(knex.fn.now());
+        table.timestamp('created').notNullable().defaultTo(knex.fn.now());
     });
 };
 

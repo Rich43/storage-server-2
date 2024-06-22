@@ -1,6 +1,6 @@
 exports.up = function(knex) {
     return knex.schema.table('Mimetype', function(table) {
-        table.string('extension', 255).defaultTo('');
+        table.string('extension', 255).notNullable().defaultTo('');
     });
 };
 

@@ -1,6 +1,6 @@
 exports.up = function(knex) {
     return knex.schema.table('Media', function(table) {
-        table.boolean('uploaded').defaultTo(false);
+        table.boolean('uploaded').notNullable().defaultTo(false);
     });
 };
 

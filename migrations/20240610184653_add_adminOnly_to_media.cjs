@@ -1,6 +1,6 @@
 exports.up = function(knex) {
     return knex.schema.table('Media', function(table) {
-        table.boolean('adminOnly').defaultTo(false);
+        table.boolean('adminOnly').notNullable().defaultTo(false);
     });
 };
 

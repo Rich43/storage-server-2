@@ -19,7 +19,7 @@ exports.up = function(knex) {
             table.increments('sessionId').primary();
             table.integer('userId').unsigned().notNullable();
             table.foreign('userId').references('User.id');
-            table.string('sessionToken', 255).notNullable();
+            table.uuid('sessionToken').notNullable();
             table.timestamp('sessionExpireDateTime').notNullable();
             table.boolean('admin').notNullable();
         })

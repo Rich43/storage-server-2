@@ -1,4 +1,4 @@
-import { getUserFromToken, validateToken } from '../utils.js';
+import { getUserFromToken, validateToken } from '../../utils.js';
 
 const getMediaById = async (_, { id }, { db, token }) => {
     await validateToken(db, token);

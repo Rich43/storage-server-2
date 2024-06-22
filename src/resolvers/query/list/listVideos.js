@@ -5,12 +5,12 @@ import {
     performPagination,
     performSorting,
     validateToken
-} from '../utils.js';
+} from '../../utils.js';
 
-const listMusic = async (_, { filter, pagination, sorting }, { db, token }) => {
-    await validateToken(db, token);
+const listVideos = async (_, { filter, pagination, sorting }, { db, token }) => {
+    const session = await validateToken(db, token);
     const user = await getUserFromToken(db, token);
-    let mediaQuery = getMediaQuery(db, user, 'AUDIO');
+    let mediaQuery = getMediaQuery(db, user, 'VIDEO');
     mediaQuery = performFilter(filter, mediaQuery);
     mediaQuery = performPagination(pagination, mediaQuery);
     mediaQuery = performSorting(sorting, mediaQuery);
@@ -18,4 +18,4 @@ const listMusic = async (_, { filter, pagination, sorting }, { db, token }) => {
     return mediaQuery;
 };
 
-export default listMusic;
+export default listVideos;

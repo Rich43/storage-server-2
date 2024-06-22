@@ -38,7 +38,7 @@ input MimeTypeFilter {
 type Session {
   userId: Int!
   sessionId: Int!
-  username: String!
+  user: User!
   avatarPicture: String
   sessionToken: String!
   sessionExpireDateTime: String!
@@ -119,6 +119,6 @@ type Mutation {
   createMedia(input: CreateMediaInput!): Media
   editMedia(input: EditMediaInput!): Media
   deleteMedia(id: Int!): Boolean
-  register(username: String!, email: String!, password: String!): Boolean
+  register(username: String!, email: String!, password: String!): User
 
 }

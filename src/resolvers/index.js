@@ -11,6 +11,8 @@ import refreshSession from './mutation/auth/refreshSession.js';
 import createMedia from './mutation/createMedia.js';
 import editMedia from './mutation/editMedia.js';
 import deleteMedia from './mutation/deleteMedia.js';
+import registerUser from "./mutation/auth/registerUser.js";
+import activateUser from "./mutation/auth/activateUser.js";
 
 const resolvers = {
     Query: {
@@ -29,6 +31,8 @@ const resolvers = {
         createMedia,
         editMedia,
         deleteMedia,
+        registerUser,
+        activateUser,
     }
 };
 

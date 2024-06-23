@@ -13,6 +13,7 @@ const refreshSession = async (_, __, { db, token }) => {
         .update({
             sessionToken: newSessionToken,
             sessionExpireDateTime: sessionExpireDateTimeFormatted,
+            updated: db.fn.now(),
         });
 
     // Retrieve user details

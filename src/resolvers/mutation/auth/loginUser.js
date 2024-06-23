@@ -19,6 +19,7 @@ const loginUser = async (_, { username, password }, { db }) => {
             userId: user.id,
             sessionToken,
             sessionExpireDateTime: sessionExpireDateTimeFormatted,
+            created: db.fn.now(),
         })
         .returning('id');
 

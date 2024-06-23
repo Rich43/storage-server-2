@@ -128,12 +128,12 @@ type Query {
 
 type Mutation {
   refreshSession: Session
-  createMedia(input: CreateMediaInput!): Media
-  editMedia(input: EditMediaInput!): Media
-  deleteMedia(id: Int!): Boolean
+  createMedia(input: CreateMediaInput!): Media!
+  editMedia(input: EditMediaInput!): Media!
+  deleteMedia(id: Int!): Boolean!
   loginUser(username: String!, password: String!): Session
   logoutUser: Boolean!
-  registerUser(input: RegisterUserInput!): User
-  activateUser(activationCode: String!): Boolean
-  editUser(input: EditUserInput!): User
+  registerUser(input: RegisterUserInput!): User!
+  activateUser(activationCode: String!): Boolean!
+  editUser(input: EditUserInput!): User!
 }

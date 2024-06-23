@@ -4,7 +4,7 @@ const editMedia = async (_, { input }, { db, token }) => {
     await validateToken(db, token);
     const user = await getUserFromToken(db, token);
 
-    const { id, title, url, mimetype, thumbnail, adminOnly } = input;
+    const { id, title, description, url, mimetype, thumbnail, adminOnly } = input;
 
     const media = await db('Media').where('id', id).first();
     if (!media) {
@@ -13,9 +13,11 @@ const editMedia = async (_, { input }, { db, token }) => {
 
     const updatedMedia = {
         ...(title && { title }),
+        ...(description && { description }),
         ...(url && { url }),
-        ...(mimetype && { mimetypeId: await db('Mimetype').select('id').where('type', mimetype).first() }),
+        ...(mimetype && { mimetype_id: (await db('Mimetype').select('id').where('type', mimetype).first()).id }),
         ...(thumbnail && { thumbnail }),
+        updated: db.fn.now()  // Set the updated column to the current timestamp
     };
 
     if (user.admin && adminOnly !== undefined) {

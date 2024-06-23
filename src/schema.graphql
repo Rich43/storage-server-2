@@ -113,6 +113,7 @@ input CreateMediaInput {
 input EditMediaInput {
   id: Int!
   title: String
+  description: String
   url: String
   mimetype: String
   thumbnail: String

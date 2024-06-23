@@ -136,4 +136,5 @@ type Mutation {
   registerUser(input: RegisterUserInput!): User!
   activateUser(activationCode: String!): Boolean!
   editUser(input: EditUserInput!): User!
+  setAvatar(mediaId: Int!): User!
 }

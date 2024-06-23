@@ -13,6 +13,7 @@ import editMedia from './mutation/editMedia.js';
 import deleteMedia from './mutation/deleteMedia.js';
 import registerUser from "./mutation/auth/registerUser.js";
 import activateUser from "./mutation/auth/activateUser.js";
+import setAvatar from "./mutation/auth/setAvatar.js";
 
 const resolvers = {
     Query: {
@@ -25,14 +26,15 @@ const resolvers = {
         getMediaById,
     },
     Mutation: {
-        loginUser,
-        logoutUser,
-        refreshSession,
         createMedia,
         editMedia,
         deleteMedia,
+        loginUser,
+        logoutUser,
+        refreshSession,
         registerUser,
         activateUser,
+        setAvatar,
     }
 };
 

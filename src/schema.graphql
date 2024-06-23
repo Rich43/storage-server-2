@@ -17,6 +17,7 @@ type User {
   email: String!
   avatar: Media
   created: String!
+  updated: String
   activated: Boolean!
   banned: Boolean!
 }
@@ -58,11 +59,13 @@ type Session {
   sessionExpireDateTime: String!
   admin: Boolean!
   created: String!
+  updated: String
 }
 
 type Media {
   id: Int!
   title: String!
+  description: String
   url: String!
   mimetype: String!
   thumbnail: Media
@@ -70,6 +73,7 @@ type Media {
   adminOnly: Boolean!
   uploaded: Boolean!
   created: String!
+  updated: String
   fileSize: Int!
 }
 
@@ -79,6 +83,7 @@ type Album {
   media: [Media]
   userId: Int!
   created: String!
+  updated: String
 }
 
 input MediaFilter {

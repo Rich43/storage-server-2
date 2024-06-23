@@ -77,6 +77,15 @@ type Media {
   fileSize: Int!
 }
 
+type MediaComment {
+  id: ID!
+  media_id: Int!
+  user_id: Int!
+  comment: String!
+  created: String!
+  updated: String!
+}
+
 type Album {
   id: Int!
   title: String!
@@ -130,6 +139,8 @@ type Query {
   listOtherFiles(filter: MediaFilter, pagination: Pagination, sorting: Sorting): [Media]
   listMimeTypes(filter: MimeTypeFilter, pagination: Pagination, sorting: Sorting): [MimeType]
   getMediaById(id: Int!): Media
+  listRelatedMedia(id: Int!): [Media]
+  listMediaComments(mediaId: Int!): [MediaComment]  # Add the new listMediaComments query
 }
 
 type Mutation {

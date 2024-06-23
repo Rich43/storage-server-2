@@ -14,6 +14,11 @@ import deleteMedia from './mutation/deleteMedia.js';
 import registerUser from "./mutation/auth/registerUser.js";
 import activateUser from "./mutation/auth/activateUser.js";
 import setAvatar from "./mutation/auth/setAvatar.js";
+import listRelatedMedia from "./query/list/listRelatedMedia.js";
+import listMediaComments from "./query/list/listMediaComments.js";
+import createMediaComment from "./mutation/createMediaComment.js";
+import editMediaComment from "./mutation/editMediaComment.js";
+import deleteMediaComment from "./mutation/deleteMediaComment.js";
 
 const resolvers = {
     Query: {
@@ -24,6 +29,8 @@ const resolvers = {
         listDocuments,
         listOtherFiles,
         getMediaById,
+        listRelatedMedia,
+        listMediaComments,  // Add the new listMediaComments query
     },
     Mutation: {
         createMedia,
@@ -35,6 +42,9 @@ const resolvers = {
         registerUser,
         activateUser,
         setAvatar,
+        createMediaComment,  // Add the new createMediaComment mutation
+        editMediaComment,  // Add the new editMediaComment mutation
+        deleteMediaComment,  // Add the new deleteMediaComment mutation
     }
 };
 

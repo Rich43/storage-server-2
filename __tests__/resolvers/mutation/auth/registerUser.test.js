@@ -1,135 +1,171 @@
-import registerUser from '../../../../src/resolvers/mutation/auth/registerUser.js';
-import { v4 as uuidv4 } from 'uuid';
-import { hashPassword } from '../../../../src/resolvers/utils/utils.js';
-import knex from 'knex';
-import { jest, describe, it, expect, afterEach } from '@jest/globals';
+import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+import registerUser from '../../../../src/resolvers/mutation/auth/registerUser';
 
 // Mock dependencies
-jest.mock('uuid');
-jest.mock('../../../../src/resolvers/utils/utils.js');
-jest.mock('knex');
+const mockHashPassword = jest.fn();
+const mockGetUserCount = jest.fn();
+const mockCreateNewUser = jest.fn();
+const mockUuidv4 = jest.fn();
+const mockNow = jest.fn();
 
-// Mock knex
-const mockKnex = {
-    select: jest.fn().mockReturnThis(),
-    count: jest.fn().mockReturnThis(),
-    insert: jest.fn().mockReturnThis(),
-    returning: jest.fn().mockReturnThis(),
+const db = {
     fn: {
-        now: jest.fn().mockReturnValue('2024-01-01T00:00:00Z')
+        now: mockNow
     }
+}; // Mock database object
+const model = {
+    User: {
+        getUserCount: mockGetUserCount,
+        createNewUser: mockCreateNewUser,
+    },
+};
+const utils = {
+    hashPassword: mockHashPassword,
+    uuidv4: mockUuidv4,
+};
+const token = {}; // Mock token object if needed
+
+const commonMocks = (hashedPassword, userCount, now, activationKey, insertedUser) => {
+    mockHashPassword.mockReturnValue(hashedPassword);
+    mockGetUserCount.mockResolvedValue(userCount);
+    mockNow.mockReturnValue(now);
+    mockUuidv4.mockReturnValue(activationKey);
+    mockCreateNewUser.mockResolvedValue([insertedUser]);
 };
 
-// Mock functions
-uuidv4.mockReturnValue('mock-activation-key');
-hashPassword.mockImplementation((password) => `hashed-${password}`);
+const commonAssertions = (input, hashedPassword, userCount, now, activationKey, insertedUser, admin, activated) => {
+    expect(mockHashPassword).toHaveBeenCalledWith(input.password);
+    expect(mockGetUserCount).toHaveBeenCalledWith(db);
+    expect(mockNow).toHaveBeenCalledTimes(2);
+    expect(mockUuidv4).toHaveBeenCalled();
+    expect(mockCreateNewUser).toHaveBeenCalledWith(db, {
+        username: input.username,
+        password: hashedPassword,
+        admin,
+        created: now,
+        avatar: null,
+        activated,
+        activation_key: activationKey,
+        banned: false,
+        updated: now
+    });
+    expect(insertedUser).toEqual({
+        id: insertedUser.id,
+        username: input.username,
+        email: input.email,
+        password: hashedPassword,
+        admin,
+        created: now,
+        avatar: null,
+        activated,
+        activation_key: activationKey,
+        banned: false,
+        updated: now
+    });
+};
 
 describe('registerUser', () => {
-    afterEach(() => {
+    beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    it('should successfully register the first user as admin and activated', async () => {
+    it('should register the first user as admin and activated', async () => {
         const input = {
-            username: 'testuser',
-            email: 'testuser@example.com',
-            password: 'password'
+            username: 'firstUser',
+            email: 'firstUser@example.com',
+            password: 'password123'
         };
-
-        const newUser = {
+        const hashedPassword = 'hashedPassword';
+        const userCount = [{ count: 0 }];
+        const now = new Date();
+        const activationKey = 'unique-activation-key';
+        const insertedUser = {
             id: 1,
-            username: 'testuser',
-            password: 'hashed-password',
+            username: 'firstUser',
+            email: 'firstUser@example.com',
+            password: hashedPassword,
             admin: true,
-            created: '2024-01-01T00:00:00Z',
+            created: now,
             avatar: null,
             activated: true,
-            activation_key: 'mock-activation-key',
+            activation_key: activationKey,
             banned: false,
-            updated: '2024-01-01T00:00:00Z'
+            updated: now
         };
 
-        mockKnex.count.mockResolvedValueOnce([{ count: 0 }]);
-        mockKnex.returning.mockResolvedValueOnce([newUser]);
+        commonMocks(hashedPassword, userCount, now, activationKey, insertedUser);
 
-        const result = await registerUser(null, { input }, { knex: mockKnex });
+        const result = await registerUser(null, { input }, { db, model, utils, token });
 
-        expect(hashPassword).toHaveBeenCalledWith('password');
-        expect(mockKnex.count).toHaveBeenCalledWith('id as count');
-        expect(mockKnex.insert).toHaveBeenCalledWith({
-            username: 'testuser',
-            password: 'hashed-password',
-            admin: true,
-            created: '2024-01-01T00:00:00Z',
-            avatar: null,
-            activated: true,
-            activation_key: 'mock-activation-key',
-            banned: false,
-            updated: '2024-01-01T00:00:00Z'
-        });
-        expect(mockKnex.returning).toHaveBeenCalledWith('*');
-        expect(result).toEqual(newUser);
+        commonAssertions(input, hashedPassword, userCount, now, activationKey, insertedUser, true, true);
+        expect(result).toEqual(insertedUser);
     });
 
-    it('should successfully register a subsequent user as non-admin and not activated', async () => {
+    it('should register a subsequent user as non-admin and not activated', async () => {
         const input = {
-            username: 'testuser2',
-            email: 'testuser2@example.com',
-            password: 'password'
+            username: 'secondUser',
+            email: 'secondUser@example.com',
+            password: 'password123'
         };
-
-        const newUser = {
+        const hashedPassword = 'hashedPassword';
+        const userCount = [{ count: 1 }];
+        const now = new Date();
+        const activationKey = 'unique-activation-key';
+        const insertedUser = {
             id: 2,
-            username: 'testuser2',
-            password: 'hashed-password',
+            username: 'secondUser',
+            email: 'secondUser@example.com',
+            password: hashedPassword,
             admin: false,
-            created: '2024-01-01T00:00:00Z',
+            created: now,
             avatar: null,
             activated: false,
-            activation_key: 'mock-activation-key',
+            activation_key: activationKey,
             banned: false,
-            updated: '2024-01-01T00:00:00Z'
+            updated: now
         };
 
-        mockKnex.count.mockResolvedValueOnce([{ count: 1 }]);
-        mockKnex.returning.mockResolvedValueOnce([newUser]);
+        commonMocks(hashedPassword, userCount, now, activationKey, insertedUser);
 
-        const result = await registerUser(null, { input }, { knex: mockKnex });
+        const result = await registerUser(null, { input }, { db, model, utils, token });
 
-        expect(hashPassword).toHaveBeenCalledWith('password');
-        expect(mockKnex.count).toHaveBeenCalledWith('id as count');
-        expect(mockKnex.insert).toHaveBeenCalledWith({
-            username: 'testuser2',
-            password: 'hashed-password',
-            admin: false,
-            created: '2024-01-01T00:00:00Z',
-            avatar: null,
-            activated: false,
-            activation_key: 'mock-activation-key',
-            banned: false,
-            updated: '2024-01-01T00:00:00Z'
-        });
-        expect(mockKnex.returning).toHaveBeenCalledWith('*');
-        expect(result).toEqual(newUser);
+        commonAssertions(input, hashedPassword, userCount, now, activationKey, insertedUser, false, false);
+        expect(result).toEqual(insertedUser);
     });
 
-    it('should handle database insertion errors', async () => {
+    it('should handle errors during user registration', async () => {
         const input = {
-            username: 'testuser3',
-            email: 'testuser3@example.com',
-            password: 'password'
+            username: 'errorUser',
+            email: 'errorUser@example.com',
+            password: 'password123'
         };
+        const hashedPassword = 'hashedPassword';
+        const userCount = [{ count: 1 }];
+        const now = new Date();
+        const activationKey = 'unique-activation-key';
 
-        mockKnex.count.mockResolvedValueOnce([{ count: 1 }]);
-        mockKnex.returning.mockRejectedValueOnce(new Error('Database error'));
+        mockHashPassword.mockReturnValue(hashedPassword);
+        mockGetUserCount.mockResolvedValue(userCount);
+        mockNow.mockReturnValue(now);
+        mockUuidv4.mockReturnValue(activationKey);
+        mockCreateNewUser.mockRejectedValue(new Error('Database error'));
 
-        await expect(registerUser(null, { input }, { knex: mockKnex }))
-            .rejects
-            .toThrow('Database error');
+        await expect(registerUser(null, { input }, { db, model, utils, token })).rejects.toThrow('Database error');
 
-        expect(hashPassword).toHaveBeenCalledWith('password');
-        expect(mockKnex.count).toHaveBeenCalledWith('id as count');
-        expect(mockKnex.insert).toHaveBeenCalled();
-        expect(mockKnex.returning).toHaveBeenCalledWith('*');
+        expect(mockHashPassword).toHaveBeenCalledWith(input.password);
+        expect(mockGetUserCount).toHaveBeenCalledWith(db);
+        expect(mockNow).toHaveBeenCalledTimes(2);
+        expect(mockUuidv4).toHaveBeenCalled();
+        expect(mockCreateNewUser).toHaveBeenCalledWith(db, {
+            username: input.username,
+            password: hashedPassword,
+            admin: false,
+            created: now,
+            avatar: null,
+            activated: false,
+            activation_key: activationKey,
+            banned: false,
+            updated: now
+        });
     });
 });

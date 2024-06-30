@@ -25,6 +25,7 @@ import {
     addAdminOnlyRestriction,
 } from "./Media.js";
 import {
+    dbListMediaComments,
     deleteMediaCommentById,
     getMediaCommentById,
     insertMediaComment,
@@ -66,6 +67,7 @@ export default {
         getMediaCommentById,
         deleteMediaCommentById,
         updateMediaCommentById,
+        dbListMediaComments,
     },
     Album: {
         getAllAlbums,

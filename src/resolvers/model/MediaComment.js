@@ -13,3 +13,7 @@ export function deleteMediaCommentById(db, id) {
 export function updateMediaCommentById(db, id, updatedComment) {
     return db('MediaComment').where('id', id).update(updatedComment);
 }
+
+export function dbListMediaComments(db, mediaId) {
+    return db('MediaComment').where('media_id', mediaId);
+}

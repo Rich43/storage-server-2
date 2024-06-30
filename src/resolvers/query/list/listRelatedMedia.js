@@ -3,10 +3,10 @@
 import natural from 'natural';
 import { removeStopwords } from 'stopword';
 
-const listRelatedMedia = async (parent, { id }, { knex }) => {
+const listRelatedMedia = async (parent, { id }, { knex: db }) => {
     try {
         // Get the media item by ID
-        const media = await knex('Media').where('id', id).first();
+        const media = await db('Media').where('id', id).first();
 
         if (!media) {
             throw new Error('Media not found');
@@ -19,7 +19,7 @@ const listRelatedMedia = async (parent, { id }, { knex }) => {
         const keywords = removeStopwords(tokens);
 
         // Create a series of OR clauses to search for related media
-        const query = knex('Media').where('id', '!=', id);
+        const query = db('Media').where('id', '!=', id);
         keywords.forEach(keyword => {
             query.orWhere('title', 'like', `%${keyword}%`)
                 .orWhere('description', 'like', `%${keyword}%`);

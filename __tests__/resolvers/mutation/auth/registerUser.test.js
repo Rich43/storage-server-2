@@ -1,3 +1,5 @@
+// noinspection JSCheckFunctionSignatures
+
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import registerUser from '../../../../src/resolvers/mutation/auth/registerUser';
 

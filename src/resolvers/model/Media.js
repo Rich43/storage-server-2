@@ -63,3 +63,12 @@ export function addAdminOnlyRestriction(userSession, mediaQuery) {
     }
     return mediaQuery;
 }
+
+export function addRelatedKeywords(db, id, keywords) {
+    const query = db('Media').where('id', '!=', id);
+    keywords.forEach(keyword => {
+        query.orWhere('title', 'like', `%${keyword}%`)
+            .orWhere('description', 'like', `%${keyword}%`);
+    });
+    return query;
+}

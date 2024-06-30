@@ -9,7 +9,7 @@ import {
     performFilter,
     performPagination,
     performSorting
-} from '../../src/resolvers/utils.js';
+} from '../../src/resolvers/utils/utils.js';
 import { jest, describe, it, expect, beforeEach } from '@jest/globals';
 
 // Mock dependencies

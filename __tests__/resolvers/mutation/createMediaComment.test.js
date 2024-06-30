@@ -1,10 +1,10 @@
 import createMediaComment from '../../../src/resolvers/mutation/createMediaComment.js';
-import { getUserFromToken, validateToken } from '../../../src/resolvers/utils.js';
+import { getUserFromToken, validateToken } from '../../../src/resolvers/utils/utils.js';
 import knex from 'knex';
 import { jest, describe, it, expect, afterEach } from '@jest/globals';
 
 // Mock dependencies
-jest.mock('../../../src/resolvers/utils.js');
+jest.mock('../../../src/resolvers/utils/utils.js');
 jest.mock('knex');
 
 // Mock knex

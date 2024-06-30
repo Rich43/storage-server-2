@@ -1,10 +1,10 @@
 import listAlbums from '../../../../src/resolvers/query/list/listAlbums.js';
-import { validateToken } from '../../../../src/resolvers/utils.js';
+import { validateToken } from '../../../../src/resolvers/utils/utils.js';
 import knex from 'knex';
 import { jest, describe, it, expect, afterEach } from '@jest/globals';
 
 // Mock dependencies
-jest.mock('../../../../src/resolvers/utils.js');
+jest.mock('../../../../src/resolvers/utils/utils.js');
 jest.mock('knex');
 
 // Mock knex

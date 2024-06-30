@@ -1,15 +1,14 @@
-import moment from 'moment';
-import crypto from 'crypto';
-import { v4 as uuidv4 } from 'uuid';
+// noinspection UnnecessaryLocalVariableJS
 
-export function getDates() {
-    const sessionExpireDateTime = moment().add(1, 'hour').utc().toISOString(); // 1 hour expiration in UTC
-    const sessionExpireDateTimeFormatted = moment(sessionExpireDateTime).utc().format('YYYY-MM-DD HH:mm:ss');
-    return { sessionExpireDateTime, sessionExpireDateTimeFormatted };
-}
+import natural from "natural";
+import { removeStopwords } from "stopword";
 
-export function hashPassword(password) {
-    return crypto.createHash('sha3-512').update(password).digest('hex');
+export function getMediaKeywords(media) {
+    const text = `${media.title} ${media.description}`;
+    const tokenizer = new natural.WordTokenizer();
+    const tokens = tokenizer.tokenize(text.toLowerCase());
+    const keywords = removeStopwords(tokens);
+    return keywords;
 }
 
 export function performFilter(filter, mediaQuery) {
@@ -42,5 +41,3 @@ export function performSorting(sorting, mediaQuery) {
     }
     return mediaQuery;
 }
-
-export const __ALL__ = {getDates, hashPassword, performFilter, performPagination, performSorting, uuidv4};

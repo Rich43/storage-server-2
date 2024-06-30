@@ -9,7 +9,7 @@ import { logger, requestLogger } from './logger.js';
 import { sessionCleanupMiddleware } from "./middleware.js";
 import resolvers from "./resolvers/index.js";
 import model from "./resolvers/model/index.js";
-import { __ALL__ } from "./resolvers/utils.js";
+import { __ALL__ } from "./resolvers/utils/utils.js";
 
 // Load schema
 const typeDefs = gql(readFileSync('schema.graphql', 'utf8'));

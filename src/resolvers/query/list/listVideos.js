@@ -5,7 +5,7 @@ import {
     performPagination,
     performSorting,
     validateToken
-} from '../../utils.js';
+} from '../../utils/utils.js';
 
 const listVideos = async (_, { filter, pagination, sorting }, { db, token }) => {
     const session = await validateToken(db, token);

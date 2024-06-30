@@ -22,7 +22,7 @@ import {
     getMediaByIdJoiningOntoMimeType, getMediaByAlbumIdJoiningOnAlbumMediaAndMimetype,
     getMediaQuery,
     insertMedia,
-    addAdminOnlyRestriction,
+    addAdminOnlyRestriction, addRelatedKeywords,
 } from "./Media.js";
 import {
     dbListMediaComments,
@@ -61,6 +61,7 @@ export default {
         getMediaByIdJoiningOntoMimeType,
         getMediaByAlbumIdJoiningOnAlbumMediaAndMimetype,
         addAdminOnlyRestriction,
+        addRelatedKeywords,
     },
     MediaComment: {
         insertMediaComment,

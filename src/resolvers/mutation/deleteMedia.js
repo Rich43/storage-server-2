@@ -1,4 +1,4 @@
-import { getUserFromToken, validateToken } from '../utils.js';
+import { getUserFromToken, validateToken } from '../utils/utils.js';
 
 
 

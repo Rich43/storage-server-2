@@ -1,4 +1,4 @@
-import { getUserFromToken, validateToken } from '../utils.js';
+import { getUserFromToken, validateToken } from '../utils/utils.js';
 
 function updateMediaById(db, id, updatedMedia) {
     return db('Media').where('id', id).update(updatedMedia);

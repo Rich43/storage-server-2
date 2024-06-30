@@ -1,5 +1,5 @@
 import editMediaComment from '../../../src/resolvers/mutation/editMediaComment.js';
-import { getUserFromToken, validateToken } from '../../../src/resolvers/utils.js';
+import { getUserFromToken, validateToken } from '../../../src/resolvers/utils/utils.js';
 import knex from 'knex';
 import { jest, describe, it, expect, afterEach } from '@jest/globals';
 

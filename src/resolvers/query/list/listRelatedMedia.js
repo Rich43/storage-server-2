@@ -1,29 +1,16 @@
 // noinspection UnnecessaryLocalVariableJS,ExceptionCaughtLocallyJS
 
-import natural from 'natural';
-import { removeStopwords } from 'stopword';
-
-const listRelatedMedia = async (parent, { id }, { knex: db }) => {
+const listRelatedMedia = async (parent, { id }, { db, model, utils, token }) => {
     try {
         // Get the media item by ID
-        const media = await db('Media').where('id', id).first();
+        const media = await model.Media.getMediaById(db, id);
 
         if (!media) {
             throw new Error('Media not found');
         }
 
-        // Extract keywords from the title and description
-        const text = `${media.title} ${media.description}`;
-        const tokenizer = new natural.WordTokenizer();
-        const tokens = tokenizer.tokenize(text.toLowerCase());
-        const keywords = removeStopwords(tokens);
-
-        // Create a series of OR clauses to search for related media
-        const query = db('Media').where('id', '!=', id);
-        keywords.forEach(keyword => {
-            query.orWhere('title', 'like', `%${keyword}%`)
-                .orWhere('description', 'like', `%${keyword}%`);
-        });
+        const keywords = utils.getMediaKeywords(media);
+        const query = model.Media.addRelatedKeywords(db, id, keywords);
 
         // Execute the query and return the results
         const relatedMedia = await query;

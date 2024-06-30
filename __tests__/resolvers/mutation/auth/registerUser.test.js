@@ -1,12 +1,12 @@
 import registerUser from '../../../../src/resolvers/mutation/auth/registerUser.js';
 import { v4 as uuidv4 } from 'uuid';
-import { hashPassword } from '../../../../src/resolvers/utils.js';
+import { hashPassword } from '../../../../src/resolvers/utils/utils.js';
 import knex from 'knex';
 import { jest, describe, it, expect, afterEach } from '@jest/globals';
 
 // Mock dependencies
 jest.mock('uuid');
-jest.mock('../../../../src/resolvers/utils.js');
+jest.mock('../../../../src/resolvers/utils/utils.js');
 jest.mock('knex');
 
 // Mock knex

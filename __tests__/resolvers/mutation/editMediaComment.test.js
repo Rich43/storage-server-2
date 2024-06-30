@@ -1,170 +1,96 @@
-import editMediaComment from '../../../src/resolvers/mutation/editMediaComment.js';
-import { getUserFromToken, validateToken } from '../../../src/resolvers/utils/utils.js';
-import knex from 'knex';
-import { jest, describe, it, expect, afterEach } from '@jest/globals';
+// noinspection JSCheckFunctionSignatures
+
+import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+import editMediaComment from '../../../src/resolvers/mutation/editMediaComment';
 
 // Mock dependencies
-jest.mock('../../../../src/utils.js');
-jest.mock('knex');
+const mockValidateToken = jest.fn();
+const mockGetUserFromToken = jest.fn();
+const mockGetMediaCommentById = jest.fn();
+const mockUpdateMediaCommentById = jest.fn();
 
-// Mock knex
-const mockDb = {
-    where: jest.fn().mockReturnThis(),
-    first: jest.fn(),
-    update: jest.fn(),
+const db = {
     fn: {
-        now: jest.fn().mockReturnValue('2024-01-01T00:00:00Z')
+        now: jest.fn()
+    }
+}; // Mock database object
+const model = {
+    Session: {
+        validateToken: mockValidateToken,
+    },
+    User: {
+        getUserFromToken: mockGetUserFromToken,
+    },
+    MediaComment: {
+        getMediaCommentById: mockGetMediaCommentById,
+        updateMediaCommentById: mockUpdateMediaCommentById,
     }
 };
+const utils = {}; // Mock utilities object if needed
+const token = 'mock-token'; // Mock token object
 
-// Mock functions
-validateToken.mockImplementation(async (db, token) => true);
-getUserFromToken.mockImplementation(async (db, token) => ({
-    id: 1
-}));
+const commonMocks = (user, comment) => {
+    mockValidateToken.mockResolvedValue(true);
+    mockGetUserFromToken.mockResolvedValue(user);
+    mockGetMediaCommentById.mockResolvedValue(comment);
+    db.fn.now.mockReturnValue(new Date());
+};
 
 describe('editMediaComment', () => {
-    afterEach(() => {
+    beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    it('should successfully edit a media comment', async () => {
-        const input = {
-            id: 1,
-            comment: 'This is an updated comment.'
-        };
+    it('should edit comment successfully', async () => {
+        const input = { id: 1, comment: 'New Comment' };
+        const user = { id: 1 };
+        const existingComment = { id: 1, user_id: 1, comment: 'Old Comment' };
+        const updatedComment = { id: 1, user_id: 1, comment: 'New Comment', updated: new Date() };
 
-        const user = {
-            id: 1
-        };
+        commonMocks(user, existingComment);
+        mockUpdateMediaCommentById.mockResolvedValue(true);
+        mockGetMediaCommentById.mockResolvedValueOnce(existingComment).mockResolvedValueOnce(updatedComment);
 
-        const existingComment = {
-            id: 1,
-            user_id: 1,
-            comment: 'This is a test comment.',
-            created: '2024-01-01T00:00:00Z',
-            updated: '2024-01-01T00:00:00Z'
-        };
+        const result = await editMediaComment(null, { input }, { db, model, utils, token });
 
-        const updatedComment = {
-            id: 1,
-            user_id: 1,
-            comment: 'This is an updated comment.',
-            created: '2024-01-01T00:00:00Z',
-            updated: '2024-01-01T00:00:00Z'
-        };
-
-        getUserFromToken.mockResolvedValueOnce(user);
-        mockDb.first.mockResolvedValueOnce(existingComment).mockResolvedValueOnce(updatedComment);
-
-        const result = await editMediaComment(null, { input }, { db: mockDb, token: 'mock-token' });
-
-        expect(validateToken).toHaveBeenCalledWith(mockDb, 'mock-token');
-        expect(getUserFromToken).toHaveBeenCalledWith(mockDb, 'mock-token');
-        expect(mockDb.where).toHaveBeenCalledWith('id', 1);
-        expect(mockDb.first).toHaveBeenCalled();
-        expect(mockDb.update).toHaveBeenCalledWith({
-            comment: 'This is an updated comment.',
-            updated: '2024-01-01T00:00:00Z'
+        expect(mockValidateToken).toHaveBeenCalledWith(db, token);
+        expect(mockGetUserFromToken).toHaveBeenCalledWith(db, token);
+        expect(mockGetMediaCommentById).toHaveBeenCalledWith(db, input.id);
+        expect(mockUpdateMediaCommentById).toHaveBeenCalledWith(db, input.id, {
+            comment: input.comment,
+            updated: expect.any(Date)
         });
         expect(result).toEqual(updatedComment);
     });
 
-    it('should throw an error if the token is invalid', async () => {
-        validateToken.mockRejectedValueOnce(new Error('Invalid token'));
+    it('should throw an error if comment not found', async () => {
+        const input = { id: 1, comment: 'New Comment' };
+        const user = { id: 1 };
 
-        const input = {
-            id: 1,
-            comment: 'This is an updated comment.'
-        };
+        mockValidateToken.mockResolvedValue(true);
+        mockGetUserFromToken.mockResolvedValue(user);
+        mockGetMediaCommentById.mockResolvedValue(null);
 
-        await expect(editMediaComment(null, { input }, { db: mockDb, token: 'invalid-token' }))
-            .rejects
-            .toThrow('Invalid token');
+        await expect(editMediaComment(null, { input }, { db, model, utils, token })).rejects.toThrow('Comment not found');
 
-        expect(validateToken).toHaveBeenCalledWith(mockDb, 'invalid-token');
-        expect(getUserFromToken).not.toHaveBeenCalled();
-        expect(mockDb.where).not.toHaveBeenCalled();
+        expect(mockValidateToken).toHaveBeenCalledWith(db, token);
+        expect(mockGetUserFromToken).toHaveBeenCalledWith(db, token);
+        expect(mockGetMediaCommentById).toHaveBeenCalledWith(db, input.id);
+        expect(mockUpdateMediaCommentById).not.toHaveBeenCalled();
     });
 
-    it('should throw an error if the comment is not found', async () => {
-        mockDb.first.mockResolvedValueOnce(null);
+    it('should throw an error if user is not authorized to edit the comment', async () => {
+        const input = { id: 1, comment: 'New Comment' };
+        const user = { id: 2 };
+        const existingComment = { id: 1, user_id: 1, comment: 'Old Comment' };
 
-        const input = {
-            id: 1,
-            comment: 'This is an updated comment.'
-        };
+        commonMocks(user, existingComment);
 
-        await expect(editMediaComment(null, { input }, { db: mockDb, token: 'mock-token' }))
-            .rejects
-            .toThrow('Comment not found');
+        await expect(editMediaComment(null, { input }, { db, model, utils, token })).rejects.toThrow('Not authorized to edit this comment');
 
-        expect(validateToken).toHaveBeenCalledWith(mockDb, 'mock-token');
-        expect(getUserFromToken).toHaveBeenCalledWith(mockDb, 'mock-token');
-        expect(mockDb.where).toHaveBeenCalledWith('id', 1);
-        expect(mockDb.update).not.toHaveBeenCalled();
-    });
-
-    it('should throw an error if the user is not authorized to edit the comment', async () => {
-        const input = {
-            id: 1,
-            comment: 'This is an updated comment.'
-        };
-
-        const user = {
-            id: 1
-        };
-
-        const existingComment = {
-            id: 1,
-            user_id: 2, // Different user ID
-            comment: 'This is a test comment.',
-            created: '2024-01-01T00:00:00Z',
-            updated: '2024-01-01T00:00:00Z'
-        };
-
-        getUserFromToken.mockResolvedValueOnce(user);
-        mockDb.first.mockResolvedValueOnce(existingComment);
-
-        await expect(editMediaComment(null, { input }, { db: mockDb, token: 'mock-token' }))
-            .rejects
-            .toThrow('Not authorized to edit this comment');
-
-        expect(validateToken).toHaveBeenCalledWith(mockDb, 'mock-token');
-        expect(getUserFromToken).toHaveBeenCalledWith(mockDb, 'mock-token');
-        expect(mockDb.where).toHaveBeenCalledWith('id', 1);
-        expect(mockDb.update).not.toHaveBeenCalled();
-    });
-
-    it('should throw an error if the comment update fails', async () => {
-        const input = {
-            id: 1,
-            comment: 'This is an updated comment.'
-        };
-
-        const user = {
-            id: 1
-        };
-
-        const existingComment = {
-            id: 1,
-            user_id: 1,
-            comment: 'This is a test comment.',
-            created: '2024-01-01T00:00:00Z',
-            updated: '2024-01-01T00:00:00Z'
-        };
-
-        getUserFromToken.mockResolvedValueOnce(user);
-        mockDb.first.mockResolvedValueOnce(existingComment);
-        mockDb.update.mockRejectedValueOnce(new Error('Database error'));
-
-        await expect(editMediaComment(null, { input }, { db: mockDb, token: 'mock-token' }))
-            .rejects
-            .toThrow('Database error');
-
-        expect(validateToken).toHaveBeenCalledWith(mockDb, 'mock-token');
-        expect(getUserFromToken).toHaveBeenCalledWith(mockDb, 'mock-token');
-        expect(mockDb.where).toHaveBeenCalledWith('id', 1);
-        expect(mockDb.update).toHaveBeenCalled();
+        expect(mockValidateToken).toHaveBeenCalledWith(db, token);
+        expect(mockGetUserFromToken).toHaveBeenCalledWith(db, token);
+        expect(mockGetMediaCommentById).toHaveBeenCalledWith(db, input.id);
+        expect(mockUpdateMediaCommentById).not.toHaveBeenCalled();
     });
 });

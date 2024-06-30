@@ -1,4 +1,4 @@
-
+// noinspection JSUnusedLocalSymbols
 
 const editMediaComment = async (_, { input }, { db, model, utils, token }) => {
     await model.Session.validateToken(db, token);
@@ -6,7 +6,7 @@ const editMediaComment = async (_, { input }, { db, model, utils, token }) => {
 
     const { id, comment } = input;
 
-    const existingComment = model.MediaComment.getMediaCommentById(db, id)
+    const existingComment = await model.MediaComment.getMediaCommentById(db, id);
     if (!existingComment) {
         throw new Error('Comment not found');
     }
@@ -22,7 +22,7 @@ const editMediaComment = async (_, { input }, { db, model, utils, token }) => {
 
     await model.MediaComment.updateMediaCommentById(db, id, updatedComment);
 
-    return db('MediaComment').where('id', id).first();
+    return model.MediaComment.getMediaCommentById(db, id);
 };
 
 export default editMediaComment;

@@ -1,3 +1,5 @@
+// noinspection JSUnusedLocalSymbols,JSCheckFunctionSignatures
+
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import editMedia from '../../../src/resolvers/mutation/editMedia';
 

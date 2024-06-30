@@ -1,3 +1,5 @@
+// noinspection JSCheckFunctionSignatures,JSIgnoredPromiseFromCall
+
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import deleteMediaComment from '../../../src/resolvers/mutation/deleteMediaComment';
 
@@ -23,6 +25,30 @@ const model = {
 const utils = {}; // Mock utilities object if needed
 const token = 'mock-token'; // Mock token object
 
+const setupMocks = (user, comment) => {
+    mockValidateToken.mockResolvedValue(true);
+    mockGetUserFromToken.mockResolvedValue(user);
+    mockGetMediaCommentById.mockResolvedValue(comment);
+};
+
+const assertCommon = async (result, user, comment, error = null) => {
+    if (error) {
+        await expect(result).rejects.toThrow(error);
+    } else {
+        await expect(result).resolves.toBe(true);
+    }
+
+    expect(mockValidateToken).toHaveBeenCalledWith(db, token);
+    expect(mockGetUserFromToken).toHaveBeenCalledWith(db, token);
+    expect(mockGetMediaCommentById).toHaveBeenCalledWith(db, comment.id);
+
+    if (!error) {
+        expect(mockDeleteMediaCommentById).toHaveBeenCalledWith(db, comment.id);
+    } else {
+        expect(mockDeleteMediaCommentById).not.toHaveBeenCalled();
+    }
+};
+
 describe('deleteMediaComment', () => {
     beforeEach(() => {
         jest.clearAllMocks();
@@ -33,18 +59,12 @@ describe('deleteMediaComment', () => {
         const user = { id: 1, admin: false };
         const comment = { id, user_id: 1 };
 
-        mockValidateToken.mockResolvedValue(true);
-        mockGetUserFromToken.mockResolvedValue(user);
-        mockGetMediaCommentById.mockResolvedValue(comment);
+        setupMocks(user, comment);
         mockDeleteMediaCommentById.mockResolvedValue(true);
 
-        const result = await deleteMediaComment(null, { id }, { db, model, utils, token });
+        const result = deleteMediaComment(null, { id }, { db, model, utils, token });
 
-        expect(mockValidateToken).toHaveBeenCalledWith(db, token);
-        expect(mockGetUserFromToken).toHaveBeenCalledWith(db, token);
-        expect(mockGetMediaCommentById).toHaveBeenCalledWith(db, id);
-        expect(mockDeleteMediaCommentById).toHaveBeenCalledWith(db, id);
-        expect(result).toBe(true);
+        await assertCommon(result, user, comment);
     });
 
     it('should throw an error if comment not found', async () => {
@@ -55,12 +75,9 @@ describe('deleteMediaComment', () => {
         mockGetUserFromToken.mockResolvedValue(user);
         mockGetMediaCommentById.mockResolvedValue(null);
 
-        await expect(deleteMediaComment(null, { id }, { db, model, utils, token })).rejects.toThrow('Comment not found');
+        const result = deleteMediaComment(null, { id }, { db, model, utils, token });
 
-        expect(mockValidateToken).toHaveBeenCalledWith(db, token);
-        expect(mockGetUserFromToken).toHaveBeenCalledWith(db, token);
-        expect(mockGetMediaCommentById).toHaveBeenCalledWith(db, id);
-        expect(mockDeleteMediaCommentById).not.toHaveBeenCalled();
+        await assertCommon(result, user, { id }, 'Comment not found');
     });
 
     it('should throw an error if user is not authorized to delete the comment', async () => {
@@ -68,16 +85,11 @@ describe('deleteMediaComment', () => {
         const user = { id: 2, admin: false };
         const comment = { id, user_id: 1 };
 
-        mockValidateToken.mockResolvedValue(true);
-        mockGetUserFromToken.mockResolvedValue(user);
-        mockGetMediaCommentById.mockResolvedValue(comment);
+        setupMocks(user, comment);
 
-        await expect(deleteMediaComment(null, { id }, { db, model, utils, token })).rejects.toThrow('Not authorized to delete this comment');
+        const result = deleteMediaComment(null, { id }, { db, model, utils, token });
 
-        expect(mockValidateToken).toHaveBeenCalledWith(db, token);
-        expect(mockGetUserFromToken).toHaveBeenCalledWith(db, token);
-        expect(mockGetMediaCommentById).toHaveBeenCalledWith(db, id);
-        expect(mockDeleteMediaCommentById).not.toHaveBeenCalled();
+        await assertCommon(result, user, comment, 'Not authorized to delete this comment');
     });
 
     it('should delete comment successfully for an admin', async () => {
@@ -85,17 +97,11 @@ describe('deleteMediaComment', () => {
         const user = { id: 2, admin: true };
         const comment = { id, user_id: 1 };
 
-        mockValidateToken.mockResolvedValue(true);
-        mockGetUserFromToken.mockResolvedValue(user);
-        mockGetMediaCommentById.mockResolvedValue(comment);
+        setupMocks(user, comment);
         mockDeleteMediaCommentById.mockResolvedValue(true);
 
-        const result = await deleteMediaComment(null, { id }, { db, model, utils, token });
+        const result = deleteMediaComment(null, { id }, { db, model, utils, token });
 
-        expect(mockValidateToken).toHaveBeenCalledWith(db, token);
-        expect(mockGetUserFromToken).toHaveBeenCalledWith(db, token);
-        expect(mockGetMediaCommentById).toHaveBeenCalledWith(db, id);
-        expect(mockDeleteMediaCommentById).toHaveBeenCalledWith(db, id);
-        expect(result).toBe(true);
+        await assertCommon(result, user, comment);
     });
 });

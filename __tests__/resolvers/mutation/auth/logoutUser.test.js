@@ -1,39 +1,39 @@
-import logoutUser from '../../../../src/resolvers/mutation/auth/logoutUser.js';
-import knex from 'knex';
-import { jest, describe, it, expect, afterEach } from '@jest/globals';
+// noinspection JSCheckFunctionSignatures
 
-// Mock knex
-jest.mock('knex');
-const mockDb = {
-    where: jest.fn().mockReturnThis(),
-    del: jest.fn()
+import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+import logoutUser from '../../../../src/resolvers/mutation/auth/logoutUser';
+
+// Mock dependencies
+const mockDeleteSession = jest.fn();
+
+const db = {}; // Mock database object
+const model = {
+    Session: {
+        deleteSession: mockDeleteSession,
+    },
 };
-
-knex.mockReturnValue(mockDb);
+const utils = {}; // Mock utilities object if needed
+const token = 'mock-token'; // Mock token object
 
 describe('logoutUser', () => {
-    afterEach(() => {
+    beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    it('should successfully log out the user', async () => {
-        mockDb.del.mockResolvedValueOnce(1); // Simulate successful deletion
+    it('should log out user successfully', async () => {
+        mockDeleteSession.mockResolvedValue(true);
 
-        const result = await logoutUser(null, null, { db: mockDb, token: 'mock-token' });
+        const result = await logoutUser(null, null, { db, model, utils, token });
 
-        expect(mockDb.where).toHaveBeenCalledWith({ sessionToken: 'mock-token' });
-        expect(mockDb.del).toHaveBeenCalled();
+        expect(mockDeleteSession).toHaveBeenCalledWith(db, token);
         expect(result).toBe(true);
     });
 
-    it('should handle errors during logout', async () => {
-        mockDb.del.mockRejectedValueOnce(new Error('Database error'));
+    it('should handle errors during session deletion', async () => {
+        mockDeleteSession.mockRejectedValue(new Error('Database error'));
 
-        await expect(logoutUser(null, null, { db: mockDb, token: 'mock-token' }))
-            .rejects
-            .toThrow('Database error');
+        await expect(logoutUser(null, null, { db, model, utils, token })).rejects.toThrow('Database error');
 
-        expect(mockDb.where).toHaveBeenCalledWith({ sessionToken: 'mock-token' });
-        expect(mockDb.del).toHaveBeenCalled();
+        expect(mockDeleteSession).toHaveBeenCalledWith(db, token);
     });
 });

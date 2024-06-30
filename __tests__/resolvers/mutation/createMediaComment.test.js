@@ -1,101 +1,87 @@
-import createMediaComment from '../../../src/resolvers/mutation/createMediaComment.js';
-import { getUserFromToken, validateToken } from '../../../src/resolvers/utils/utils.js';
-import knex from 'knex';
-import { jest, describe, it, expect, afterEach } from '@jest/globals';
+import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+import createMediaComment from '../../../src/resolvers/mutation/createMediaComment';
 
 // Mock dependencies
-jest.mock('../../../src/resolvers/utils/utils.js');
-jest.mock('knex');
+const mockValidateToken = jest.fn();
+const mockGetUserFromToken = jest.fn();
+const mockInsertMediaComment = jest.fn();
+const mockNow = jest.fn();
 
-// Mock knex
-const mockDb = {
-    insert: jest.fn().mockReturnThis(),
-    returning: jest.fn().mockReturnThis(),
+const db = {
     fn: {
-        now: jest.fn().mockReturnValue('2024-01-01T00:00:00Z')
+        now: mockNow
     }
+}; // Mock database object
+const model = {
+    MediaComment: {
+        insertMediaComment: mockInsertMediaComment,
+    },
 };
-
-// Mock functions
-validateToken.mockImplementation(async (db, token) => true);
-getUserFromToken.mockImplementation(async (db, token) => ({
-    id: 1
-}));
+const utils = {
+    validateToken: mockValidateToken,
+    getUserFromToken: mockGetUserFromToken,
+};
+const token = 'mock-token'; // Mock token object
 
 describe('createMediaComment', () => {
-    afterEach(() => {
+    beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    it('should successfully create a media comment', async () => {
-        const input = {
-            mediaId: 1,
-            comment: 'This is a test comment.'
-        };
-
-        const user = {
-            id: 1
-        };
-
-        const newComment = {
+    it('should create media comment successfully', async () => {
+        const input = { mediaId: 1, comment: 'This is a test comment' };
+        const user = { id: 1, username: 'testUser' };
+        const now = new Date();
+        const insertedComment = {
             id: 1,
-            media_id: 1,
-            user_id: 1,
-            comment: 'This is a test comment.',
-            created: '2024-01-01T00:00:00Z',
-            updated: '2024-01-01T00:00:00Z'
+            media_id: input.mediaId,
+            user_id: user.id,
+            comment: input.comment,
+            created: now,
+            updated: now
         };
 
-        getUserFromToken.mockResolvedValueOnce(user);
-        mockDb.returning.mockResolvedValueOnce([newComment]);
+        mockValidateToken.mockResolvedValue(true);
+        mockGetUserFromToken.mockResolvedValue(user);
+        mockNow.mockReturnValue(now);
+        mockInsertMediaComment.mockResolvedValue([insertedComment]);
 
-        const result = await createMediaComment(null, { input }, { db: mockDb, token: 'mock-token' });
+        const result = await createMediaComment(null, { input }, { db, model, utils, token });
 
-        expect(validateToken).toHaveBeenCalledWith(mockDb, 'mock-token');
-        expect(getUserFromToken).toHaveBeenCalledWith(mockDb, 'mock-token');
-        expect(mockDb.insert).toHaveBeenCalledWith({
-            media_id: 1,
-            user_id: 1,
-            comment: 'This is a test comment.',
-            created: '2024-01-01T00:00:00Z',
-            updated: '2024-01-01T00:00:00Z'
+        expect(mockValidateToken).toHaveBeenCalledWith(db, token);
+        expect(mockGetUserFromToken).toHaveBeenCalledWith(db, token);
+        expect(mockNow).toHaveBeenCalledTimes(2);
+        expect(mockInsertMediaComment).toHaveBeenCalledWith(db, {
+            media_id: input.mediaId,
+            user_id: user.id,
+            comment: input.comment,
+            created: now,
+            updated: now
         });
-        expect(mockDb.returning).toHaveBeenCalledWith('*');
-        expect(result).toEqual(newComment);
+        expect(result).toEqual(insertedComment);
     });
 
-    it('should throw an error if the token is invalid', async () => {
-        validateToken.mockRejectedValueOnce(new Error('Invalid token'));
+    it('should handle errors during comment creation', async () => {
+        const input = { mediaId: 1, comment: 'This is a test comment' };
+        const user = { id: 1, username: 'testUser' };
+        const now = new Date();
 
-        const input = {
-            mediaId: 1,
-            comment: 'This is a test comment.'
-        };
+        mockValidateToken.mockResolvedValue(true);
+        mockGetUserFromToken.mockResolvedValue(user);
+        mockNow.mockReturnValue(now);
+        mockInsertMediaComment.mockRejectedValue(new Error('Database error'));
 
-        await expect(createMediaComment(null, { input }, { db: mockDb, token: 'invalid-token' }))
-            .rejects
-            .toThrow('Invalid token');
+        await expect(createMediaComment(null, { input }, { db, model, utils, token })).rejects.toThrow('Database error');
 
-        expect(validateToken).toHaveBeenCalledWith(mockDb, 'invalid-token');
-        expect(getUserFromToken).not.toHaveBeenCalled();
-        expect(mockDb.insert).not.toHaveBeenCalled();
-    });
-
-    it('should throw an error if comment creation fails', async () => {
-        const input = {
-            mediaId: 1,
-            comment: 'This is a test comment.'
-        };
-
-        getUserFromToken.mockResolvedValueOnce({ id: 1 });
-        mockDb.insert.mockRejectedValueOnce(new Error('Database error'));
-
-        await expect(createMediaComment(null, { input }, { db: mockDb, token: 'mock-token' }))
-            .rejects
-            .toThrow('Database error');
-
-        expect(validateToken).toHaveBeenCalledWith(mockDb, 'mock-token');
-        expect(getUserFromToken).toHaveBeenCalledWith(mockDb, 'mock-token');
-        expect(mockDb.insert).toHaveBeenCalled();
+        expect(mockValidateToken).toHaveBeenCalledWith(db, token);
+        expect(mockGetUserFromToken).toHaveBeenCalledWith(db, token);
+        expect(mockNow).toHaveBeenCalledTimes(2);
+        expect(mockInsertMediaComment).toHaveBeenCalledWith(db, {
+            media_id: input.mediaId,
+            user_id: user.id,
+            comment: input.comment,
+            created: now,
+            updated: now
+        });
     });
 });

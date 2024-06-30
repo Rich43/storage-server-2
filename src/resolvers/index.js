@@ -30,7 +30,7 @@ const resolvers = {
         listOtherFiles,
         getMediaById,
         listRelatedMedia,
-        listMediaComments,  // Add the new listMediaComments query
+        listMediaComments,
     },
     Mutation: {
         createMedia,
@@ -42,9 +42,9 @@ const resolvers = {
         registerUser,
         activateUser,
         setAvatar,
-        createMediaComment,  // Add the new createMediaComment mutation
-        editMediaComment,  // Add the new editMediaComment mutation
-        deleteMediaComment,  // Add the new deleteMediaComment mutation
+        createMediaComment,
+        editMediaComment,
+        deleteMediaComment,
     }
 };
 

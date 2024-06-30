@@ -1,5 +1,6 @@
 import moment from 'moment';
 import crypto from 'crypto';
+import { v4 as uuidv4 } from 'uuid';
 
 export function getDates() {
     const sessionExpireDateTime = moment().add(1, 'hour').utc().toISOString(); // 1 hour expiration in UTC
@@ -9,43 +10,6 @@ export function getDates() {
 
 export function hashPassword(password) {
     return crypto.createHash('sha3-512').update(password).digest('hex');
-}
-
-export async function validateToken(db, token) {
-    const session = await db('Session').where({ sessionToken: token }).first();
-    if (!session) {
-        throw new Error('Invalid session token');
-    }
-    const now = moment().utc().format('YYYY-MM-DD HH:mm:ss');
-    if (session.sessionExpireDateTime < now) {
-        throw new Error('Session token has expired');
-    }
-    return session;
-}
-
-export async function getUserFromToken(db, token) {
-    const user = await db('User')
-        .join('Session', 'User.id', 'Session.userId')
-        .select('User.admin')
-        .where('Session.sessionToken', token)
-        .first();
-
-    if (!user) {
-        throw new Error('User not found');
-    }
-    return user;
-}
-
-export function getMediaQuery(db, user, category) {
-    let mediaQuery = db('Media')
-        .join('Mimetype', 'Media.mimetypeId', '=', 'Mimetype.id')
-        .where('Mimetype.category', category)
-        .select('Media.*', 'Mimetype.type as mimetype');
-
-    if (!user.admin) {
-        mediaQuery = mediaQuery.where('Media.adminOnly', false);
-    }
-    return mediaQuery;
 }
 
 export function performFilter(filter, mediaQuery) {
@@ -78,3 +42,5 @@ export function performSorting(sorting, mediaQuery) {
     }
     return mediaQuery;
 }
+
+export const __ALL__ = {getDates, hashPassword, performFilter, performPagination, performSorting, uuidv4};

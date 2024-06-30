@@ -1,10 +1,8 @@
-import { getUserFromToken, validateToken } from '../utils.js';
+const deleteMediaComment = async (_, { id }, { db, model, utils, token }) => {
+    await model.Session.validateToken(db, token);
+    const user = await model.User.getUserFromToken(db, token);
 
-const deleteMediaComment = async (_, { id }, { db, token }) => {
-    await validateToken(db, token);
-    const user = await getUserFromToken(db, token);
-
-    const existingComment = await db('MediaComment').where('id', id).first();
+    const existingComment = await model.MediaComment.getMediaCommentById(db, id);
     if (!existingComment) {
         throw new Error('Comment not found');
     }
@@ -13,7 +11,7 @@ const deleteMediaComment = async (_, { id }, { db, token }) => {
         throw new Error('Not authorized to delete this comment');
     }
 
-    await db('MediaComment').where('id', id).del();
+    await model.MediaComment.deleteMediaCommentById(db, id);
 
     return true;
 };

@@ -1,10 +1,12 @@
 import { getUserFromToken, validateToken } from '../utils.js';
 
-const deleteMedia = async (_, { id }, { db, token }) => {
+
+
+const deleteMedia = async (_, { id }, { db, model, utils, token }) => {
     const session = await validateToken(db, token);
     const user = await getUserFromToken(db, token);
 
-    const media = await db('Media').where('id', id).first();
+    const media = model.Media.getMediaById(db, id);
     if (!media) {
         throw new Error('Media not found');
     }
@@ -17,7 +19,7 @@ const deleteMedia = async (_, { id }, { db, token }) => {
         throw new Error('Only admins can delete adminOnly media');
     }
 
-    await db('Media').where('id', id).del();
+    await model.Media.deleteMediaById(db, id);
     return true;
 };
 

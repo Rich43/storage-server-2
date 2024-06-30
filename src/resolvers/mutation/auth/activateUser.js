@@ -1,21 +1,12 @@
-const activateUser = async (parent, { activationCode }, { knex }) => {
+const activateUser = async (parent, { activationCode }, { db, model, utils, token }) => {
     try {
-        const user = await knex('User')
-            .where('activation_key', activationCode)
-            .first();
+        const user = await model.User.findActivationKey(db, activationCode);
 
         if (!user) {
             // noinspection ExceptionCaughtLocallyJS
             throw new Error('Invalid activation code');
         }
-
-        await knex('User')
-            .where('id', user.id)
-            .update({
-                activated: true,
-                activation_key: null,
-                updated: knex.fn.now()
-            });
+        await model.User.updateActivationKey(db, user.id);
 
         return true;
     } catch (error) {

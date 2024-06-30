@@ -1,14 +1,8 @@
-import { getUserFromToken, validateToken } from '../../utils.js';
+const getMediaById = async (_, { id }, { db, model, utils, token }) => {
+    await model.Session.validateToken(db, token);
+    const user = await model.User.getUserFromToken(db, token);
 
-const getMediaById = async (_, { id }, { db, token }) => {
-    await validateToken(db, token);
-    const user = await getUserFromToken(db, token);
-
-    const media = await db('Media')
-        .join('Mimetype', 'Media.mimetypeId', '=', 'Mimetype.id')
-        .select('Media.*', 'Mimetype.type as mimetype')
-        .where('Media.id', id)
-        .first();
+    const media = await model.Media.getMediaByIdJoiningOntoMimeType(db, id);
 
     if (!media) {
         throw new Error('Media not found');

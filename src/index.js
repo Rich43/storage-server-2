@@ -8,6 +8,8 @@ import bodyParser from 'body-parser';
 import { logger, requestLogger } from './logger.js';
 import { sessionCleanupMiddleware } from "./middleware.js";
 import resolvers from "./resolvers/index.js";
+import model from "./resolvers/model/index.js";
+import { __ALL__ } from "./resolvers/utils.js";
 
 // Load schema
 const typeDefs = gql(readFileSync('schema.graphql', 'utf8'));
@@ -27,7 +29,7 @@ app.use(bodyParser.json());
 // Define the context to include the database connection and other context-related information
 const context = ({ req }) => {
     const token = req.headers.authorization.trim().toLowerCase().replaceAll(" ", "").replaceAll("bearer", "") || '';
-    return { db, token };
+    return { db, model, __ALL__, token };
 };
 
 // Create the Apollo Server instance

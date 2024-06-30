@@ -1,17 +1,14 @@
-const setAvatar = async (parent, { mediaId }, { knex, user }) => {
+const setAvatar = async (parent, { mediaId }, { db, model, utils, token }) => {
     try {
         // Verify the user is authenticated
-        if (!user) {
+        const session = await model.Session.validateToken(db, token);
+        if (!token) {
             // noinspection ExceptionCaughtLocallyJS
             throw new Error('Not authenticated');
         }
 
         // Check if the media has an image mime type category
-        const media = await knex('Media')
-            .join('Mimetype', 'Media.mimetype_id', 'Mimetype.id')
-            .where('Media.id', mediaId)
-            .andWhere('Mimetype.category', 'IMAGE')
-            .first();
+        const media = await model.Media.getFirstMediaItemWithImageMimetypeById(db, mediaId);
 
         if (!media) {
             // noinspection ExceptionCaughtLocallyJS
@@ -19,17 +16,10 @@ const setAvatar = async (parent, { mediaId }, { knex, user }) => {
         }
 
         // Update the user's avatar
-        await knex('User')
-            .where('id', user.id)
-            .update({
-                avatar: mediaId,
-                updated: knex.fn.now()
-            });
+        await model.User.updateUserAvatar(db, session.userId, mediaId);
 
         // noinspection UnnecessaryLocalVariableJS
-        const updatedUser = await knex('User')
-            .where('id', user.id)
-            .first();
+        const updatedUser = model.User.getUserById(session.userId);
 
         return updatedUser;
     } catch (error) {

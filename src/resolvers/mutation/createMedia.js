@@ -1,25 +1,15 @@
-import { getUserFromToken, validateToken } from '../utils.js';
+const createMedia = async (_, { input }, { db, model, utils, token }) => {
+    await model.Session.validateToken(db, token);
+    const user = await model.User.getUserFromToken(db, token);
 
-const createMedia = async (_, { input }, { db, token }) => {
-    await validateToken(db, token);
-    const user = await getUserFromToken(db, token);
-
-    const { title, description, url, mimetype, thumbnail, adminOnly } = input;
+    const { adminOnly } = input;
 
     // Only admins can set adminOnly to true
     const mediaAdminOnly = !!(user.admin && adminOnly);
 
-    const [mediaId] = await db('Media').insert({
-        title,
-        description,
-        url,
-        mimetypeId: await db('Mimetype').select('id').where('type', mimetype).first(),
-        thumbnail,
-        userId: user.userId,
-        adminOnly: mediaAdminOnly
-    }).returning('id');
+    const [mediaId] = await model.Media.insertMedia(db, user, mediaAdminOnly, input);
 
-    return db('Media').where('id', mediaId).first();
+    return model.Media.getMediaById(db, mediaId);
 };
 
 export default createMedia;

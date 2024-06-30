@@ -1,8 +1,12 @@
 import { getUserFromToken, validateToken } from '../utils.js';
 
-const editMedia = async (_, { input }, { db, token }) => {
-    await validateToken(db, token);
-    const user = await getUserFromToken(db, token);
+function updateMediaById(db, id, updatedMedia) {
+    return db('Media').where('id', id).update(updatedMedia);
+}
+
+const editMedia = async (_, { input }, { db, model, utils, token }) => {
+    await model.Session.validateToken(db, token);
+    const user = await model.User.getUserFromToken(db, token);
 
     const { id, title, description, url, mimetype, thumbnail, adminOnly } = input;
 
@@ -24,9 +28,9 @@ const editMedia = async (_, { input }, { db, token }) => {
         updatedMedia.adminOnly = adminOnly;
     }
 
-    await db('Media').where('id', id).update(updatedMedia);
+    await updateMediaById(db, id, updatedMedia);
 
-    return db('Media').where('id', id).first();
+    return model.Media.getMediaById(db, id);
 };
 
 export default editMedia;

@@ -1,8 +1,6 @@
-import { getUserFromToken, validateToken } from '../utils.js';
-
-const createMediaComment = async (_, { input }, { db, token }) => {
-    await validateToken(db, token);
-    const user = await getUserFromToken(db, token);
+export const createMediaComment = async (_, { input }, { db, model, utils, token }) => {
+    await utils.validateToken(db, token);
+    const user = await utils.getUserFromToken(db, token);
 
     const { mediaId, comment } = input;
 
@@ -14,7 +12,7 @@ const createMediaComment = async (_, { input }, { db, token }) => {
         updated: db.fn.now()
     };
 
-    const [insertedComment] = await db('MediaComment').insert(newComment).returning('*');
+    const [insertedComment] = await model.MediaComment.insertMediaComment(db, newComment);
 
     return insertedComment;
 };

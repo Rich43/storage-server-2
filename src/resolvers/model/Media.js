@@ -72,3 +72,7 @@ export function addRelatedKeywords(db, id, keywords) {
     });
     return query;
 }
+
+export function updateMediaById(db, id, updatedMedia) {
+    return db('Media').where('id', id).update(updatedMedia);
+}

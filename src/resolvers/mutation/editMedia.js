@@ -1,25 +1,20 @@
-import { getUserFromToken, validateToken } from '../utils/utils.js';
-
-function updateMediaById(db, id, updatedMedia) {
-    return db('Media').where('id', id).update(updatedMedia);
-}
-
 const editMedia = async (_, { input }, { db, model, utils, token }) => {
     await model.Session.validateToken(db, token);
     const user = await model.User.getUserFromToken(db, token);
 
     const { id, title, description, url, mimetype, thumbnail, adminOnly } = input;
 
-    const media = await db('Media').where('id', id).first();
+    const media = await model.Media.getMediaById(db, id);
     if (!media) {
         throw new Error('Media not found');
     }
 
+    const mimetypeFunc = await model.Mimetype.getMimetypeIdByType(db, mimetype);
     const updatedMedia = {
         ...(title && { title }),
         ...(description && { description }),
         ...(url && { url }),
-        ...(mimetype && { mimetype_id: (await db('Mimetype').select('id').where('type', mimetype).first()).id }),
+        ...(mimetype && { mimetype_id: mimetypeFunc.id }),
         ...(thumbnail && { thumbnail }),
         updated: db.fn.now()  // Set the updated column to the current timestamp
     };
@@ -28,7 +23,7 @@ const editMedia = async (_, { input }, { db, model, utils, token }) => {
         updatedMedia.adminOnly = adminOnly;
     }
 
-    await updateMediaById(db, id, updatedMedia);
+    await model.Media.updateMediaById(db, id, updatedMedia);
 
     return model.Media.getMediaById(db, id);
 };

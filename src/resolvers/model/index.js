@@ -22,7 +22,7 @@ import {
     getMediaByIdJoiningOntoMimeType, getMediaByAlbumIdJoiningOnAlbumMediaAndMimetype,
     getMediaQuery,
     insertMedia,
-    addAdminOnlyRestriction, addRelatedKeywords,
+    addAdminOnlyRestriction, addRelatedKeywords, updateMediaById,
 } from "./Media.js";
 import {
     dbListMediaComments,
@@ -32,6 +32,7 @@ import {
     updateMediaCommentById
 } from "./MediaComment.js";
 import { filterAlbum, getAllAlbums } from "./Album.js";
+import { getMimetypeIdByType } from "./Mimetype.js";
 
 export default {
     User: {
@@ -62,6 +63,7 @@ export default {
         getMediaByAlbumIdJoiningOnAlbumMediaAndMimetype,
         addAdminOnlyRestriction,
         addRelatedKeywords,
+        updateMediaById,
     },
     MediaComment: {
         insertMediaComment,
@@ -73,5 +75,8 @@ export default {
     Album: {
         getAllAlbums,
         filterAlbum,
+    },
+    Mimetype: {
+        getMimetypeIdByType,
     }
 };

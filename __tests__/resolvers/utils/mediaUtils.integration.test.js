@@ -13,6 +13,25 @@ describe('mediaUtils.js integration tests', () => {
 
             expect(keywords).toEqual(["sample", "title", "description", "media", "content"]);
         });
+
+        it('should handle empty title and description', () => {
+            const media = {
+                title: "",
+                description: ""
+            };
+
+            const keywords = getMediaKeywords(media);
+
+            expect(keywords).toEqual([]);
+        });
+
+        it('should handle undefined title and description', () => {
+            const media = {};
+
+            const keywords = getMediaKeywords(media);
+
+            expect(keywords).toEqual([]);
+        });
     });
 
     describe('performFilter', () => {
@@ -107,6 +126,20 @@ describe('mediaUtils.js integration tests', () => {
             expect(mockQuery.offset).not.toHaveBeenCalled();
             expect(result).toBe(mockQuery);
         });
+
+        it('should not apply pagination if pagination is undefined', () => {
+            const pagination = undefined;
+            const mockQuery = {
+                limit: jest.fn().mockReturnThis(),
+                offset: jest.fn().mockReturnThis()
+            };
+
+            const result = performPagination(pagination, mockQuery);
+
+            expect(mockQuery.limit).not.toHaveBeenCalled();
+            expect(mockQuery.offset).not.toHaveBeenCalled();
+            expect(result).toBe(mockQuery);
+        });
     });
 
     describe('performSorting', () => {
@@ -124,6 +157,18 @@ describe('mediaUtils.js integration tests', () => {
 
         it('should not apply sorting if sorting is empty', () => {
             const sorting = {};
+            const mockQuery = {
+                orderBy: jest.fn().mockReturnThis()
+            };
+
+            const result = performSorting(sorting, mockQuery);
+
+            expect(mockQuery.orderBy).not.toHaveBeenCalled();
+            expect(result).toBe(mockQuery);
+        });
+
+        it('should not apply sorting if sorting is undefined', () => {
+            const sorting = undefined;
             const mockQuery = {
                 orderBy: jest.fn().mockReturnThis()
             };

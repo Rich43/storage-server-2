@@ -152,6 +152,20 @@ describe('mediaUtils.js integration tests', () => {
             expect(mockQuery.offset).not.toHaveBeenCalled();
             expect(result).toBe(mockQuery);
         });
+
+        it('should not apply pagination if page or limit is undefined', () => {
+            const pagination = { page: undefined, limit: undefined };
+            const mockQuery = {
+                limit: jest.fn().mockReturnThis(),
+                offset: jest.fn().mockReturnThis()
+            };
+
+            const result = performPagination(pagination, mockQuery);
+
+            expect(mockQuery.limit).not.toHaveBeenCalled();
+            expect(mockQuery.offset).not.toHaveBeenCalled();
+            expect(result).toBe(mockQuery);
+        });
     });
 
     describe('performSorting', () => {
@@ -181,6 +195,18 @@ describe('mediaUtils.js integration tests', () => {
 
         it('should not apply sorting if sorting is undefined', () => {
             const sorting = undefined;
+            const mockQuery = {
+                orderBy: jest.fn().mockReturnThis()
+            };
+
+            const result = performSorting(sorting, mockQuery);
+
+            expect(mockQuery.orderBy).not.toHaveBeenCalled();
+            expect(result).toBe(mockQuery);
+        });
+
+        it('should not apply sorting if field or order is undefined', () => {
+            const sorting = { field: undefined, order: undefined };
             const mockQuery = {
                 orderBy: jest.fn().mockReturnThis()
             };

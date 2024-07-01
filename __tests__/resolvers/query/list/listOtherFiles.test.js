@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
-import listOtherFiles from '../../../../src/resolvers/query/listOtherFiles';
+import listOtherFiles from '../../../../src/resolvers/query/list/listOtherFiles';
 import {
     db,
     model,

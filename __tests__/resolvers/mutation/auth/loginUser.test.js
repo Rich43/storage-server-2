@@ -1,110 +1,115 @@
-import loginUser from '../../../../src/resolvers/mutation/auth/loginUser.js';
-import { v4 as uuidv4 } from 'uuid';
-import { getDates, hashPassword } from '../../../../src/resolvers/utils.js';
-import { jest, describe, it, expect, afterEach } from '@jest/globals';
+// noinspection JSCheckFunctionSignatures
+
+import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+import loginUser from '../../../../src/resolvers/mutation/auth/loginUser';
 
 // Mock dependencies
-jest.mock('uuid');
-jest.mock('../../../../src/resolvers/utils.js');
-jest.mock('knex');
+const mockHashPassword = jest.fn();
+const mockValidateUser = jest.fn();
+const mockUuidv4 = jest.fn();
+const mockGetDates = jest.fn();
+const mockCreateSession = jest.fn();
+const mockGetSessionById = jest.fn();
 
-// Mock knex
-const mockDb = {
-    where: jest.fn().mockReturnThis(),
-    first: jest.fn(),
-    insert: jest.fn().mockReturnThis(),
-    returning: jest.fn().mockReturnThis(),
-    fn: {
-        now: jest.fn().mockReturnValue('2024-01-01T00:00:00Z')
-    }
+const db = {}; // Mock database object
+const model = {
+    User: {
+        validateUser: mockValidateUser,
+    },
+    Session: {
+        createSession: mockCreateSession,
+        getSessionById: mockGetSessionById,
+    },
 };
-
-// Mock functions
-uuidv4.mockReturnValue('mock-session-token');
-getDates.mockReturnValue({
-    sessionExpireDateTime: '2024-01-01T00:00:00Z',
-    sessionExpireDateTimeFormatted: '2024-01-01 00:00:00'
-});
-hashPassword.mockImplementation((password) => `hashed-${password}`);
+const utils = {
+    hashPassword: mockHashPassword,
+    uuidv4: mockUuidv4,
+    getDates: mockGetDates,
+};
+const token = {}; // Mock token object if needed
 
 describe('loginUser', () => {
-    afterEach(() => {
+    beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    it('should successfully log in the user', async () => {
-        const user = {
-            id: 1,
-            username: 'testuser',
-            password: 'hashed-password',
-            avatar: 'avatar.png',
-            admin: false
-        };
+    it('should log in user successfully with valid username and password', async () => {
+        const username = 'validUser';
+        const password = 'validPassword';
+        const hashedPassword = 'hashedPassword';
+        const user = { id: 1, username: 'validUser', avatar: 'avatar.png', admin: true };
+        const sessionToken = 'unique-session-token';
+        const sessionExpireDateTime = '2023-12-31T23:59:59.000Z';
+        const sessionExpireDateTimeFormatted = '2023-12-31 23:59:59';
+        const session = { id: 1, sessionToken };
 
-        const session = {
-            id: 1,
-            sessionToken: 'mock-session-token',
-            sessionExpireDateTime: '2024-01-01T00:00:00Z'
-        };
+        mockHashPassword.mockReturnValue(hashedPassword);
+        mockValidateUser.mockResolvedValue(user);
+        mockUuidv4.mockReturnValue(sessionToken);
+        mockGetDates.mockReturnValue({ sessionExpireDateTime, sessionExpireDateTimeFormatted });
+        mockCreateSession.mockResolvedValue(session.id);
+        mockGetSessionById.mockResolvedValue(session);
 
-        mockDb.first.mockResolvedValueOnce(user).mockResolvedValueOnce(session);
-        mockDb.insert.mockResolvedValueOnce([1]);
+        const result = await loginUser(null, { username, password }, { db, model, utils, token });
 
-        const result = await loginUser(null, { username: 'testuser', password: 'password' }, { db: mockDb });
+        expect(mockHashPassword).toHaveBeenCalledWith(password);
+        expect(mockValidateUser).toHaveBeenCalledWith(db, username, hashedPassword);
+        expect(mockUuidv4).toHaveBeenCalled();
+        expect(mockGetDates).toHaveBeenCalled();
+        expect(mockCreateSession).toHaveBeenCalledWith(db, user.id, sessionToken, sessionExpireDateTimeFormatted);
+        expect(mockGetSessionById).toHaveBeenCalledWith(db, session.id);
 
-        expect(hashPassword).toHaveBeenCalledWith('password');
-        expect(mockDb.where).toHaveBeenCalledWith({ username: 'testuser', password: 'hashed-password' });
-        expect(mockDb.first).toHaveBeenCalled();
-        expect(mockDb.insert).toHaveBeenCalledWith({
-            userId: user.id,
-            sessionToken: 'mock-session-token',
-            sessionExpireDateTime: '2024-01-01 00:00:00',
-            created: '2024-01-01T00:00:00Z'
-        });
-        expect(mockDb.returning).toHaveBeenCalledWith('id');
         expect(result).toEqual({
             userId: user.id,
             sessionId: session.id,
             username: user.username,
             avatarPicture: user.avatar,
             sessionToken: session.sessionToken,
-            sessionExpireDateTime: '2024-01-01T00:00:00Z',
-            admin: user.admin
+            sessionExpireDateTime: sessionExpireDateTime,
+            admin: user.admin,
         });
     });
 
-    it('should throw an error if the username or password is invalid', async () => {
-        mockDb.first.mockResolvedValueOnce(null);
+    it('should throw an error for invalid username or password', async () => {
+        const username = 'invalidUser';
+        const password = 'invalidPassword';
+        const hashedPassword = 'hashedInvalidPassword';
 
-        await expect(loginUser(null, { username: 'invaliduser', password: 'password' }, { db: mockDb }))
-            .rejects
-            .toThrow('Invalid username or password');
+        mockHashPassword.mockReturnValue(hashedPassword);
+        mockValidateUser.mockResolvedValue(null);
 
-        expect(hashPassword).toHaveBeenCalledWith('password');
-        expect(mockDb.where).toHaveBeenCalledWith({ username: 'invaliduser', password: 'hashed-password' });
-        expect(mockDb.first).toHaveBeenCalled();
-        expect(mockDb.insert).not.toHaveBeenCalled();
+        await expect(loginUser(null, { username, password }, { db, model, utils, token })).rejects.toThrow('Invalid username or password');
+
+        expect(mockHashPassword).toHaveBeenCalledWith(password);
+        expect(mockValidateUser).toHaveBeenCalledWith(db, username, hashedPassword);
+        expect(mockUuidv4).not.toHaveBeenCalled();
+        expect(mockGetDates).not.toHaveBeenCalled();
+        expect(mockCreateSession).not.toHaveBeenCalled();
+        expect(mockGetSessionById).not.toHaveBeenCalled();
     });
 
-    it('should throw an error if session creation fails', async () => {
-        const user = {
-            id: 1,
-            username: 'testuser',
-            password: 'hashed-password',
-            avatar: 'avatar.png',
-            admin: false
-        };
+    it('should handle errors during session creation', async () => {
+        const username = 'validUser';
+        const password = 'validPassword';
+        const hashedPassword = 'hashedPassword';
+        const user = { id: 1, username: 'validUser', avatar: 'avatar.png', admin: true };
+        const sessionToken = 'unique-session-token';
+        const sessionExpireDateTime = '2023-12-31T23:59:59.000Z';
+        const sessionExpireDateTimeFormatted = '2023-12-31 23:59:59';
 
-        mockDb.first.mockResolvedValueOnce(user);
-        mockDb.insert.mockRejectedValueOnce(new Error('Session creation failed'));
+        mockHashPassword.mockReturnValue(hashedPassword);
+        mockValidateUser.mockResolvedValue(user);
+        mockUuidv4.mockReturnValue(sessionToken);
+        mockGetDates.mockReturnValue({ sessionExpireDateTime, sessionExpireDateTimeFormatted });
+        mockCreateSession.mockRejectedValue(new Error('Database error'));
 
-        await expect(loginUser(null, { username: 'testuser', password: 'password' }, { db: mockDb }))
-            .rejects
-            .toThrow('Session creation failed');
+        await expect(loginUser(null, { username, password }, { db, model, utils, token })).rejects.toThrow('Database error');
 
-        expect(hashPassword).toHaveBeenCalledWith('password');
-        expect(mockDb.where).toHaveBeenCalledWith({ username: 'testuser', password: 'hashed-password' });
-        expect(mockDb.first).toHaveBeenCalled();
-        expect(mockDb.insert).toHaveBeenCalled();
+        expect(mockHashPassword).toHaveBeenCalledWith(password);
+        expect(mockValidateUser).toHaveBeenCalledWith(db, username, hashedPassword);
+        expect(mockUuidv4).toHaveBeenCalled();
+        expect(mockGetDates).toHaveBeenCalled();
+        expect(mockCreateSession).toHaveBeenCalledWith(db, user.id, sessionToken, sessionExpireDateTimeFormatted);
+        expect(mockGetSessionById).not.toHaveBeenCalled();
     });
 });

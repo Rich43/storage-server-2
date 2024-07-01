@@ -1,40 +1,31 @@
-const setAvatar = async (parent, { mediaId }, { knex, user }) => {
+// noinspection UnnecessaryLocalVariableJS,ExceptionCaughtLocallyJS
+
+import { CustomError } from "../../utils/CustomError.js";
+
+const setAvatar = async (parent, { mediaId }, { db, model, utils, token }) => {
     try {
         // Verify the user is authenticated
-        if (!user) {
-            // noinspection ExceptionCaughtLocallyJS
+        const session = await model.Session.validateToken(db, token);
+        if (!session) {
             throw new Error('Not authenticated');
         }
 
         // Check if the media has an image mime type category
-        const media = await knex('Media')
-            .join('Mimetype', 'Media.mimetype_id', 'Mimetype.id')
-            .where('Media.id', mediaId)
-            .andWhere('Mimetype.category', 'IMAGE')
-            .first();
+        const media = await model.Media.getFirstMediaItemWithImageMimetypeById(db, mediaId);
 
         if (!media) {
-            // noinspection ExceptionCaughtLocallyJS
             throw new Error('Media must have image mime type category');
         }
 
         // Update the user's avatar
-        await knex('User')
-            .where('id', user.id)
-            .update({
-                avatar: mediaId,
-                updated: knex.fn.now()
-            });
+        await model.User.updateUserAvatar(db, session.userId, mediaId);
 
-        // noinspection UnnecessaryLocalVariableJS
-        const updatedUser = await knex('User')
-            .where('id', user.id)
-            .first();
+        const updatedUser = await model.User.getUserById(db, session.userId);
 
         return updatedUser;
     } catch (error) {
         console.error(error);
-        throw new Error('Failed to set avatar');
+        throw new CustomError('Failed to set avatar', error);
     }
 };
 

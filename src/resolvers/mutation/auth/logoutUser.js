@@ -1,6 +1,6 @@
-const logoutUser = async (_, __, { db, token }) => {
+const logoutUser = async (_, __, { db, model, utils, token}) => {
     // Delete the session by token
-    await db('Session').where({ sessionToken: token }).del();
+    await model.Session.deleteSession(db, token);
     return true;
 };
 

@@ -1,19 +1,10 @@
-import {
-    getMediaQuery,
-    getUserFromToken,
-    performFilter,
-    performPagination,
-    performSorting,
-    validateToken
-} from '../../utils.js';
-
-const listVideos = async (_, { filter, pagination, sorting }, { db, token }) => {
-    const session = await validateToken(db, token);
-    const user = await getUserFromToken(db, token);
-    let mediaQuery = getMediaQuery(db, user, 'VIDEO');
-    mediaQuery = performFilter(filter, mediaQuery);
-    mediaQuery = performPagination(pagination, mediaQuery);
-    mediaQuery = performSorting(sorting, mediaQuery);
+const listVideos = async (_, { filter, pagination, sorting }, { db, model, utils, token }) => {
+    await model.Session.validateToken(db, token);
+    const user = await model.User.getUserFromToken(db, token);
+    let mediaQuery = model.Media.getMediaQuery(db, user, 'VIDEO');
+    mediaQuery = utils.performFilter(filter, mediaQuery);
+    mediaQuery = utils.performPagination(pagination, mediaQuery);
+    mediaQuery = utils.performSorting(sorting, mediaQuery);
 
     return mediaQuery;
 };

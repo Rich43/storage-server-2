@@ -1,30 +1,23 @@
-import { v4 as uuidv4 } from 'uuid';
-import { getDates, hashPassword } from '../../utils.js';
+const loginUser = async (_, { username, password }, { db, model, utils, token }) => {
 
-const loginUser = async (_, { username, password }, { db }) => {
     // Hash the password before querying
-    const hashedPassword = hashPassword(password);
-    // Find user by username and hashed password
-    const user = await db('User').where({ username, password: hashedPassword }).first();
+    const hashedPassword = utils.hashPassword(password);
+
+    // Find and validate the user
+    const user = await model.User.validateUser(db, username, hashedPassword);
     if (!user) {
         throw new Error('Invalid username or password');
     }
 
     // Generate session token and expiry date
-    const sessionToken = uuidv4(); // Generate a unique session token
-    const { sessionExpireDateTime, sessionExpireDateTimeFormatted } = getDates();
+    const sessionToken = utils.uuidv4(); // Generate a unique session token
+    const { sessionExpireDateTime, sessionExpireDateTimeFormatted } = utils.getDates();
+
     // Create new session
-    const [sessionId] = await db('Session')
-        .insert({
-            userId: user.id,
-            sessionToken,
-            sessionExpireDateTime: sessionExpireDateTimeFormatted,
-            created: db.fn.now(),
-        })
-        .returning('id');
+    const sessionId = await model.Session.createSession(db, user.id, sessionToken, sessionExpireDateTimeFormatted);
 
     // Retrieve the full session object
-    const session = await db('Session').where({ id: sessionId }).first();
+    const session = await model.Session.getSessionById(db, sessionId);
 
     return {
         userId: user.id,

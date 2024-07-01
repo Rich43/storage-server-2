@@ -1,107 +1,98 @@
-import refreshSession from '../../../../src/resolvers/mutation/auth/refreshSession.js';
-import { v4 as uuidv4 } from 'uuid';
-import { getDates, validateToken } from '../../../../src/resolvers/utils.js';
-import knex from 'knex';
-import { jest, describe, it, expect, afterEach } from '@jest/globals';
+// noinspection JSCheckFunctionSignatures
+
+import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+import refreshSession from '../../../../src/resolvers/mutation/auth/refreshSession';
 
 // Mock dependencies
-jest.mock('uuid');
-jest.mock('../../../../src/resolvers/utils.js');
-jest.mock('knex');
+const mockValidateToken = jest.fn();
+const mockUuidv4 = jest.fn();
+const mockGetDates = jest.fn();
+const mockUpdateSessionWithNewTokenAndExpiryDate = jest.fn();
+const mockGetUserById = jest.fn();
 
-// Mock knex
-const mockDb = {
-    where: jest.fn().mockReturnThis(),
-    first: jest.fn(),
-    update: jest.fn(),
-    fn: {
-        now: jest.fn().mockReturnValue('2024-01-01T00:00:00Z')
-    }
+const db = {}; // Mock database object
+const model = {
+    Session: {
+        validateToken: mockValidateToken,
+        updateSessionWithNewTokenAndExpiryDate: mockUpdateSessionWithNewTokenAndExpiryDate,
+    },
+    User: {
+        getUserById: mockGetUserById,
+    },
 };
-
-// Mock functions
-uuidv4.mockReturnValue('new-mock-session-token');
-getDates.mockReturnValue({
-    sessionExpireDateTime: '2024-01-01T00:00:00Z',
-    sessionExpireDateTimeFormatted: '2024-01-01 00:00:00'
-});
-validateToken.mockImplementation(async (db, token) => ({
-    id: 1,
-    userId: 1,
-    sessionToken: token
-}));
+const utils = {
+    uuidv4: mockUuidv4,
+    getDates: mockGetDates,
+};
+const token = 'mock-token'; // Mock token object
 
 describe('refreshSession', () => {
-    afterEach(() => {
+    beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    it('should successfully refresh the session', async () => {
-        const session = {
-            id: 1,
-            userId: 1,
-            sessionToken: 'mock-token'
-        };
+    it('should refresh session successfully', async () => {
+        const session = { id: 1, userId: 1 };
+        const newSessionToken = 'new-unique-session-token';
+        const sessionExpireDateTime = '2023-12-31T23:59:59.000Z';
+        const sessionExpireDateTimeFormatted = '2023-12-31 23:59:59';
+        const user = { id: 1, username: 'validUser', avatar: 'avatar.png', admin: true };
 
-        const user = {
-            id: 1,
-            username: 'testuser',
-            avatar: 'avatar.png',
-            admin: false
-        };
+        mockValidateToken.mockResolvedValue(session);
+        mockUuidv4.mockReturnValue(newSessionToken);
+        mockGetDates.mockReturnValue({ sessionExpireDateTime, sessionExpireDateTimeFormatted });
+        mockUpdateSessionWithNewTokenAndExpiryDate.mockResolvedValue(true);
+        mockGetUserById.mockResolvedValue(user);
 
-        validateToken.mockResolvedValueOnce(session);
-        mockDb.first.mockResolvedValueOnce(user);
+        const result = await refreshSession(null, null, { db, model, utils, token });
 
-        const result = await refreshSession(null, null, { db: mockDb, token: 'mock-token' });
-
-        expect(validateToken).toHaveBeenCalledWith(mockDb, 'mock-token');
-        expect(mockDb.where).toHaveBeenCalledWith({ sessionToken: 'mock-token' });
-        expect(mockDb.update).toHaveBeenCalledWith({
-            sessionToken: 'new-mock-session-token',
-            sessionExpireDateTime: '2024-01-01 00:00:00',
-            updated: '2024-01-01T00:00:00Z'
-        });
-        expect(mockDb.first).toHaveBeenCalledWith({ id: 1 });
+        expect(mockValidateToken).toHaveBeenCalledWith(db, token);
+        expect(mockUuidv4).toHaveBeenCalled();
+        expect(mockGetDates).toHaveBeenCalled();
+        expect(mockUpdateSessionWithNewTokenAndExpiryDate).toHaveBeenCalledWith(db, token, newSessionToken, sessionExpireDateTimeFormatted);
+        expect(mockGetUserById).toHaveBeenCalledWith(db, session.userId);
 
         expect(result).toEqual({
             userId: user.id,
             sessionId: session.id,
             username: user.username,
             avatarPicture: user.avatar,
-            sessionToken: 'new-mock-session-token',
-            sessionExpireDateTime: '2024-01-01T00:00:00Z',
-            admin: user.admin
+            sessionToken: newSessionToken,
+            sessionExpireDateTime: sessionExpireDateTime,
+            admin: user.admin,
         });
     });
 
-    it('should throw an error if the token is invalid', async () => {
-        validateToken.mockRejectedValueOnce(new Error('Invalid token'));
+    it('should handle errors during session validation', async () => {
+        mockValidateToken.mockRejectedValue(new Error('Invalid token'));
 
-        await expect(refreshSession(null, null, { db: mockDb, token: 'invalid-token' }))
-            .rejects
-            .toThrow('Invalid token');
+        await expect(refreshSession(null, null, { db, model, utils, token })).rejects.toThrow('Invalid token');
 
-        expect(validateToken).toHaveBeenCalledWith(mockDb, 'invalid-token');
-        expect(mockDb.update).not.toHaveBeenCalled();
+        expect(mockValidateToken).toHaveBeenCalledWith(db, token);
+        expect(mockUuidv4).not.toHaveBeenCalled();
+        expect(mockGetDates).not.toHaveBeenCalled();
+        expect(mockUpdateSessionWithNewTokenAndExpiryDate).not.toHaveBeenCalled();
+        expect(mockGetUserById).not.toHaveBeenCalled();
     });
 
-    it('should throw an error if session update fails', async () => {
-        const session = {
-            id: 1,
-            userId: 1,
-            sessionToken: 'mock-token'
-        };
+    it('should handle errors during user retrieval', async () => {
+        const session = { id: 1, userId: 1 };
+        const newSessionToken = 'new-unique-session-token';
+        const sessionExpireDateTime = '2023-12-31T23:59:59.000Z';
+        const sessionExpireDateTimeFormatted = '2023-12-31 23:59:59';
 
-        validateToken.mockResolvedValueOnce(session);
-        mockDb.update.mockRejectedValueOnce(new Error('Database error'));
+        mockValidateToken.mockResolvedValue(session);
+        mockUuidv4.mockReturnValue(newSessionToken);
+        mockGetDates.mockReturnValue({ sessionExpireDateTime, sessionExpireDateTimeFormatted });
+        mockUpdateSessionWithNewTokenAndExpiryDate.mockResolvedValue(true);
+        mockGetUserById.mockRejectedValue(new Error('User not found'));
 
-        await expect(refreshSession(null, null, { db: mockDb, token: 'mock-token' }))
-            .rejects
-            .toThrow('Database error');
+        await expect(refreshSession(null, null, { db, model, utils, token })).rejects.toThrow('User not found');
 
-        expect(validateToken).toHaveBeenCalledWith(mockDb, 'mock-token');
-        expect(mockDb.update).toHaveBeenCalled();
-        expect(mockDb.first).not.toHaveBeenCalled();
+        expect(mockValidateToken).toHaveBeenCalledWith(db, token);
+        expect(mockUuidv4).toHaveBeenCalled();
+        expect(mockGetDates).toHaveBeenCalled();
+        expect(mockUpdateSessionWithNewTokenAndExpiryDate).toHaveBeenCalledWith(db, token, newSessionToken, sessionExpireDateTimeFormatted);
+        expect(mockGetUserById).toHaveBeenCalledWith(db, session.userId);
     });
 });

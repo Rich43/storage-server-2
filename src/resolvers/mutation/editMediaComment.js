@@ -1,12 +1,12 @@
-import { getUserFromToken, validateToken } from '../utils.js';
+// noinspection JSUnusedLocalSymbols
 
-const editMediaComment = async (_, { input }, { db, token }) => {
-    await validateToken(db, token);
-    const user = await getUserFromToken(db, token);
+const editMediaComment = async (_, { input }, { db, model, utils, token }) => {
+    await model.Session.validateToken(db, token);
+    const user = await model.User.getUserFromToken(db, token);
 
     const { id, comment } = input;
 
-    const existingComment = await db('MediaComment').where('id', id).first();
+    const existingComment = await model.MediaComment.getMediaCommentById(db, id);
     if (!existingComment) {
         throw new Error('Comment not found');
     }
@@ -20,9 +20,9 @@ const editMediaComment = async (_, { input }, { db, token }) => {
         updated: db.fn.now()
     };
 
-    await db('MediaComment').where('id', id).update(updatedComment);
+    await model.MediaComment.updateMediaCommentById(db, id, updatedComment);
 
-    return db('MediaComment').where('id', id).first();
+    return model.MediaComment.getMediaCommentById(db, id);
 };
 
 export default editMediaComment;

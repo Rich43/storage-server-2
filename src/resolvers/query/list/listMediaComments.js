@@ -1,5 +1,5 @@
-const listMediaComments = async (_, { mediaId }, { db }) => {
-    return db('MediaComment').where('media_id', mediaId);
+const listMediaComments = async (_, { mediaId }, { db, model, utils, token }) => {
+    return model.MediaComment.dbListMediaComments(db, mediaId);
 };
 
 export default listMediaComments;

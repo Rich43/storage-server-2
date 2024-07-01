@@ -1,114 +1,112 @@
-import setAvatar from '../../../../src/resolvers/mutation/auth/setAvatar.js';
-import knex from 'knex';
-import { jest, describe, it, expect, afterEach } from '@jest/globals';
+import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+import setAvatar from '../../../../src/resolvers/mutation/auth/setAvatar';
+import { CustomError } from '../../../../src/resolvers/utils/CustomError';
 
-// Mock knex
-jest.mock('knex');
-const mockKnex = {
-    join: jest.fn().mockReturnThis(),
-    where: jest.fn().mockReturnThis(),
-    andWhere: jest.fn().mockReturnThis(),
-    first: jest.fn(),
-    update: jest.fn(),
-    fn: {
-        now: jest.fn().mockReturnValue('2024-01-01T00:00:00Z')
-    }
+// Mock dependencies
+const mockValidateToken = jest.fn();
+const mockGetFirstMediaItemWithImageMimetypeById = jest.fn();
+const mockUpdateUserAvatar = jest.fn();
+const mockGetUserById = jest.fn();
+
+const db = {}; // Mock database object
+const model = {
+    Session: {
+        validateToken: mockValidateToken,
+    },
+    Media: {
+        getFirstMediaItemWithImageMimetypeById: mockGetFirstMediaItemWithImageMimetypeById,
+    },
+    User: {
+        updateUserAvatar: mockUpdateUserAvatar,
+        getUserById: mockGetUserById,
+    },
 };
-
-knex.mockReturnValue(mockKnex);
+const utils = {}; // Mock utilities object if needed
+const token = 'mock-token'; // Mock token object
 
 describe('setAvatar', () => {
-    afterEach(() => {
+    beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    it('should successfully update the user\'s avatar', async () => {
-        const user = {
-            id: 1,
-            username: 'testuser',
-            avatar: null
-        };
+    it('should set user avatar successfully with valid token and mediaId', async () => {
+        const mediaId = 'valid-media-id';
+        const session = { userId: 1 };
+        const media = { id: mediaId, mimeType: 'image/png' };
+        const updatedUser = { id: 1, username: 'validUser', avatar: mediaId };
 
-        const media = {
-            id: 1,
-            mimetype_id: 1,
-            category: 'IMAGE'
-        };
+        mockValidateToken.mockResolvedValue(session);
+        mockGetFirstMediaItemWithImageMimetypeById.mockResolvedValue(media);
+        mockUpdateUserAvatar.mockResolvedValue(true);
+        mockGetUserById.mockResolvedValue(updatedUser);
 
-        const updatedUser = {
-            id: 1,
-            username: 'testuser',
-            avatar: 1,
-            updated: '2024-01-01T00:00:00Z'
-        };
+        const result = await setAvatar(null, { mediaId }, { db, model, utils, token });
 
-        mockKnex.first.mockResolvedValueOnce(media).mockResolvedValueOnce(updatedUser);
-
-        const result = await setAvatar(null, { mediaId: 1 }, { knex: mockKnex, user });
-
-        expect(mockKnex.join).toHaveBeenCalledWith('Mimetype', 'Media.mimetype_id', 'Mimetype.id');
-        expect(mockKnex.where).toHaveBeenCalledWith('Media.id', 1);
-        expect(mockKnex.andWhere).toHaveBeenCalledWith('Mimetype.category', 'IMAGE');
-        expect(mockKnex.update).toHaveBeenCalledWith({
-            avatar: 1,
-            updated: '2024-01-01T00:00:00Z'
-        });
+        expect(mockValidateToken).toHaveBeenCalledWith(db, token);
+        expect(mockGetFirstMediaItemWithImageMimetypeById).toHaveBeenCalledWith(db, mediaId);
+        expect(mockUpdateUserAvatar).toHaveBeenCalledWith(db, session.userId, mediaId);
+        expect(mockGetUserById).toHaveBeenCalledWith(db, session.userId);
         expect(result).toEqual(updatedUser);
     });
 
-    it('should throw an error if the user is not authenticated', async () => {
-        await expect(setAvatar(null, { mediaId: 1 }, { knex: mockKnex, user: null }))
-            .rejects
-            .toThrow('Not authenticated');
+    it('should throw an error if not authenticated', async () => {
+        mockValidateToken.mockResolvedValue(null);
 
-        expect(mockKnex.join).not.toHaveBeenCalled();
-        expect(mockKnex.where).not.toHaveBeenCalled();
-        expect(mockKnex.andWhere).not.toHaveBeenCalled();
-        expect(mockKnex.update).not.toHaveBeenCalled();
+        try {
+            await setAvatar(null, { mediaId: 'valid-media-id' }, { db, model, utils, token });
+        } catch (error) {
+            expect(error).toBeInstanceOf(CustomError);
+            expect(error.message).toBe('Failed to set avatar');
+            expect(error.originalError.message).toBe('Not authenticated');
+        }
+
+        expect(mockValidateToken).toHaveBeenCalledWith(db, token);
+        expect(mockGetFirstMediaItemWithImageMimetypeById).not.toHaveBeenCalled();
+        expect(mockUpdateUserAvatar).not.toHaveBeenCalled();
+        expect(mockGetUserById).not.toHaveBeenCalled();
     });
 
-    it('should throw an error if the media is not of image mime type category', async () => {
-        const user = {
-            id: 1,
-            username: 'testuser',
-            avatar: null
-        };
+    it('should throw an error if media does not have image mime type', async () => {
+        const mediaId = 'invalid-media-id';
+        const session = { userId: 1 };
 
-        mockKnex.first.mockResolvedValueOnce(null);
+        mockValidateToken.mockResolvedValue(session);
+        mockGetFirstMediaItemWithImageMimetypeById.mockResolvedValue(null);
 
-        await expect(setAvatar(null, { mediaId: 1 }, { knex: mockKnex, user }))
-            .rejects
-            .toThrow('Media must have image mime type category');
+        try {
+            await setAvatar(null, { mediaId }, { db, model, utils, token });
+        } catch (error) {
+            expect(error).toBeInstanceOf(CustomError);
+            expect(error.message).toBe('Failed to set avatar');
+            expect(error.originalError.message).toBe('Media must have image mime type category');
+        }
 
-        expect(mockKnex.join).toHaveBeenCalledWith('Mimetype', 'Media.mimetype_id', 'Mimetype.id');
-        expect(mockKnex.where).toHaveBeenCalledWith('Media.id', 1);
-        expect(mockKnex.andWhere).toHaveBeenCalledWith('Mimetype.category', 'IMAGE');
-        expect(mockKnex.update).not.toHaveBeenCalled();
+        expect(mockValidateToken).toHaveBeenCalledWith(db, token);
+        expect(mockGetFirstMediaItemWithImageMimetypeById).toHaveBeenCalledWith(db, mediaId);
+        expect(mockUpdateUserAvatar).not.toHaveBeenCalled();
+        expect(mockGetUserById).not.toHaveBeenCalled();
     });
 
-    it('should throw an error if the avatar update fails', async () => {
-        const user = {
-            id: 1,
-            username: 'testuser',
-            avatar: null
-        };
+    it('should handle errors during user avatar update', async () => {
+        const mediaId = 'valid-media-id';
+        const session = { userId: 1 };
+        const media = { id: mediaId, mimeType: 'image/png' };
 
-        const media = {
-            id: 1,
-            mimetype_id: 1,
-            category: 'IMAGE'
-        };
+        mockValidateToken.mockResolvedValue(session);
+        mockGetFirstMediaItemWithImageMimetypeById.mockResolvedValue(media);
+        mockUpdateUserAvatar.mockRejectedValue(new Error('Database error'));
 
-        mockKnex.first.mockResolvedValueOnce(media);
-        mockKnex.update.mockRejectedValueOnce(new Error('Database error'));
+        try {
+            await setAvatar(null, { mediaId }, { db, model, utils, token });
+        } catch (error) {
+            expect(error).toBeInstanceOf(CustomError);
+            expect(error.message).toBe('Failed to set avatar');
+            expect(error.originalError.message).toBe('Database error');
+        }
 
-        await expect(setAvatar(null, { mediaId: 1 }, { knex: mockKnex, user }))
-            .rejects
-            .toThrow('Failed to set avatar');
-
-        expect(mockKnex.join).toHaveBeenCalledWith('Mimetype', 'Media.mimetype_id', 'Mimetype.id');
-        expect(mockKnex.where).toHaveBeenCalledWith('Media.id', 1);
-        expect(mockKnex.andWhere).toHaveBeenCalledWith('Mimetype.category', 'IMAGE');
-        expect(mockKnex.update).toHaveBeenCalled();
+        expect(mockValidateToken).toHaveBeenCalledWith(db, token);
+        expect(mockGetFirstMediaItemWithImageMimetypeById).toHaveBeenCalledWith(db, mediaId);
+        expect(mockUpdateUserAvatar).toHaveBeenCalledWith(db, session.userId, mediaId);
+        expect(mockGetUserById).not.toHaveBeenCalled();
     });
 });

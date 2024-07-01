@@ -4,7 +4,7 @@ import listPictures from './query/list/listPictures.js';
 import listVideos from './query/list/listVideos.js';
 import listDocuments from './query/list/listDocuments.js';
 import listOtherFiles from './query/list/listOtherFiles.js';
-import getMediaById from './query/list/getMediaById.js';
+import getMediaById from './query/getMediaById.js';
 import loginUser from './mutation/auth/loginUser.js';
 import logoutUser from './mutation/auth/logoutUser.js';
 import refreshSession from './mutation/auth/refreshSession.js';
@@ -30,7 +30,7 @@ const resolvers = {
         listOtherFiles,
         getMediaById,
         listRelatedMedia,
-        listMediaComments,  // Add the new listMediaComments query
+        listMediaComments,
     },
     Mutation: {
         createMedia,
@@ -42,9 +42,9 @@ const resolvers = {
         registerUser,
         activateUser,
         setAvatar,
-        createMediaComment,  // Add the new createMediaComment mutation
-        editMediaComment,  // Add the new editMediaComment mutation
-        deleteMediaComment,  // Add the new deleteMediaComment mutation
+        createMediaComment,
+        editMediaComment,
+        deleteMediaComment,
     }
 };
 

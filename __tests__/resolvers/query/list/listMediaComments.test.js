@@ -1,58 +1,54 @@
-import listMediaComments from '../../../../src/resolvers/query/list/listMediaComments.js';
-import knex from 'knex';
-import { jest, describe, it, expect, afterEach } from '@jest/globals';
+import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+import listMediaComments from '../../../../src/resolvers/query/list/listMediaComments';
 
-// Mock knex
-jest.mock('knex');
+// Mock dependencies
+const mockDbListMediaComments = jest.fn();
 
-// Mock knex instance
-const mockDb = {
-    where: jest.fn().mockReturnThis(),
-    select: jest.fn().mockReturnThis(),
-    first: jest.fn()
+const db = {}; // Mock database object
+const model = {
+    MediaComment: {
+        dbListMediaComments: mockDbListMediaComments,
+    }
 };
+const utils = {}; // Mock utilities object if needed
+const token = 'mock-token'; // Mock token object
 
 describe('listMediaComments', () => {
-    afterEach(() => {
+    beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    it('should successfully list comments for a given media ID', async () => {
+    it('should list comments for a media item', async () => {
         const mediaId = 1;
-        const comments = [
-            { id: 1, media_id: 1, comment: 'First comment', user_id: 1 },
-            { id: 2, media_id: 1, comment: 'Second comment', user_id: 2 }
-        ];
+        const comments = [{ id: 1, mediaId, comment: 'Great media!' }];
 
-        mockDb.where.mockResolvedValueOnce(comments);
+        mockDbListMediaComments.mockResolvedValue(comments);
 
-        const result = await listMediaComments(null, { mediaId }, { db: mockDb });
+        const result = await listMediaComments(null, { mediaId }, { db, model, utils, token });
 
-        expect(mockDb.where).toHaveBeenCalledWith('media_id', mediaId);
+        expect(mockDbListMediaComments).toHaveBeenCalledWith(db, mediaId);
         expect(result).toEqual(comments);
     });
 
-    it('should return an empty array if no comments exist for the given media ID', async () => {
+    it('should handle no comments found for a media item', async () => {
         const mediaId = 1;
         const comments = [];
 
-        mockDb.where.mockResolvedValueOnce(comments);
+        mockDbListMediaComments.mockResolvedValue(comments);
 
-        const result = await listMediaComments(null, { mediaId }, { db: mockDb });
+        const result = await listMediaComments(null, { mediaId }, { db, model, utils, token });
 
-        expect(mockDb.where).toHaveBeenCalledWith('media_id', mediaId);
+        expect(mockDbListMediaComments).toHaveBeenCalledWith(db, mediaId);
         expect(result).toEqual(comments);
     });
 
-    it('should handle errors during comment retrieval', async () => {
+    it('should handle database errors gracefully', async () => {
         const mediaId = 1;
+        const errorMessage = 'Database error';
 
-        mockDb.where.mockRejectedValueOnce(new Error('Database error'));
+        mockDbListMediaComments.mockRejectedValue(new Error(errorMessage));
 
-        await expect(listMediaComments(null, { mediaId }, { db: mockDb }))
-            .rejects
-            .toThrow('Database error');
-
-        expect(mockDb.where).toHaveBeenCalledWith('media_id', mediaId);
+        await expect(listMediaComments(null, { mediaId }, { db, model, utils, token })).rejects.toThrow(errorMessage);
+        expect(mockDbListMediaComments).toHaveBeenCalledWith(db, mediaId);
     });
 });

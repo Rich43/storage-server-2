@@ -1,12 +1,14 @@
 // noinspection UnnecessaryLocalVariableJS,ExceptionCaughtLocallyJS
 
+import { CustomError } from '../../utils/CustomError';
+
 const listRelatedMedia = async (parent, { id }, { db, model, utils, token }) => {
     try {
         // Get the media item by ID
         const media = await model.Media.getMediaById(db, id);
 
         if (!media) {
-            throw new Error('Media not found');
+            throw new CustomError('Media not found', null);
         }
 
         const keywords = utils.getMediaKeywords(media);
@@ -17,7 +19,7 @@ const listRelatedMedia = async (parent, { id }, { db, model, utils, token }) => 
         return relatedMedia;
     } catch (error) {
         console.error(error);
-        throw new Error('Failed to list related media');
+        throw new CustomError('Failed to list related media', error);
     }
 };
 

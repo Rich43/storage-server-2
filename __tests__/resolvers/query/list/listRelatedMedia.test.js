@@ -1,95 +1,71 @@
-import listRelatedMedia from '../../../../src/resolvers/query/list/listRelatedMedia.js';
-import knex from 'knex';
-import { jest, describe, it, expect, afterEach } from '@jest/globals';
-import natural from 'natural';
-import { removeStopwords } from 'stopword';
+import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+import listRelatedMedia from '../../../../src/resolvers/query/list/listRelatedMedia';
+import { CustomError } from '../../../../src/resolvers/utils/CustomError';
+import {
+    db,
+    model,
+    utils,
+    token,
+    setupMocks,
+} from './commonMocks'; // Adjust the path as necessary
 
-// Mock dependencies
-jest.mock('knex');
-jest.mock('natural');
-jest.mock('stopword');
+const mockGetMediaById = jest.fn();
+const mockGetMediaKeywords = jest.fn();
+const mockAddRelatedKeywords = jest.fn();
 
-// Mock knex
-const mockDb = {
-    where: jest.fn().mockReturnThis(),
-    orWhere: jest.fn().mockReturnThis(),
-    first: jest.fn()
+model.Media.getMediaById = mockGetMediaById;
+utils.getMediaKeywords = mockGetMediaKeywords;
+model.Media.addRelatedKeywords = mockAddRelatedKeywords;
+
+const setupRelatedMediaMocks = (media, keywords, relatedMedia) => {
+    mockGetMediaById.mockResolvedValue(media);
+    mockGetMediaKeywords.mockReturnValue(keywords);
+    mockAddRelatedKeywords.mockResolvedValue(relatedMedia);
 };
-
-// Mock functions
-const tokenizerMock = {
-    tokenize: jest.fn()
-};
-natural.WordTokenizer.mockImplementation(() => tokenizerMock);
-removeStopwords.mockImplementation(tokens => tokens);
 
 describe('listRelatedMedia', () => {
-    afterEach(() => {
+    beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    it('should successfully retrieve related media', async () => {
+    it('should list related media successfully', async () => {
         const id = 1;
-        const media = {
-            id: 1,
-            title: 'Test Media',
-            description: 'This is a test media description.'
-        };
+        const media = { id: 1, name: 'Media 1' };
+        const keywords = ['keyword1', 'keyword2'];
+        const relatedMedia = [{ id: 2, name: 'Related Media 1' }];
 
-        const keywords = ['test', 'media', 'description'];
+        setupRelatedMediaMocks(media, keywords, relatedMedia);
 
-        const relatedMedia = [
-            { id: 2, title: 'Related Media 1', description: 'Description of related media 1' },
-            { id: 3, title: 'Related Media 2', description: 'Description of related media 2' }
-        ];
+        const result = await listRelatedMedia(null, { id }, { db, model, utils, token });
 
-        mockDb.first.mockResolvedValueOnce(media);
-        tokenizerMock.tokenize.mockReturnValueOnce(['test', 'media', 'description']);
-        mockDb.where.mockResolvedValueOnce(relatedMedia);
-
-        const result = await listRelatedMedia(null, { id }, { knex: mockDb });
-
-        expect(mockDb.where).toHaveBeenCalledWith('id', id);
-        expect(mockDb.first).toHaveBeenCalled();
-        expect(tokenizerMock.tokenize).toHaveBeenCalledWith('test media this is a test media description.');
-        expect(removeStopwords).toHaveBeenCalledWith(['test', 'media', 'description']);
-        expect(mockDb.where).toHaveBeenCalledWith('id', '!=', id);
-        keywords.forEach(keyword => {
-            expect(mockDb.orWhere).toHaveBeenCalledWith('title', 'like', `%${keyword}%`);
-            expect(mockDb.orWhere).toHaveBeenCalledWith('description', 'like', `%${keyword}%`);
-        });
+        expect(mockGetMediaById).toHaveBeenCalledWith(db, id);
+        expect(mockGetMediaKeywords).toHaveBeenCalledWith(media);
+        expect(mockAddRelatedKeywords).toHaveBeenCalledWith(db, id, keywords);
         expect(result).toEqual(relatedMedia);
     });
 
-    it('should throw an error if the media is not found', async () => {
+    it('should throw a CustomError if media not found', async () => {
         const id = 1;
 
-        mockDb.first.mockResolvedValueOnce(null);
+        mockGetMediaById.mockResolvedValue(null);
 
-        await expect(listRelatedMedia(null, { id }, { knex: mockDb }))
-            .rejects
-            .toThrow('Media not found');
+        await expect(listRelatedMedia(null, { id }, { db, model, utils, token })).rejects.toThrow(CustomError);
 
-        expect(mockDb.where).toHaveBeenCalledWith('id', id);
-        expect(mockDb.first).toHaveBeenCalled();
-        expect(tokenizerMock.tokenize).not.toHaveBeenCalled();
-        expect(removeStopwords).not.toHaveBeenCalled();
-        expect(mockDb.orWhere).not.toHaveBeenCalled();
+        expect(mockGetMediaById).toHaveBeenCalledWith(db, id);
+        expect(mockGetMediaKeywords).not.toHaveBeenCalled();
+        expect(mockAddRelatedKeywords).not.toHaveBeenCalled();
     });
 
-    it('should handle errors during related media retrieval', async () => {
+    it('should handle errors gracefully with CustomError', async () => {
         const id = 1;
+        const errorMessage = 'Database error';
 
-        mockDb.first.mockRejectedValueOnce(new Error('Database error'));
+        mockGetMediaById.mockRejectedValue(new Error(errorMessage));
 
-        await expect(listRelatedMedia(null, { id }, { knex: mockDb }))
-            .rejects
-            .toThrow('Failed to list related media');
+        await expect(listRelatedMedia(null, { id }, { db, model, utils, token })).rejects.toThrow(CustomError);
 
-        expect(mockDb.where).toHaveBeenCalledWith('id', id);
-        expect(mockDb.first).toHaveBeenCalled();
-        expect(tokenizerMock.tokenize).not.toHaveBeenCalled();
-        expect(removeStopwords).not.toHaveBeenCalled();
-        expect(mockDb.orWhere).not.toHaveBeenCalled();
+        expect(mockGetMediaById).toHaveBeenCalledWith(db, id);
+        expect(mockGetMediaKeywords).not.toHaveBeenCalled();
+        expect(mockAddRelatedKeywords).not.toHaveBeenCalled();
     });
 });

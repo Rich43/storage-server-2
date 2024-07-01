@@ -1,5 +1,3 @@
-// noinspection JSCheckFunctionSignatures
-
 import { jest } from "@jest/globals";
 
 const mockValidateToken = jest.fn();
@@ -8,6 +6,9 @@ const mockGetMediaQuery = jest.fn();
 const mockPerformFilter = jest.fn();
 const mockPerformPagination = jest.fn();
 const mockPerformSorting = jest.fn();
+const mockGetMediaById = jest.fn();
+const mockGetMediaKeywords = jest.fn();
+const mockAddRelatedKeywords = jest.fn();
 
 const db = {}; // Mock database object
 const model = {
@@ -19,12 +20,15 @@ const model = {
     },
     Media: {
         getMediaQuery: mockGetMediaQuery,
+        getMediaById: mockGetMediaById,
+        addRelatedKeywords: mockAddRelatedKeywords,
     }
 };
 const utils = {
     performFilter: mockPerformFilter,
     performPagination: mockPerformPagination,
     performSorting: mockPerformSorting,
+    getMediaKeywords: mockGetMediaKeywords,
 };
 const token = 'mock-token'; // Mock token object
 
@@ -49,4 +53,7 @@ export {
     mockPerformFilter,
     mockPerformPagination,
     mockPerformSorting,
+    mockGetMediaById,
+    mockGetMediaKeywords,
+    mockAddRelatedKeywords,
 };

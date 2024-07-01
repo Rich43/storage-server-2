@@ -4,7 +4,7 @@ import listPictures from './query/list/listPictures.js';
 import listVideos from './query/list/listVideos.js';
 import listDocuments from './query/list/listDocuments.js';
 import listOtherFiles from './query/list/listOtherFiles.js';
-import getMediaById from './query/list/getMediaById.js';
+import getMediaById from './query/getMediaById.js';
 import loginUser from './mutation/auth/loginUser.js';
 import logoutUser from './mutation/auth/logoutUser.js';
 import refreshSession from './mutation/auth/refreshSession.js';

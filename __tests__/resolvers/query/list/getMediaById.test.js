@@ -1,126 +1,93 @@
-import getMediaById from '../../../../src/resolvers/query/list/getMediaById.js';
-import { getUserFromToken, validateToken } from '../../../../src/resolvers/utils/utils.js';
-import knex from 'knex';
-import { jest, describe, it, expect, afterEach } from '@jest/globals';
+import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+import getMediaById from '../../../../src/resolvers/query/getMediaById';
 
 // Mock dependencies
-jest.mock('../../../../src/resolvers/utils/utils.js');
-jest.mock('knex');
+const mockValidateToken = jest.fn();
+const mockGetUserFromToken = jest.fn();
+const mockGetMediaByIdJoiningOntoMimeType = jest.fn();
 
-// Mock knex
-const mockDb = {
-    join: jest.fn().mockReturnThis(),
-    select: jest.fn().mockReturnThis(),
-    where: jest.fn().mockReturnThis(),
-    first: jest.fn()
+const db = {}; // Mock database object
+const model = {
+    Session: {
+        validateToken: mockValidateToken,
+    },
+    User: {
+        getUserFromToken: mockGetUserFromToken,
+    },
+    Media: {
+        getMediaByIdJoiningOntoMimeType: mockGetMediaByIdJoiningOntoMimeType,
+    }
+};
+const utils = {}; // Mock utilities object if needed
+const token = 'mock-token'; // Mock token object
+
+const setupMocks = (user, media) => {
+    mockValidateToken.mockResolvedValue(true);
+    mockGetUserFromToken.mockResolvedValue(user);
+    mockGetMediaByIdJoiningOntoMimeType.mockResolvedValue(media);
 };
 
-// Mock functions
-validateToken.mockImplementation(async (db, token) => true);
-getUserFromToken.mockImplementation(async (db, token) => ({
-    id: 1,
-    admin: false
-}));
+const assertCommonMocks = async (result, media, error = null) => {
+    if (error) {
+        await expect(result).rejects.toThrow(error);
+    } else {
+        await expect(result).resolves.toEqual(media);
+    }
+
+    expect(mockValidateToken).toHaveBeenCalledWith(db, token);
+    expect(mockGetUserFromToken).toHaveBeenCalledWith(db, token);
+    expect(mockGetMediaByIdJoiningOntoMimeType).toHaveBeenCalledWith(db, media.id);
+};
 
 describe('getMediaById', () => {
-    afterEach(() => {
+    beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    it('should successfully retrieve media by ID', async () => {
-        const media = {
-            id: 1,
-            title: 'Test Media',
-            description: 'Test description',
-            url: 'http://example.com/media',
-            mimetypeId: 1,
-            mimetype: 'image/png',
-            adminOnly: false
-        };
+    it('should return media for authorized user', async () => {
+        const id = 1;
+        const user = { id: 1, admin: false };
+        const media = { id: 1, adminOnly: false, title: 'Test Media' };
 
-        getUserFromToken.mockResolvedValueOnce({ id: 1, admin: false });
-        mockDb.first.mockResolvedValueOnce(media);
+        setupMocks(user, media);
 
-        const result = await getMediaById(null, { id: 1 }, { db: mockDb, token: 'mock-token' });
+        const result = getMediaById(null, { id }, { db, model, utils, token });
 
-        expect(validateToken).toHaveBeenCalledWith(mockDb, 'mock-token');
-        expect(getUserFromToken).toHaveBeenCalledWith(mockDb, 'mock-token');
-        expect(mockDb.join).toHaveBeenCalledWith('Mimetype', 'Media.mimetypeId', '=', 'Mimetype.id');
-        expect(mockDb.select).toHaveBeenCalledWith('Media.*', 'Mimetype.type as mimetype');
-        expect(mockDb.where).toHaveBeenCalledWith('Media.id', 1);
-        expect(mockDb.first).toHaveBeenCalled();
-        expect(result).toEqual(media);
+        await assertCommonMocks(result, media);
     });
 
-    it('should throw an error if the token is invalid', async () => {
-        validateToken.mockRejectedValueOnce(new Error('Invalid token'));
+    it('should throw an error if media not found', async () => {
+        const id = 1;
+        const user = { id: 1, admin: false };
 
-        await expect(getMediaById(null, { id: 1 }, { db: mockDb, token: 'invalid-token' }))
-            .rejects
-            .toThrow('Invalid token');
+        setupMocks(user, null);
 
-        expect(validateToken).toHaveBeenCalledWith(mockDb, 'invalid-token');
-        expect(getUserFromToken).not.toHaveBeenCalled();
-        expect(mockDb.join).not.toHaveBeenCalled();
-        expect(mockDb.select).not.toHaveBeenCalled();
-        expect(mockDb.where).not.toHaveBeenCalled();
-        expect(mockDb.first).not.toHaveBeenCalled();
+        const result = getMediaById(null, { id }, { db, model, utils, token });
+
+        await assertCommonMocks(result, { id }, 'Media not found');
     });
 
-    it('should throw an error if the media is not found', async () => {
-        mockDb.first.mockResolvedValueOnce(null);
+    it('should throw an error if user does not have permission to view adminOnly media', async () => {
+        const id = 1;
+        const user = { id: 1, admin: false };
+        const media = { id: 1, adminOnly: true, title: 'Admin Media' };
 
-        await expect(getMediaById(null, { id: 1 }, { db: mockDb, token: 'mock-token' }))
-            .rejects
-            .toThrow('Media not found');
+        setupMocks(user, media);
 
-        expect(validateToken).toHaveBeenCalledWith(mockDb, 'mock-token');
-        expect(getUserFromToken).toHaveBeenCalledWith(mockDb, 'mock-token');
-        expect(mockDb.join).toHaveBeenCalledWith('Mimetype', 'Media.mimetypeId', '=', 'Mimetype.id');
-        expect(mockDb.select).toHaveBeenCalledWith('Media.*', 'Mimetype.type as mimetype');
-        expect(mockDb.where).toHaveBeenCalledWith('Media.id', 1);
-        expect(mockDb.first).toHaveBeenCalled();
+        const result = getMediaById(null, { id }, { db, model, utils, token });
+
+        await assertCommonMocks(result, media, 'You do not have permission to view this media');
     });
 
-    it('should throw an error if the user does not have permission to view the media', async () => {
-        const media = {
-            id: 1,
-            title: 'Test Media',
-            description: 'Test description',
-            url: 'http://example.com/media',
-            mimetypeId: 1,
-            mimetype: 'image/png',
-            adminOnly: true
-        };
+    it('should return adminOnly media for admin user', async () => {
+        const id = 1;
+        const user = { id: 1, admin: true };
+        const media = { id: 1, adminOnly: true, title: 'Admin Media' };
 
-        getUserFromToken.mockResolvedValueOnce({ id: 1, admin: false });
-        mockDb.first.mockResolvedValueOnce(media);
+        setupMocks(user, media);
 
-        await expect(getMediaById(null, { id: 1 }, { db: mockDb, token: 'mock-token' }))
-            .rejects
-            .toThrow('You do not have permission to view this media');
+        const result = getMediaById(null, { id }, { db, model, utils, token });
 
-        expect(validateToken).toHaveBeenCalledWith(mockDb, 'mock-token');
-        expect(getUserFromToken).toHaveBeenCalledWith(mockDb, 'mock-token');
-        expect(mockDb.join).toHaveBeenCalledWith('Mimetype', 'Media.mimetypeId', '=', 'Mimetype.id');
-        expect(mockDb.select).toHaveBeenCalledWith('Media.*', 'Mimetype.type as mimetype');
-        expect(mockDb.where).toHaveBeenCalledWith('Media.id', 1);
-        expect(mockDb.first).toHaveBeenCalled();
-    });
-
-    it('should throw an error if there is an unexpected error during media retrieval', async () => {
-        getUserFromToken.mockResolvedValueOnce({ id: 1, admin: false });
-        mockDb.first.mockRejectedValueOnce(new Error('Database error'));
-
-        await expect(getMediaById(null, { id: 1 }, { db: mockDb, token: 'mock-token' }))
-            .rejects
-            .toThrow('Database error');
-
-        expect(validateToken).toHaveBeenCalledWith(mockDb, 'mock-token');
-        expect(getUserFromToken).toHaveBeenCalledWith(mockDb, 'mock-token');
-        expect(mockDb.join).toHaveBeenCalledWith('Mimetype', 'Media.mimetypeId', '=', 'Mimetype.id');
-        expect(mockDb.select).toHaveBeenCalledWith('Media.*', 'Mimetype.type as mimetype');
-        expect(mockDb.where).toHaveBeenCalledWith('Media.id', 1);
-        expect(mockDb.first).toHaveBeenCalled();
+        await assertCommonMocks(result, media);
     });
 });

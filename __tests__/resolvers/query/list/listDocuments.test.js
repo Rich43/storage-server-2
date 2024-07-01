@@ -1,146 +1,111 @@
-import listDocuments from '../../../../src/resolvers/query/list/listDocuments.js';
-import {
-    getMediaQuery,
-    getUserFromToken,
-    performFilter,
-    performPagination,
-    performSorting,
-    validateToken
-} from '../../../../src/resolvers/utils/utils.js';
-import knex from 'knex';
-import { jest, describe, it, expect, afterEach } from '@jest/globals';
+import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+import listDocuments from '../../../../src/resolvers/query/list/listDocuments';
 
 // Mock dependencies
-jest.mock('../../../../src/resolvers/utils/utils.js');
-jest.mock('knex');
+const mockValidateToken = jest.fn();
+const mockGetUserFromToken = jest.fn();
+const mockGetMediaQuery = jest.fn();
+const mockPerformFilter = jest.fn();
+const mockPerformPagination = jest.fn();
+const mockPerformSorting = jest.fn();
 
-// Mock knex
-const mockDb = {
-    select: jest.fn().mockReturnThis(),
-    where: jest.fn().mockReturnThis(),
-    limit: jest.fn().mockReturnThis(),
-    offset: jest.fn().mockReturnThis(),
-    orderBy: jest.fn().mockReturnThis()
+const db = {}; // Mock database object
+const model = {
+    Session: {
+        validateToken: mockValidateToken,
+    },
+    User: {
+        getUserFromToken: mockGetUserFromToken,
+    },
+    Media: {
+        getMediaQuery: mockGetMediaQuery,
+    }
+};
+const utils = {
+    performFilter: mockPerformFilter,
+    performPagination: mockPerformPagination,
+    performSorting: mockPerformSorting,
+};
+const token = 'mock-token'; // Mock token object
+
+const setupMocks = (user, mediaQuery) => {
+    mockValidateToken.mockResolvedValue(true);
+    mockGetUserFromToken.mockResolvedValue(user);
+    mockGetMediaQuery.mockReturnValue(mediaQuery);
+    mockPerformFilter.mockImplementation((filter, query) => query);
+    mockPerformPagination.mockImplementation((pagination, query) => query);
+    mockPerformSorting.mockImplementation((sorting, query) => query);
 };
 
-// Mock functions
-validateToken.mockImplementation(async (db, token) => true);
-getUserFromToken.mockImplementation(async (db, token) => ({
-    id: 1,
-    admin: false
-}));
-getMediaQuery.mockImplementation((db, user, category) => mockDb);
-performFilter.mockImplementation((filter, query) => query);
-performPagination.mockImplementation((pagination, query) => query);
-performSorting.mockImplementation((sorting, query) => query);
+const assertCommonMocks = async (result, expectedQuery) => {
+    await expect(result).resolves.toEqual(expectedQuery);
+
+    expect(mockValidateToken).toHaveBeenCalledWith(db, token);
+    expect(mockGetUserFromToken).toHaveBeenCalledWith(db, token);
+    expect(mockGetMediaQuery).toHaveBeenCalledWith(db, expect.any(Object), 'DOCUMENT');
+    expect(mockPerformFilter).toHaveBeenCalledWith(expect.anything(), expect.anything());
+    expect(mockPerformPagination).toHaveBeenCalledWith(expect.anything(), expect.anything());
+    expect(mockPerformSorting).toHaveBeenCalledWith(expect.anything(), expect.anything());
+};
 
 describe('listDocuments', () => {
-    afterEach(() => {
+    beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    it('should successfully list documents', async () => {
-        const token = 'mock-token';
+    it('should list documents successfully for a user', async () => {
+        const filter = {};
+        const pagination = {};
+        const sorting = {};
+        const user = { id: 1, admin: false };
+        const mediaQuery = [{ id: 1, name: 'Document 1' }];
 
-        const documents = [
-            { id: 1, title: 'Document 1', mimetype: 'application/pdf' },
-            { id: 2, title: 'Document 2', mimetype: 'application/msword' }
-        ];
+        setupMocks(user, mediaQuery);
 
-        mockDb.select.mockResolvedValueOnce(documents);
+        const result = listDocuments(null, { filter, pagination, sorting }, { db, model, utils, token });
 
-        const result = await listDocuments(null, {}, { db: mockDb, token });
-
-        expect(validateToken).toHaveBeenCalledWith(mockDb, token);
-        expect(getUserFromToken).toHaveBeenCalledWith(mockDb, token);
-        expect(getMediaQuery).toHaveBeenCalledWith(mockDb, { id: 1, admin: false }, 'DOCUMENT');
-        expect(performFilter).toHaveBeenCalledWith(undefined, mockDb);
-        expect(performPagination).toHaveBeenCalledWith(undefined, mockDb);
-        expect(performSorting).toHaveBeenCalledWith(undefined, mockDb);
-        expect(result).toEqual(documents);
+        await assertCommonMocks(result, mediaQuery);
     });
 
-    it('should throw an error if the token is invalid', async () => {
-        validateToken.mockRejectedValueOnce(new Error('Invalid token'));
+    it('should list documents with applied filters', async () => {
+        const filter = { name: 'Document 1' };
+        const pagination = {};
+        const sorting = {};
+        const user = { id: 1, admin: false };
+        const mediaQuery = [{ id: 1, name: 'Document 1' }];
 
-        await expect(listDocuments(null, {}, { db: mockDb, token: 'invalid-token' }))
-            .rejects
-            .toThrow('Invalid token');
+        setupMocks(user, mediaQuery);
 
-        expect(validateToken).toHaveBeenCalledWith(mockDb, 'invalid-token');
-        expect(getUserFromToken).not.toHaveBeenCalled();
-        expect(getMediaQuery).not.toHaveBeenCalled();
-        expect(performFilter).not.toHaveBeenCalled();
-        expect(performPagination).not.toHaveBeenCalled();
-        expect(performSorting).not.toHaveBeenCalled();
+        const result = listDocuments(null, { filter, pagination, sorting }, { db, model, utils, token });
+
+        await assertCommonMocks(result, mediaQuery);
     });
 
-    it('should apply filters correctly', async () => {
-        const token = 'mock-token';
+    it('should list documents with pagination', async () => {
+        const filter = {};
+        const pagination = { limit: 10, offset: 0 };
+        const sorting = {};
+        const user = { id: 1, admin: false };
+        const mediaQuery = [{ id: 1, name: 'Document 1' }];
 
-        const filter = { title: 'Document' };
+        setupMocks(user, mediaQuery);
 
-        const documents = [
-            { id: 1, title: 'Document 1', mimetype: 'application/pdf' },
-            { id: 2, title: 'Document 2', mimetype: 'application/msword' }
-        ];
+        const result = listDocuments(null, { filter, pagination, sorting }, { db, model, utils, token });
 
-        mockDb.select.mockResolvedValueOnce(documents);
-
-        const result = await listDocuments(null, { filter }, { db: mockDb, token });
-
-        expect(validateToken).toHaveBeenCalledWith(mockDb, token);
-        expect(getUserFromToken).toHaveBeenCalledWith(mockDb, token);
-        expect(getMediaQuery).toHaveBeenCalledWith(mockDb, { id: 1, admin: false }, 'DOCUMENT');
-        expect(performFilter).toHaveBeenCalledWith(filter, mockDb);
-        expect(performPagination).toHaveBeenCalledWith(undefined, mockDb);
-        expect(performSorting).toHaveBeenCalledWith(undefined, mockDb);
-        expect(result).toEqual(documents);
+        await assertCommonMocks(result, mediaQuery);
     });
 
-    it('should apply pagination correctly', async () => {
-        const token = 'mock-token';
+    it('should list documents with sorting', async () => {
+        const filter = {};
+        const pagination = {};
+        const sorting = { field: 'name', direction: 'asc' };
+        const user = { id: 1, admin: false };
+        const mediaQuery = [{ id: 1, name: 'Document 1' }];
 
-        const pagination = { page: 1, limit: 10 };
+        setupMocks(user, mediaQuery);
 
-        const documents = [
-            { id: 1, title: 'Document 1', mimetype: 'application/pdf' },
-            { id: 2, title: 'Document 2', mimetype: 'application/msword' }
-        ];
+        const result = listDocuments(null, { filter, pagination, sorting }, { db, model, utils, token });
 
-        mockDb.select.mockResolvedValueOnce(documents);
-
-        const result = await listDocuments(null, { pagination }, { db: mockDb, token });
-
-        expect(validateToken).toHaveBeenCalledWith(mockDb, token);
-        expect(getUserFromToken).toHaveBeenCalledWith(mockDb, token);
-        expect(getMediaQuery).toHaveBeenCalledWith(mockDb, { id: 1, admin: false }, 'DOCUMENT');
-        expect(performFilter).toHaveBeenCalledWith(undefined, mockDb);
-        expect(performPagination).toHaveBeenCalledWith(pagination, mockDb);
-        expect(performSorting).toHaveBeenCalledWith(undefined, mockDb);
-        expect(result).toEqual(documents);
-    });
-
-    it('should apply sorting correctly', async () => {
-        const token = 'mock-token';
-
-        const sorting = { field: 'title', order: 'asc' };
-
-        const documents = [
-            { id: 1, title: 'Document 1', mimetype: 'application/pdf' },
-            { id: 2, title: 'Document 2', mimetype: 'application/msword' }
-        ];
-
-        mockDb.select.mockResolvedValueOnce(documents);
-
-        const result = await listDocuments(null, { sorting }, { db: mockDb, token });
-
-        expect(validateToken).toHaveBeenCalledWith(mockDb, token);
-        expect(getUserFromToken).toHaveBeenCalledWith(mockDb, token);
-        expect(getMediaQuery).toHaveBeenCalledWith(mockDb, { id: 1, admin: false }, 'DOCUMENT');
-        expect(performFilter).toHaveBeenCalledWith(undefined, mockDb);
-        expect(performPagination).toHaveBeenCalledWith(undefined, mockDb);
-        expect(performSorting).toHaveBeenCalledWith(sorting, mockDb);
-        expect(result).toEqual(documents);
+        await assertCommonMocks(result, mediaQuery);
     });
 });

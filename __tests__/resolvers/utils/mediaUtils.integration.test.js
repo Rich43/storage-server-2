@@ -96,6 +96,18 @@ describe('mediaUtils.js integration tests', () => {
             expect(mockQuery.where).not.toHaveBeenCalled();
             expect(result).toBe(mockQuery);
         });
+
+        it('should handle undefined filter', () => {
+            const filter = undefined;
+            const mockQuery = {
+                where: jest.fn().mockReturnThis()
+            };
+
+            const result = performFilter(filter, mockQuery);
+
+            expect(mockQuery.where).not.toHaveBeenCalled();
+            expect(result).toBe(mockQuery);
+        });
     });
 
     describe('performPagination', () => {

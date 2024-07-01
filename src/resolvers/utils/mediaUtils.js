@@ -4,7 +4,8 @@ import natural from "natural";
 import { removeStopwords } from "stopword";
 
 export function getMediaKeywords(media) {
-    const text = `${media.title} ${media.description}`;
+    const text = `${media.title || ''} ${media.description || ''}`.trim();
+    if (!text) return [];
     const tokenizer = new natural.WordTokenizer();
     const tokens = tokenizer.tokenize(text.toLowerCase());
     const keywords = removeStopwords(tokens);
@@ -27,17 +28,21 @@ export function performFilter(filter, mediaQuery) {
 }
 
 export function performPagination(pagination, mediaQuery) {
-    if (pagination) {
-        const {page, limit} = pagination;
-        mediaQuery = mediaQuery.limit(limit).offset((page - 1) * limit);
+    if (pagination && Object.keys(pagination).length > 0) {
+        const { page, limit } = pagination;
+        if (page !== undefined && limit !== undefined) {
+            mediaQuery = mediaQuery.limit(limit).offset((page - 1) * limit);
+        }
     }
     return mediaQuery;
 }
 
 export function performSorting(sorting, mediaQuery) {
-    if (sorting) {
-        const {field, order} = sorting;
-        mediaQuery = mediaQuery.orderBy(field, order);
+    if (sorting && Object.keys(sorting).length > 0) {
+        const { field, order } = sorting;
+        if (field && order) {
+            mediaQuery = mediaQuery.orderBy(field, order);
+        }
     }
     return mediaQuery;
 }

@@ -4,7 +4,7 @@ import { CustomError } from '../utils/CustomError';
 
 const deleteMedia = async (_, { id }, { db, model, utils, token }) => {
     try {
-        const session = await model.Session.validateToken(db, token);
+        const session = await model.Session.validateToken(db, utils, token);
         const user = await model.User.getUserFromToken(db, token);
 
         const media = await model.Media.getMediaById(db, id);

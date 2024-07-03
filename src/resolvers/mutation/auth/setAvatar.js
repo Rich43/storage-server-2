@@ -5,7 +5,7 @@ import { CustomError } from "../../utils/CustomError.js";
 const setAvatar = async (parent, { mediaId }, { db, model, utils, token }) => {
     try {
         // Verify the user is authenticated
-        const session = await model.Session.validateToken(db, token);
+        const session = await model.Session.validateToken(db, utils, token);
         if (!session) {
             throw new Error('Not authenticated');
         }

@@ -2,25 +2,25 @@
 
 import moment from "moment";
 
-export async function validateToken(db, token) {
+export async function validateToken(db, utils, token) {
     const session = await db('Session').where({ sessionToken: token }).first();
     if (!session) {
         throw new Error('Invalid session token');
     }
-    const now = moment().utc().format('YYYY-MM-DD HH:mm:ss');
+    const now = utils.moment().utc().format('YYYY-MM-DD HH:mm:ss');
     if (session.sessionExpireDateTime < now) {
         throw new Error('Session token has expired');
     }
     return session;
 }
 
-export const createSession = async (db, userId, sessionToken, sessionExpireDateTimeFormatted) => {
+export async function createSession(db, utils, userId, sessionToken, sessionExpireDateTimeFormatted)  {
     const sessionData = {
         userId,
         sessionToken,
         sessionExpireDateTime: sessionExpireDateTimeFormatted,
-        created: moment().utc().toISOString(),
-        updated: moment().utc().toISOString()  // Assuming there's an updated field
+        created: utils.moment().utc().toISOString(),
+        updated: utils.moment().utc().toISOString()  // Assuming there's an updated field
     };
 
     await db('Session').insert(sessionData);
@@ -30,7 +30,7 @@ export const createSession = async (db, userId, sessionToken, sessionExpireDateT
         .first();
 
     return insertedSession.id;
-};
+}
 
 export async function getSessionById(db, sessionId) {
     const session = await db('Session').where({id: sessionId}).first();
@@ -41,13 +41,13 @@ export function deleteSession(db, token) {
     return db('Session').where({sessionToken: token}).del();
 }
 
-export async function updateSessionWithNewTokenAndExpiryDate(db, token, newSessionToken, sessionExpireDateTimeFormatted) {
+export async function updateSessionWithNewTokenAndExpiryDate(db, utils, token, newSessionToken, sessionExpireDateTimeFormatted) {
     await db('Session')
         .where({sessionToken: token})
         .update({
             sessionToken: newSessionToken,
             sessionExpireDateTime: sessionExpireDateTimeFormatted,
-            updated: moment().utc().toISOString(),
+            updated: utils.moment().utc().toISOString(),
         });
 }
 

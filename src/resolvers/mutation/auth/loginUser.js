@@ -14,7 +14,7 @@ const loginUser = async (_, { username, password }, { db, model, utils, token })
     const { sessionExpireDateTime, sessionExpireDateTimeFormatted } = utils.getDates();
 
     // Create new session
-    const sessionId = await model.Session.createSession(db, user.id, sessionToken, sessionExpireDateTimeFormatted);
+    const sessionId = await model.Session.createSession(db, utils, user.id, sessionToken, sessionExpireDateTimeFormatted);
 
     // Retrieve the full session object
     const session = await model.Session.getSessionById(db, sessionId);

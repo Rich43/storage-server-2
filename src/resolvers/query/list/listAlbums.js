@@ -1,5 +1,5 @@
 const listAlbums = async (_, { filter, pagination, sorting }, { db, model, utils, token }) => {
-    await model.Session.validateToken(db, token);
+    await model.Session.validateToken(db, utils, token);
     const userSession = await model.Session.getAdminFlagFromSession(db, token);
 
     let albumQuery = model.Album.getAllAlbums(db);

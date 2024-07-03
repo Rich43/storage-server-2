@@ -1,7 +1,7 @@
 import { describe, expect, it, jest } from '@jest/globals';
 import { getAllAlbums, filterAlbum } from '../../../src/resolvers/model/Album';
 
-describe('Album.js integration tests', () => {
+describe('Album.js tests', () => {
     let mockDb;
     let mockQuery;
 

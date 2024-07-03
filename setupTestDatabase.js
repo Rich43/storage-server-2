@@ -57,9 +57,9 @@ export async function setupDatabase() {
         table.string('user_extension', 255).defaultTo('');
         table.bigInteger('filesize').defaultTo(-1).notNullable();
         table.boolean('uploaded').defaultTo(false).notNullable();
-        table.timestamp('created').defaultTo(db.fn.now()).notNullable();
+        table.string('created', 255).notNullable();
         table.integer('thumbnail').unsigned();
-        table.timestamp('updated').defaultTo(db.fn.now()).notNullable();
+        table.string('updated', 255).notNullable();
         table.text('description').nullable();
     });
 
@@ -79,20 +79,20 @@ export async function setupDatabase() {
         table.string('username', 255).notNullable().unique();
         table.string('password', 255).notNullable();
         table.boolean('admin').defaultTo(false).notNullable();
-        table.timestamp('created').defaultTo(db.fn.now()).notNullable();
+        table.string('created', 255).notNullable();
         table.integer('avatar').unsigned().references('id').inTable('media');
         table.boolean('activated').defaultTo(false).notNullable();
         table.string('activation_key', 36).notNullable();
         table.boolean('banned').defaultTo(false).notNullable();
-        table.timestamp('updated').defaultTo(db.fn.now()).notNullable();
+        table.string('updated', 255).notNullable();
     });
 
     await db.schema.createTable('album', (table) => {
         table.increments('id').primary();
         table.string('title', 255).notNullable();
         table.integer('userId').unsigned().references('id').inTable('user');
-        table.timestamp('created').defaultTo(db.fn.now()).notNullable();
-        table.timestamp('updated').defaultTo(db.fn.now()).notNullable();
+        table.string('created', 255).notNullable();
+        table.string('updated', 255).notNullable();
     });
 
     await db.schema.createTable('album_media', (table) => {
@@ -111,9 +111,9 @@ export async function setupDatabase() {
         table.increments('id').primary();
         table.integer('userId').unsigned().notNullable().references('id').inTable('user');
         table.string('sessionToken', 36).notNullable();
-        table.timestamp('sessionExpireDateTime').notNullable();
-        table.timestamp('created').defaultTo(db.fn.now()).notNullable();
-        table.timestamp('updated').defaultTo(db.fn.now()).notNullable();
+        table.string('sessionExpireDateTime', 255).notNullable();
+        table.string('created', 255).notNullable();
+        table.string('updated', 255).notNullable();
     });
 
     await db.schema.createTable('MediaComment', function(table) {
@@ -121,11 +121,11 @@ export async function setupDatabase() {
         table.integer('mediaId').unsigned().notNullable();
         table.integer('userId').unsigned().notNullable();
         table.text('comment').notNullable();
-        table.timestamp('created').defaultTo(db.fn.now()).notNullable();
-        table.timestamp('updated').defaultTo(db.fn.now()).notNullable();
+        table.string('created', 255).notNullable();
+        table.string('updated', 255).notNullable();
 
-        table.foreign('mediaId').references('id').inTable('Media');
-        table.foreign('userId').references('id').inTable('User');
+        table.foreign('mediaId').references('id').inTable('media');
+        table.foreign('userId').references('id').inTable('user');
     });
 
     return { container, db };

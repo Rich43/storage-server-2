@@ -43,13 +43,22 @@ describe('Media.js integration tests', () => {
         ]);
     });
 
-    it('should create a media query with category and admin check', async () => {
+    it('should create a media query with category and admin check for non-admin user', async () => {
         const user = { admin: false };
         const category = 'IMAGE';
         const query = getMediaQuery(db, user, category);
         const sql = query.toString();
         expect(sql).toContain('`Mimetype`.`category` = \'IMAGE\'');
         expect(sql).toContain('`Media`.`adminOnly` = false');
+    });
+
+    it('should create a media query with category and no admin check for admin user', async () => {
+        const user = { admin: true };
+        const category = 'IMAGE';
+        const query = getMediaQuery(db, user, category);
+        const sql = query.toString();
+        expect(sql).toContain('`Mimetype`.`category` = \'IMAGE\'');
+        expect(sql).not.toContain('`Media`.`adminOnly` = false');
     });
 
     it('should return the first media item with image mimetype by id', async () => {
@@ -131,6 +140,14 @@ describe('Media.js integration tests', () => {
         query = addAdminOnlyRestriction(userSession, query);
         const sql = query.toString();
         expect(sql).toContain('`Media`.`adminOnly` = false');
+    });
+
+    it('should not add adminOnly restriction for admin user', async () => {
+        const userSession = { admin: true };
+        let query = db('media').where('id', 1);
+        query = addAdminOnlyRestriction(userSession, query);
+        const sql = query.toString();
+        expect(sql).not.toContain('`Media`.`adminOnly` = false');
     });
 
     it('should update media by id', async () => {

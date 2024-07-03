@@ -1,7 +1,5 @@
 // noinspection UnnecessaryLocalVariableJS
 
-import moment from "moment";
-
 export async function validateToken(db, utils, token) {
     const session = await db('Session').where({ sessionToken: token }).first();
     if (!session) {

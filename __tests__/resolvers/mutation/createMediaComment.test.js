@@ -44,7 +44,7 @@ describe('createMediaComment', () => {
         mockValidateToken.mockResolvedValue(true);
         mockGetUserFromToken.mockResolvedValue(user);
         mockNow.mockReturnValue(now);
-        mockInsertMediaComment.mockResolvedValue([insertedComment]);
+        mockInsertMediaComment.mockResolvedValue(insertedComment);
 
         const result = await createMediaComment(null, { input }, { db, model, utils, token });
 

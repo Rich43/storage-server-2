@@ -45,9 +45,7 @@ describe('MediaComment.js integration tests', () => {
         const newComment = {
             mediaId: 1,
             userId: 1,
-            comment: 'This is a test comment',
-            created: db.fn.now(),
-            updated: db.fn.now()
+            comment: 'This is a test comment'
         };
 
         const insertedComment = await insertMediaComment(db, newComment);

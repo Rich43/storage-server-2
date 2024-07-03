@@ -19,8 +19,8 @@ export const createSession = async (db, userId, sessionToken, sessionExpireDateT
         userId,
         sessionToken,
         sessionExpireDateTime: sessionExpireDateTimeFormatted,
-        created: db.fn.now(),
-        updated: db.fn.now()  // Assuming there's an updated field
+        created: moment().utc().toISOString(),
+        updated: moment().utc().toISOString()  // Assuming there's an updated field
     };
 
     await db('Session').insert(sessionData);
@@ -47,7 +47,7 @@ export async function updateSessionWithNewTokenAndExpiryDate(db, token, newSessi
         .update({
             sessionToken: newSessionToken,
             sessionExpireDateTime: sessionExpireDateTimeFormatted,
-            updated: db.fn.now(),
+            updated: moment().utc().toISOString(),
         });
 }
 

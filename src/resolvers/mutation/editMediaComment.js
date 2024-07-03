@@ -1,5 +1,7 @@
 // noinspection JSUnusedLocalSymbols
 
+import moment from "moment";
+
 const editMediaComment = async (_, { input }, { db, model, utils, token }) => {
     await model.Session.validateToken(db, token);
     const user = await model.User.getUserFromToken(db, token);
@@ -17,7 +19,7 @@ const editMediaComment = async (_, { input }, { db, model, utils, token }) => {
 
     const updatedComment = {
         comment,
-        updated: db.fn.now()
+        updated: moment().utc().toISOString()
     };
 
     await model.MediaComment.updateMediaCommentById(db, id, updatedComment);

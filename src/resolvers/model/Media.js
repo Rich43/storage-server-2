@@ -1,5 +1,7 @@
 // noinspection UnnecessaryLocalVariableJS
 
+import moment from "moment";
+
 export function getMediaQuery(db, user, category) {
     let mediaQuery = db('Media')
         .join('Mimetype', 'Media.mimetypeId', '=', 'Mimetype.id')
@@ -34,8 +36,8 @@ export async function insertMedia(db, user, mediaAdminOnly, input, mimetypeId) {
         filesize: input.filesize,
         uploaded: input.uploaded,
         user_extension: input.user_extension,
-        created: db.fn.now(),
-        updated: db.fn.now()
+        created: moment().utc().toISOString(),
+        updated: moment().utc().toISOString()
     };
 
     await db('Media').insert(mediaData);

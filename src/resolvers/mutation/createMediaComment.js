@@ -1,5 +1,7 @@
 // noinspection UnnecessaryLocalVariableJS
 
+import moment from "moment";
+
 export const createMediaComment = async (_, { input }, { db, model, utils, token }) => {
     await utils.validateToken(db, token);
     const user = await utils.getUserFromToken(db, token);
@@ -10,8 +12,8 @@ export const createMediaComment = async (_, { input }, { db, model, utils, token
         mediaId: mediaId,
         userId: user.id,
         comment,
-        created: db.fn.now(),
-        updated: db.fn.now()
+        created: moment().utc().toISOString(),
+        updated: moment().utc().toISOString()
     };
 
     const insertedComment = await model.MediaComment.insertMediaComment(db, newComment);

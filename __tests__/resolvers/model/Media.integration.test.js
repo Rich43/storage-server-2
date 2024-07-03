@@ -49,8 +49,7 @@ describe('Media.js integration tests', () => {
         const query = getMediaQuery(db, user, category);
         const sql = query.toString();
         expect(sql).toContain('`Mimetype`.`category` = \'IMAGE\'');
-        expect(sql).
-        toContain('`Media`.`adminOnly` = false');
+        expect(sql).toContain('`Media`.`adminOnly` = false');
     });
 
     it('should return the first media item with image mimetype by id', async () => {
@@ -197,5 +196,44 @@ describe('Media.js integration tests', () => {
 
         expect(results.length).toBe(1);
         expect(results[0].id).toBe(2);
+    });
+
+    it('should return media by album id joining onto album_media and mimetype', async () => {
+        await db('album').insert({
+            id: 1,
+            title: 'Test Album',
+            userId: 1
+        });
+
+        await db('media').insert([
+            {
+                id: 1,
+                title: 'First Media',
+                description: 'This is the first media',
+                url: 'http://test.url',
+                userId: 1,
+                mimetypeId: 1,
+                filename: 'testfile.png' // Ensure filename > 1 character
+            },
+            {
+                id: 2,
+                title: 'Second Media',
+                description: 'This is the second media',
+                url: 'http://test.url',
+                userId: 1,
+                mimetypeId: 1,
+                filename: 'testfile2.png' // Ensure filename > 1 character
+            }
+        ]);
+
+        await db('album_media').insert([
+            { albumId: 1, mediaId: 1 },
+            { albumId: 1, mediaId: 2 }
+        ]);
+
+        const media = await getMediaByAlbumIdJoiningOnAlbumMediaAndMimetype(db, 1);
+        expect(media.length).toBe(2);
+        expect(media[0].title).toBe('First Media');
+        expect(media[1].title).toBe('Second Media');
     });
 });

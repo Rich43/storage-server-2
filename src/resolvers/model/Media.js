@@ -21,12 +21,12 @@ export async function getFirstMediaItemWithImageMimetypeById(db, mediaId) {
     return media;
 }
 
-export async function insertMedia(db, user, mediaAdminOnly, input) {
+export async function insertMedia(db, user, mediaAdminOnly, input, mimetypeId) {
     return await db('Media').insert({
         title: input.title,
         description: input.description,
         url: input.url,
-        mimetypeId: await db('Mimetype').select('id').where('type', input.mimetype).first(),
+        mimetypeId,
         thumbnail: input.thumbnail,
         userId: user.userId,
         adminOnly: mediaAdminOnly

@@ -1,86 +1,117 @@
-import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+import { describe, expect, it, beforeEach, jest } from '@jest/globals';
 import createMedia from '../../../src/resolvers/mutation/createMedia';
 
-// Mock dependencies
-const mockValidateToken = jest.fn();
-const mockGetUserFromToken = jest.fn();
-const mockInsertMedia = jest.fn();
-const mockGetMediaById = jest.fn();
-
-const db = {}; // Mock database object
-const model = {
-    Session: {
-        validateToken: mockValidateToken,
-    },
-    User: {
-        getUserFromToken: mockGetUserFromToken,
-    },
-    Media: {
-        insertMedia: mockInsertMedia,
-        getMediaById: mockGetMediaById,
-    },
-};
-const utils = {}; // Mock utilities object if needed
-const token = 'mock-token'; // Mock token object
-
 describe('createMedia', () => {
+    let db, model, utils, token, context;
+    const userAdmin = { id: 1, admin: true };
+    const userNonAdmin = { id: 2, admin: false };
+    const mimetype = { id: 1 };
+
     beforeEach(() => {
-        jest.clearAllMocks();
+        db = {};
+        token = 'valid-token';
+
+        model = {
+            Session: {
+                validateToken: jest.fn().mockResolvedValue(true),
+            },
+            User: {
+                getUserFromToken: jest.fn(),
+            },
+            Mimetype: {
+                getMimetypeIdByType: jest.fn().mockResolvedValue(mimetype),
+            },
+            Media: {
+                insertMedia: jest.fn(),
+                getMediaById: jest.fn(),
+            },
+        };
+
+        utils = {};
+
+        context = { db, model, utils, token };
     });
+
+    const commonAssertions = async (input, user, mediaAdminOnly, mediaId, expectedMedia) => {
+        model.User.getUserFromToken.mockResolvedValue(user);
+        model.Media.insertMedia.mockResolvedValue([mediaId]);
+        model.Media.getMediaById.mockResolvedValue(expectedMedia);
+
+        const result = await createMedia(null, { input }, context);
+
+        expect(result).toEqual(expectedMedia);
+        expect(model.Session.validateToken).toHaveBeenCalledWith(db, token);
+        expect(model.User.getUserFromToken).toHaveBeenCalledWith(db, token);
+        expect(model.Mimetype.getMimetypeIdByType).toHaveBeenCalledWith(db, input.mimetype);
+        expect(model.Media.insertMedia).toHaveBeenCalledWith(db, user, mediaAdminOnly, input, mimetype);
+        expect(model.Media.getMediaById).toHaveBeenCalledWith(db, mediaId);
+    };
 
     it('should create media successfully for an admin user with adminOnly set to true', async () => {
-        const input = { title: 'Sample Media', adminOnly: true };
-        const user = { id: 1, username: 'adminUser', admin: true };
+        const input = {
+            title: 'Test Title',
+            description: 'Test Description',
+            url: 'http://test.url',
+            mimetype: 'image/png',
+            thumbnail: 'http://test.thumbnail',
+            adminOnly: true
+        };
+
         const mediaId = 1;
-        const media = { id: mediaId, title: 'Sample Media', adminOnly: true };
+        const expectedMedia = {
+            id: mediaId,
+            title: 'Test Title',
+            description: 'Test Description',
+            url: 'http://test.url',
+            mimetypeId: mimetype.id,
+            thumbnail: 'http://test.thumbnail',
+            userId: userAdmin.id,
+            adminOnly: true,
+        };
 
-        mockValidateToken.mockResolvedValue(true);
-        mockGetUserFromToken.mockResolvedValue(user);
-        mockInsertMedia.mockResolvedValue([mediaId]);
-        mockGetMediaById.mockResolvedValue(media);
-
-        const result = await createMedia(null, { input }, { db, model, utils, token });
-
-        expect(mockValidateToken).toHaveBeenCalledWith(db, token);
-        expect(mockGetUserFromToken).toHaveBeenCalledWith(db, token);
-        expect(mockInsertMedia).toHaveBeenCalledWith(db, user, true, input);
-        expect(mockGetMediaById).toHaveBeenCalledWith(db, mediaId);
-        expect(result).toEqual(media);
+        await commonAssertions(input, userAdmin, true, mediaId, expectedMedia);
     });
 
-    it('should create media successfully for a non-admin user with adminOnly set to true', async () => {
-        const input = { title: 'Sample Media', adminOnly: true };
-        const user = { id: 2, username: 'regularUser', admin: false };
+    it('should create media successfully for a non-admin user with adminOnly set to false', async () => {
+        const input = {
+            title: 'Test Title User',
+            description: 'Test Description User',
+            url: 'http://test.user.url',
+            mimetype: 'image/jpeg',
+            thumbnail: 'http://test.user.thumbnail',
+            adminOnly: true
+        };
+
         const mediaId = 2;
-        const media = { id: mediaId, title: 'Sample Media', adminOnly: false };
+        const expectedMedia = {
+            id: mediaId,
+            title: 'Test Title User',
+            description: 'Test Description User',
+            url: 'http://test.user.url',
+            mimetypeId: mimetype.id,
+            thumbnail: 'http://test.user.thumbnail',
+            userId: userNonAdmin.id,
+            adminOnly: false,
+        };
 
-        mockValidateToken.mockResolvedValue(true);
-        mockGetUserFromToken.mockResolvedValue(user);
-        mockInsertMedia.mockResolvedValue([mediaId]);
-        mockGetMediaById.mockResolvedValue(media);
-
-        const result = await createMedia(null, { input }, { db, model, utils, token });
-
-        expect(mockValidateToken).toHaveBeenCalledWith(db, token);
-        expect(mockGetUserFromToken).toHaveBeenCalledWith(db, token);
-        expect(mockInsertMedia).toHaveBeenCalledWith(db, user, false, input);
-        expect(mockGetMediaById).toHaveBeenCalledWith(db, mediaId);
-        expect(result).toEqual(media);
+        await commonAssertions(input, userNonAdmin, false, mediaId, expectedMedia);
     });
 
     it('should handle errors during media creation', async () => {
-        const input = { title: 'Sample Media', adminOnly: false };
-        const user = { id: 1, username: 'adminUser', admin: true };
+        const input = {
+            title: 'Error Title',
+            description: 'Error Description',
+            url: 'http://error.url',
+            mimetype: 'image/gif',
+            thumbnail: 'http://error.thumbnail',
+            adminOnly: true
+        };
 
-        mockValidateToken.mockResolvedValue(true);
-        mockGetUserFromToken.mockResolvedValue(user);
-        mockInsertMedia.mockRejectedValue(new Error('Database error'));
+        const user = { id: 3, admin: true };
 
-        await expect(createMedia(null, { input }, { db, model, utils, token })).rejects.toThrow('Database error');
+        model.User.getUserFromToken.mockResolvedValue(user);
+        model.Media.insertMedia.mockRejectedValue(new Error('Database error'));
 
-        expect(mockValidateToken).toHaveBeenCalledWith(db, token);
-        expect(mockGetUserFromToken).toHaveBeenCalledWith(db, token);
-        expect(mockInsertMedia).toHaveBeenCalledWith(db, user, false, input);
-        expect(mockGetMediaById).not.toHaveBeenCalled();
+        await expect(createMedia(null, { input }, context)).rejects.toThrow('Database error');
     });
 });

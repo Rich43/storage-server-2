@@ -5,8 +5,8 @@ export const createMediaComment = async (_, { input }, { db, model, utils, token
     const { mediaId, comment } = input;
 
     const newComment = {
-        media_id: mediaId,
-        user_id: user.id,
+        mediaId: mediaId,
+        userId: user.id,
         comment,
         created: db.fn.now(),
         updated: db.fn.now()

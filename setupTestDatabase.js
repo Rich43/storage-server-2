@@ -1,3 +1,5 @@
+// noinspection DuplicatedCode
+
 import { GenericContainer } from 'testcontainers';
 import knex from 'knex';
 
@@ -112,6 +114,18 @@ export async function setupDatabase() {
         table.timestamp('sessionExpireDateTime').notNullable();
         table.timestamp('created').defaultTo(db.fn.now()).notNullable();
         table.timestamp('updated').defaultTo(db.fn.now()).notNullable();
+    });
+
+    await db.schema.createTable('MediaComment', function(table) {
+        table.increments('id').primary();
+        table.integer('mediaId').unsigned().notNullable();
+        table.integer('userId').unsigned().notNullable();
+        table.text('comment').notNullable();
+        table.timestamp('created').defaultTo(knex.fn.now()).notNullable();
+        table.timestamp('updated').defaultTo(knex.fn.now()).notNullable();
+
+        table.foreign('mediaId').references('id').inTable('Media');
+        table.foreign('userId').references('id').inTable('User');
     });
 
     return { container, db };

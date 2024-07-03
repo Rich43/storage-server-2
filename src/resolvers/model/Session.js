@@ -15,15 +15,21 @@ export async function validateToken(db, token) {
 }
 
 export const createSession = async (db, userId, sessionToken, sessionExpireDateTimeFormatted) => {
-    const [sessionId] = await db('Session')
-        .insert({
-            userId,
-            sessionToken,
-            sessionExpireDateTime: sessionExpireDateTimeFormatted,
-            created: db.fn.now(),
-        })
-        .returning('id');
-    return sessionId;
+    const sessionData = {
+        userId,
+        sessionToken,
+        sessionExpireDateTime: sessionExpireDateTimeFormatted,
+        created: db.fn.now(),
+        updated: db.fn.now()  // Assuming there's an updated field
+    };
+
+    await db('Session').insert(sessionData);
+
+    const insertedSession = await db('Session')
+        .where(sessionData)
+        .first();
+
+    return insertedSession.id;
 };
 
 export async function getSessionById(db, sessionId) {

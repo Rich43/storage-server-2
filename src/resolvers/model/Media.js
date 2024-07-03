@@ -22,7 +22,7 @@ export async function getFirstMediaItemWithImageMimetypeById(db, mediaId) {
 }
 
 export async function insertMedia(db, user, mediaAdminOnly, input, mimetypeId) {
-    return await db('Media').insert({
+    const mediaData = {
         title: input.title,
         description: input.description,
         url: input.url,
@@ -36,7 +36,15 @@ export async function insertMedia(db, user, mediaAdminOnly, input, mimetypeId) {
         user_extension: input.user_extension,
         created: db.fn.now(),
         updated: db.fn.now()
-    }).returning('id');
+    };
+
+    await db('Media').insert(mediaData);
+
+    const insertedMedia = await db('Media')
+        .where(mediaData)
+        .first();
+
+    return [insertedMedia.id];
 }
 
 export function getMediaById(db, mediaId) {

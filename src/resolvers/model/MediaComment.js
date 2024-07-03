@@ -1,5 +1,6 @@
 export async function insertMediaComment(db, newComment) {
-    return await db('MediaComment').insert(newComment).returning('*');
+    await db('MediaComment').insert(newComment);
+    return await db('MediaComment').where(newComment).first();
 }
 
 export async function getMediaCommentById(db, id) {

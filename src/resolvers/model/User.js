@@ -43,7 +43,25 @@ export async function getUserCount(db) {
 }
 
 export async function createNewUser(db, newUser) {
-    return await db('User').insert(newUser).returning('*');
+    const userData = {
+        username: newUser.username,
+        password: newUser.password,
+        admin: newUser.admin || false,
+        avatar: newUser.avatar || null,
+        activated: newUser.activated || false,
+        activation_key: newUser.activation_key,
+        banned: newUser.banned || false,
+        created: db.fn.now(),
+        updated: db.fn.now()
+    };
+
+    await db('User').insert(userData);
+
+    const insertedUser = await db('User')
+        .where(userData)
+        .first();
+
+    return insertedUser;
 }
 
 export async function updateUserAvatar(db, userId, mediaId) {

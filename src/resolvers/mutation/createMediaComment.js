@@ -1,3 +1,5 @@
+// noinspection UnnecessaryLocalVariableJS
+
 export const createMediaComment = async (_, { input }, { db, model, utils, token }) => {
     await utils.validateToken(db, token);
     const user = await utils.getUserFromToken(db, token);
@@ -12,7 +14,7 @@ export const createMediaComment = async (_, { input }, { db, model, utils, token
         updated: db.fn.now()
     };
 
-    const [insertedComment] = await model.MediaComment.insertMediaComment(db, newComment);
+    const insertedComment = await model.MediaComment.insertMediaComment(db, newComment);
 
     return insertedComment;
 };

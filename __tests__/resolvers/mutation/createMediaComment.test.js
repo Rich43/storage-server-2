@@ -34,8 +34,8 @@ describe('createMediaComment', () => {
         const now = new Date();
         const insertedComment = {
             id: 1,
-            media_id: input.mediaId,
-            user_id: user.id,
+            mediaId: input.mediaId,
+            userId: user.id,
             comment: input.comment,
             created: now,
             updated: now
@@ -52,8 +52,8 @@ describe('createMediaComment', () => {
         expect(mockGetUserFromToken).toHaveBeenCalledWith(db, token);
         expect(mockNow).toHaveBeenCalledTimes(2);
         expect(mockInsertMediaComment).toHaveBeenCalledWith(db, {
-            media_id: input.mediaId,
-            user_id: user.id,
+            mediaId: input.mediaId,
+            userId: user.id,
             comment: input.comment,
             created: now,
             updated: now
@@ -77,8 +77,8 @@ describe('createMediaComment', () => {
         expect(mockGetUserFromToken).toHaveBeenCalledWith(db, token);
         expect(mockNow).toHaveBeenCalledTimes(2);
         expect(mockInsertMediaComment).toHaveBeenCalledWith(db, {
-            media_id: input.mediaId,
-            user_id: user.id,
+            mediaId: input.mediaId,
+            userId: user.id,
             comment: input.comment,
             created: now,
             updated: now

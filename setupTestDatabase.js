@@ -121,8 +121,8 @@ export async function setupDatabase() {
         table.integer('mediaId').unsigned().notNullable();
         table.integer('userId').unsigned().notNullable();
         table.text('comment').notNullable();
-        table.timestamp('created').defaultTo(knex.fn.now()).notNullable();
-        table.timestamp('updated').defaultTo(knex.fn.now()).notNullable();
+        table.timestamp('created').defaultTo(db.fn.now()).notNullable();
+        table.timestamp('updated').defaultTo(db.fn.now()).notNullable();
 
         table.foreign('mediaId').references('id').inTable('Media');
         table.foreign('userId').references('id').inTable('User');

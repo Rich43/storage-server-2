@@ -1,5 +1,3 @@
-import moment from "moment";
-
 const editMedia = async (_, { input }, { db, model, utils, token }) => {
     await model.Session.validateToken(db, token);
     const user = await model.User.getUserFromToken(db, token);
@@ -18,7 +16,7 @@ const editMedia = async (_, { input }, { db, model, utils, token }) => {
         ...(url && { url }),
         ...(mimetype && { mimetype_id: mimetypeFunc.id }),
         ...(thumbnail && { thumbnail }),
-        updated: moment().utc().toISOString()  // Set the updated column to the current timestamp
+        updated: utils.moment().utc().toISOString()  // Set the updated column to the current timestamp
     };
 
     if (user.admin && adminOnly !== undefined) {

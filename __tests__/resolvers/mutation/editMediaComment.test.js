@@ -1,96 +1,118 @@
-// noinspection JSCheckFunctionSignatures
-
-import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+import { describe, it, expect, beforeEach, jest } from '@jest/globals';
 import editMediaComment from '../../../src/resolvers/mutation/editMediaComment';
+import moment from 'moment';
 
-// Mock dependencies
-const mockValidateToken = jest.fn();
-const mockGetUserFromToken = jest.fn();
-const mockGetMediaCommentById = jest.fn();
-const mockUpdateMediaCommentById = jest.fn();
+jest.mock('moment');
 
-const db = {
-    fn: {
-        now: jest.fn()
-    }
-}; // Mock database object
-const model = {
-    Session: {
-        validateToken: mockValidateToken,
-    },
-    User: {
-        getUserFromToken: mockGetUserFromToken,
-    },
-    MediaComment: {
-        getMediaCommentById: mockGetMediaCommentById,
-        updateMediaCommentById: mockUpdateMediaCommentById,
-    }
-};
-const utils = {}; // Mock utilities object if needed
-const token = 'mock-token'; // Mock token object
+describe('editMediaComment unit tests', () => {
+    let mockDb, mockModel, mockUtils, context;
+    const fixedTimestamp = '2024-07-03T22:06:19.869Z';
 
-const commonMocks = (user, comment) => {
-    mockValidateToken.mockResolvedValue(true);
-    mockGetUserFromToken.mockResolvedValue(user);
-    mockGetMediaCommentById.mockResolvedValue(comment);
-    db.fn.now.mockReturnValue(new Date());
-};
-
-describe('editMediaComment', () => {
     beforeEach(() => {
-        jest.clearAllMocks();
+        mockDb = {};
+        mockModel = {
+            Session: {
+                validateToken: jest.fn()
+            },
+            User: {
+                getUserFromToken: jest.fn()
+            },
+            MediaComment: {
+                getMediaCommentById: jest.fn(),
+                updateMediaCommentById: jest.fn()
+            }
+        };
+        mockUtils = {
+            moment: jest.fn(() => moment(fixedTimestamp))
+        };
+        context = {
+            db: mockDb,
+            model: mockModel,
+            utils: mockUtils,
+            token: 'validtoken'
+        };
     });
 
-    it('should edit comment successfully', async () => {
-        const input = { id: 1, comment: 'New Comment' };
+    it('should edit a media comment successfully', async () => {
+        const input = {
+            id: 1,
+            comment: 'Updated comment'
+        };
+
         const user = { id: 1 };
-        const existingComment = { id: 1, user_id: 1, comment: 'Old Comment' };
-        const updatedComment = { id: 1, user_id: 1, comment: 'New Comment', updated: new Date() };
-
-        commonMocks(user, existingComment);
-        mockUpdateMediaCommentById.mockResolvedValue(true);
-        mockGetMediaCommentById.mockResolvedValueOnce(existingComment).mockResolvedValueOnce(updatedComment);
-
-        const result = await editMediaComment(null, { input }, { db, model, utils, token });
-
-        expect(mockValidateToken).toHaveBeenCalledWith(db, token);
-        expect(mockGetUserFromToken).toHaveBeenCalledWith(db, token);
-        expect(mockGetMediaCommentById).toHaveBeenCalledWith(db, input.id);
-        expect(mockUpdateMediaCommentById).toHaveBeenCalledWith(db, input.id, {
+        const existingComment = { id: 1, user_id: 1, comment: 'Original comment' };
+        const updatedComment = {
             comment: input.comment,
-            updated: expect.any(Date)
-        });
-        expect(result).toEqual(updatedComment);
+            updated: fixedTimestamp
+        };
+
+        mockModel.Session.validateToken.mockResolvedValue(true);
+        mockModel.User.getUserFromToken.mockResolvedValue(user);
+        mockModel.MediaComment.getMediaCommentById.mockResolvedValue(existingComment);
+        mockModel.MediaComment.updateMediaCommentById.mockResolvedValue(null);
+        mockModel.MediaComment.getMediaCommentById.mockResolvedValue({ ...existingComment, ...updatedComment });
+
+        const result = await editMediaComment(null, { input }, context);
+
+        expect(mockModel.Session.validateToken).toHaveBeenCalledWith(mockDb, 'validtoken');
+        expect(mockModel.User.getUserFromToken).toHaveBeenCalledWith(mockDb, 'validtoken');
+        expect(mockModel.MediaComment.getMediaCommentById).toHaveBeenCalledWith(mockDb, input.id);
+        expect(mockModel.MediaComment.updateMediaCommentById).toHaveBeenCalledWith(mockDb, input.id, updatedComment);
+        expect(result).toEqual({ ...existingComment, ...updatedComment });
     });
 
-    it('should throw an error if comment not found', async () => {
-        const input = { id: 1, comment: 'New Comment' };
-        const user = { id: 1 };
+    it('should throw an error if comment does not exist', async () => {
+        const input = {
+            id: 1,
+            comment: 'Updated comment'
+        };
 
-        mockValidateToken.mockResolvedValue(true);
-        mockGetUserFromToken.mockResolvedValue(user);
-        mockGetMediaCommentById.mockResolvedValue(null);
+        mockModel.Session.validateToken.mockResolvedValue(true);
+        mockModel.User.getUserFromToken.mockResolvedValue({ id: 1 });
+        mockModel.MediaComment.getMediaCommentById.mockResolvedValue(null);
 
-        await expect(editMediaComment(null, { input }, { db, model, utils, token })).rejects.toThrow('Comment not found');
+        await expect(editMediaComment(null, { input }, context)).rejects.toThrow('Comment not found');
 
-        expect(mockValidateToken).toHaveBeenCalledWith(db, token);
-        expect(mockGetUserFromToken).toHaveBeenCalledWith(db, token);
-        expect(mockGetMediaCommentById).toHaveBeenCalledWith(db, input.id);
-        expect(mockUpdateMediaCommentById).not.toHaveBeenCalled();
+        expect(mockModel.Session.validateToken).toHaveBeenCalledWith(mockDb, 'validtoken');
+        expect(mockModel.User.getUserFromToken).toHaveBeenCalledWith(mockDb, 'validtoken');
+        expect(mockModel.MediaComment.getMediaCommentById).toHaveBeenCalledWith(mockDb, input.id);
+        expect(mockModel.MediaComment.updateMediaCommentById).not.toHaveBeenCalled();
     });
 
     it('should throw an error if user is not authorized to edit the comment', async () => {
-        const input = { id: 1, comment: 'New Comment' };
-        const user = { id: 2 };
-        const existingComment = { id: 1, user_id: 1, comment: 'Old Comment' };
+        const input = {
+            id: 1,
+            comment: 'Updated comment'
+        };
 
-        commonMocks(user, existingComment);
+        const user = { id: 1 };
+        const existingComment = { id: 1, user_id: 2, comment: 'Original comment' };
 
-        await expect(editMediaComment(null, { input }, { db, model, utils, token })).rejects.toThrow('Not authorized to edit this comment');
+        mockModel.Session.validateToken.mockResolvedValue(true);
+        mockModel.User.getUserFromToken.mockResolvedValue(user);
+        mockModel.MediaComment.getMediaCommentById.mockResolvedValue(existingComment);
 
-        expect(mockValidateToken).toHaveBeenCalledWith(db, token);
-        expect(mockGetUserFromToken).toHaveBeenCalledWith(db, token);
-        expect(mockGetMediaCommentById).toHaveBeenCalledWith(db, input.id);
-        expect(mockUpdateMediaCommentById).not.toHaveBeenCalled();
+        await expect(editMediaComment(null, { input }, context)).rejects.toThrow('Not authorized to edit this comment');
+
+        expect(mockModel.Session.validateToken).toHaveBeenCalledWith(mockDb, 'validtoken');
+        expect(mockModel.User.getUserFromToken).toHaveBeenCalledWith(mockDb, 'validtoken');
+        expect(mockModel.MediaComment.getMediaCommentById).toHaveBeenCalledWith(mockDb, input.id);
+        expect(mockModel.MediaComment.updateMediaCommentById).not.toHaveBeenCalled();
+    });
+
+    it('should throw an error if token validation fails', async () => {
+        const input = {
+            id: 1,
+            comment: 'Updated comment'
+        };
+
+        mockModel.Session.validateToken.mockRejectedValue(new Error('Invalid token'));
+
+        await expect(editMediaComment(null, { input }, context)).rejects.toThrow('Invalid token');
+
+        expect(mockModel.Session.validateToken).toHaveBeenCalledWith(mockDb, 'validtoken');
+        expect(mockModel.User.getUserFromToken).not.toHaveBeenCalled();
+        expect(mockModel.MediaComment.getMediaCommentById).not.toHaveBeenCalled();
+        expect(mockModel.MediaComment.updateMediaCommentById).not.toHaveBeenCalled();
     });
 });

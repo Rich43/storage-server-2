@@ -12,6 +12,7 @@ import {
     updateMediaById
 } from '../../../src/resolvers/model/Media';
 import { describe, expect, it, beforeAll, afterAll, beforeEach } from '@jest/globals';
+import moment from "moment";
 
 let container;
 
@@ -27,6 +28,7 @@ afterAll(async () => {
 
 describe('Media.js integration tests', () => {
     beforeEach(async () => {
+        let today = moment().utc().toISOString();
         await db('album_media').del();
         await db('album').del();
         await db('media').del();
@@ -38,8 +40,8 @@ describe('Media.js integration tests', () => {
         ]);
 
         await db('user').insert([
-            { id: 1, username: 'testuser', password: 'password', admin: false, activation_key: 'key' },
-            { id: 2, username: 'adminuser', password: 'password', admin: true, activation_key: 'key' }
+            { id: 1, username: 'testuser', password: 'password', admin: false, activation_key: 'key', created: today, updated: today },
+            { id: 2, username: 'adminuser', password: 'password', admin: true, activation_key: 'key', created: today, updated: today }
         ]);
     });
 
@@ -62,13 +64,16 @@ describe('Media.js integration tests', () => {
     });
 
     it('should return the first media item with image mimetype by id', async () => {
+        let today = moment().utc().toISOString();
         await db('media').insert({
             id: 1,
             title: 'Test Image',
             url: 'http://example.com/image.png',
             userId: 1,
             mimetypeId: 1,
-            filename: 'testfile.png' // Ensure filename > 1 character
+            filename: 'testfile.png',
+            created: today,
+            updated: today
         });
 
         const media = await getFirstMediaItemWithImageMimetypeById(db, 1);
@@ -76,13 +81,16 @@ describe('Media.js integration tests', () => {
     });
 
     it('should insert media and return the id', async () => {
+        let today = moment().utc().toISOString();
         await db('media').insert({
             id: 1,
             title: 'Test Image',
             url: 'http://example.com/image.png',
             userId: 1,
             mimetypeId: 1,
-            filename: 'testfile.png' // Ensure filename > 1 character
+            filename: 'testfile.png',
+            created: today,
+            updated: today
         });
 
         const user = { userId: 1, admin: false };
@@ -105,13 +113,16 @@ describe('Media.js integration tests', () => {
     });
 
     it('should return media by id', async () => {
+        let today = moment().utc().toISOString();
         await db('media').insert({
             id: 1,
             title: 'Test Title',
             url: 'http://test.url',
             userId: 1,
             mimetypeId: 1,
-            filename: 'testfile.png' // Ensure filename > 1 character
+            filename: 'testfile.png',
+            created: today,
+            updated: today
         });
 
         const media = await getMediaById(db, 1);
@@ -119,13 +130,16 @@ describe('Media.js integration tests', () => {
     });
 
     it('should delete media by id', async () => {
+        let today = moment().utc().toISOString();
         await db('media').insert({
             id: 1,
             title: 'Test Title',
             url: 'http://test.url',
             userId: 1,
             mimetypeId: 1,
-            filename: 'testfile.png' // Ensure filename > 1 character
+            filename: 'testfile.png',
+            created: today,
+            updated: today
         });
 
         await deleteMediaById(db, 1);
@@ -151,13 +165,16 @@ describe('Media.js integration tests', () => {
     });
 
     it('should update media by id', async () => {
+        let today = moment().utc().toISOString();
         await db('media').insert({
             id: 1,
             title: 'Original Title',
             url: 'http://test.url',
             userId: 1,
             mimetypeId: 1,
-            filename: 'testfile.png' // Ensure filename > 1 character
+            filename: 'testfile.png',
+            created: today,
+            updated: today
         });
 
         const updatedMedia = {
@@ -171,13 +188,16 @@ describe('Media.js integration tests', () => {
     });
 
     it('should return media by id joining onto mimetype', async () => {
+        let today = moment().utc().toISOString();
         await db('media').insert({
             id: 1,
             title: 'Test Title',
             url: 'http://test.url',
             userId: 1,
             mimetypeId: 1,
-            filename: 'testfile.png' // Ensure filename > 1 character
+            filename: 'testfile.png',
+            created: today,
+            updated: today
         });
 
         const media = await getMediaByIdJoiningOntoMimeType(db, 1);
@@ -186,6 +206,7 @@ describe('Media.js integration tests', () => {
     });
 
     it('should add related keywords to query', async () => {
+        let today = moment().utc().toISOString();
         await db('media').insert([
             {
                 id: 1,
@@ -194,7 +215,9 @@ describe('Media.js integration tests', () => {
                 url: 'http://test.url',
                 userId: 1,
                 mimetypeId: 1,
-                filename: 'testfile.png' // Ensure filename > 1 character
+                filename: 'testfile.png',
+                created: today,
+                updated: today
             },
             {
                 id: 2,
@@ -203,7 +226,9 @@ describe('Media.js integration tests', () => {
                 url: 'http://test.url',
                 userId: 1,
                 mimetypeId: 1,
-                filename: 'testfile2.png' // Ensure filename > 1 character
+                filename: 'testfile2.png',
+                created: today,
+                updated: today
             }
         ]);
 
@@ -216,10 +241,13 @@ describe('Media.js integration tests', () => {
     });
 
     it('should return media by album id joining onto album_media and mimetype', async () => {
+        let today = moment().utc().toISOString();
         await db('album').insert({
             id: 1,
             title: 'Test Album',
-            userId: 1
+            userId: 1,
+            created: today,
+            updated: today
         });
 
         await db('media').insert([
@@ -230,7 +258,9 @@ describe('Media.js integration tests', () => {
                 url: 'http://test.url',
                 userId: 1,
                 mimetypeId: 1,
-                filename: 'testfile.png' // Ensure filename > 1 character
+                filename: 'testfile.png',
+                created: today,
+                updated: today
             },
             {
                 id: 2,
@@ -239,7 +269,9 @@ describe('Media.js integration tests', () => {
                 url: 'http://test.url',
                 userId: 1,
                 mimetypeId: 1,
-                filename: 'testfile2.png' // Ensure filename > 1 character
+                filename: 'testfile2.png',
+                created: today,
+                updated: today
             }
         ]);
 

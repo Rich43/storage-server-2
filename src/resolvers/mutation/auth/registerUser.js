@@ -1,5 +1,3 @@
-import moment from "moment";
-
 const registerUser = async (parent, { input }, { db, model, utils, token }) => {
     const { username, email, password } = input;
 
@@ -15,12 +13,12 @@ const registerUser = async (parent, { input }, { db, model, utils, token }) => {
         username,
         password: hashedPassword,
         admin: isFirstUser,  // first user is admin
-        created: moment().utc().toISOString(),
+        created: utils.moment().utc().toISOString(),
         avatar: null,
         activated: isFirstUser,  // first user is activated
         activation_key: utils.uuidv4(),
         banned: false,
-        updated: moment().utc().toISOString()
+        updated: utils.moment().utc().toISOString()
     };
 
     const [insertedUser] = await model.User.createNewUser(db, newUser);

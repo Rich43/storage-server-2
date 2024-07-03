@@ -23,6 +23,7 @@ afterAll(async () => {
 
 describe('MediaComment.js integration tests', () => {
     beforeEach(async () => {
+        let today = moment().utc().toISOString();
         await db('MediaComment').del();
         await db('Media').del();
         await db('User').del();
@@ -33,20 +34,23 @@ describe('MediaComment.js integration tests', () => {
         ]);
 
         await db('User').insert([
-            { id: 1, username: 'testuser', password: 'password', admin: false, activation_key: 'key' },
-            { id: 2, username: 'adminuser', password: 'password', admin: true, activation_key: 'key' }
+            { id: 1, username: 'testuser', password: 'password', admin: false, activation_key: 'key', created: today, updated: today },
+            { id: 2, username: 'adminuser', password: 'password', admin: true, activation_key: 'key', created: today, updated: today }
         ]);
 
         await db('Media').insert([
-            { id: 1, title: 'Test Media', url: 'http://example.com/media', userId: 1, mimetypeId: 1, filename: 'testfile.png' }
+            { id: 1, title: 'Test Media', url: 'http://example.com/media', userId: 1, mimetypeId: 1, filename: 'testfile.png', created: today, updated: today }
         ]);
     });
 
     it('should insert a media comment and return it', async () => {
+        let today = moment().utc().toISOString();
         const newComment = {
             mediaId: 1,
             userId: 1,
-            comment: 'This is a test comment'
+            comment: 'This is a test comment',
+            created: today,
+            updated: today
         };
 
         const insertedComment = await insertMediaComment(db, newComment);

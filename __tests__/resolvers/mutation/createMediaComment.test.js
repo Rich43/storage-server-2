@@ -1,87 +1,116 @@
-import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+import { describe, it, expect, beforeEach, jest } from '@jest/globals';
 import createMediaComment from '../../../src/resolvers/mutation/createMediaComment';
+import moment from 'moment';
 
-// Mock dependencies
-const mockValidateToken = jest.fn();
-const mockGetUserFromToken = jest.fn();
-const mockInsertMediaComment = jest.fn();
-const mockNow = jest.fn();
+jest.mock('moment');
 
-const db = {
-    fn: {
-        now: mockNow
-    }
-}; // Mock database object
-const model = {
-    MediaComment: {
-        insertMediaComment: mockInsertMediaComment,
-    },
-};
-const utils = {
-    validateToken: mockValidateToken,
-    getUserFromToken: mockGetUserFromToken,
-};
-const token = 'mock-token'; // Mock token object
+describe('createMediaComment unit tests', () => {
+    let mockDb, mockModel, mockUtils, context;
+    const fixedTimestamp = '2024-07-03T22:06:19.869Z';
 
-describe('createMediaComment', () => {
     beforeEach(() => {
-        jest.clearAllMocks();
+        mockDb = {};
+        mockModel = {
+            MediaComment: {
+                insertMediaComment: jest.fn()
+            }
+        };
+        mockUtils = {
+            validateToken: jest.fn(),
+            getUserFromToken: jest.fn(),
+            moment: jest.fn(() => moment(fixedTimestamp))
+        };
+        context = {
+            db: mockDb,
+            model: mockModel,
+            utils: mockUtils,
+            token: 'validtoken'
+        };
     });
 
-    it('should create media comment successfully', async () => {
-        const input = { mediaId: 1, comment: 'This is a test comment' };
-        const user = { id: 1, username: 'testUser' };
-        const now = new Date();
-        const insertedComment = {
-            id: 1,
-            mediaId: input.mediaId,
-            userId: user.id,
-            comment: input.comment,
-            created: now,
-            updated: now
+    it('should create a media comment', async () => {
+        const input = {
+            mediaId: 1,
+            comment: 'This is a test comment'
         };
 
-        mockValidateToken.mockResolvedValue(true);
-        mockGetUserFromToken.mockResolvedValue(user);
-        mockNow.mockReturnValue(now);
-        mockInsertMediaComment.mockResolvedValue(insertedComment);
-
-        const result = await createMediaComment(null, { input }, { db, model, utils, token });
-
-        expect(mockValidateToken).toHaveBeenCalledWith(db, token);
-        expect(mockGetUserFromToken).toHaveBeenCalledWith(db, token);
-        expect(mockNow).toHaveBeenCalledTimes(2);
-        expect(mockInsertMediaComment).toHaveBeenCalledWith(db, {
+        const user = { id: 1 };
+        const newComment = {
             mediaId: input.mediaId,
             userId: user.id,
             comment: input.comment,
-            created: now,
-            updated: now
-        });
+            created: fixedTimestamp,
+            updated: fixedTimestamp
+        };
+
+        const insertedComment = { ...newComment, id: 1 };
+
+        mockUtils.validateToken.mockResolvedValue(true);
+        mockUtils.getUserFromToken.mockResolvedValue(user);
+        mockModel.MediaComment.insertMediaComment.mockResolvedValue(insertedComment);
+
+        const result = await createMediaComment(null, { input }, context);
+
+        expect(mockUtils.validateToken).toHaveBeenCalledWith(mockDb, 'validtoken');
+        expect(mockUtils.getUserFromToken).toHaveBeenCalledWith(mockDb, 'validtoken');
+        expect(mockModel.MediaComment.insertMediaComment).toHaveBeenCalledWith(mockDb, newComment);
         expect(result).toEqual(insertedComment);
     });
 
-    it('should handle errors during comment creation', async () => {
-        const input = { mediaId: 1, comment: 'This is a test comment' };
-        const user = { id: 1, username: 'testUser' };
-        const now = new Date();
+    it('should throw an error if token validation fails', async () => {
+        const input = {
+            mediaId: 1,
+            comment: 'This is a test comment'
+        };
 
-        mockValidateToken.mockResolvedValue(true);
-        mockGetUserFromToken.mockResolvedValue(user);
-        mockNow.mockReturnValue(now);
-        mockInsertMediaComment.mockRejectedValue(new Error('Database error'));
+        mockUtils.validateToken.mockRejectedValue(new Error('Invalid token'));
 
-        await expect(createMediaComment(null, { input }, { db, model, utils, token })).rejects.toThrow('Database error');
+        await expect(createMediaComment(null, { input }, context)).rejects.toThrow('Invalid token');
 
-        expect(mockValidateToken).toHaveBeenCalledWith(db, token);
-        expect(mockGetUserFromToken).toHaveBeenCalledWith(db, token);
-        expect(mockNow).toHaveBeenCalledTimes(2);
-        expect(mockInsertMediaComment).toHaveBeenCalledWith(db, {
+        expect(mockUtils.validateToken).toHaveBeenCalledWith(mockDb, 'validtoken');
+        expect(mockUtils.getUserFromToken).not.toHaveBeenCalled();
+        expect(mockModel.MediaComment.insertMediaComment).not.toHaveBeenCalled();
+    });
+
+    it('should throw an error if user retrieval fails', async () => {
+        const input = {
+            mediaId: 1,
+            comment: 'This is a test comment'
+        };
+
+        mockUtils.validateToken.mockResolvedValue(true);
+        mockUtils.getUserFromToken.mockRejectedValue(new Error('User not found'));
+
+        await expect(createMediaComment(null, { input }, context)).rejects.toThrow('User not found');
+
+        expect(mockUtils.validateToken).toHaveBeenCalledWith(mockDb, 'validtoken');
+        expect(mockUtils.getUserFromToken).toHaveBeenCalledWith(mockDb, 'validtoken');
+        expect(mockModel.MediaComment.insertMediaComment).not.toHaveBeenCalled();
+    });
+
+    it('should throw an error if media comment insertion fails', async () => {
+        const input = {
+            mediaId: 1,
+            comment: 'This is a test comment'
+        };
+
+        const user = { id: 1 };
+        const newComment = {
             mediaId: input.mediaId,
             userId: user.id,
             comment: input.comment,
-            created: now,
-            updated: now
-        });
+            created: fixedTimestamp,
+            updated: fixedTimestamp
+        };
+
+        mockUtils.validateToken.mockResolvedValue(true);
+        mockUtils.getUserFromToken.mockResolvedValue(user);
+        mockModel.MediaComment.insertMediaComment.mockRejectedValue(new Error('Insertion failed'));
+
+        await expect(createMediaComment(null, { input }, context)).rejects.toThrow('Insertion failed');
+
+        expect(mockUtils.validateToken).toHaveBeenCalledWith(mockDb, 'validtoken');
+        expect(mockUtils.getUserFromToken).toHaveBeenCalledWith(mockDb, 'validtoken');
+        expect(mockModel.MediaComment.insertMediaComment).toHaveBeenCalledWith(mockDb, newComment);
     });
 });

@@ -14,6 +14,6 @@ export function updateMediaCommentById(db, id, updatedComment) {
     return db('MediaComment').where('id', id).update(updatedComment);
 }
 
-export function dbListMediaComments(db, mediaId) {
+export function getMediaCommentsByMediaId(db, mediaId) {
     return db('MediaComment').where('mediaId', mediaId);
 }

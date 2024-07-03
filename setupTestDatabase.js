@@ -6,6 +6,7 @@ let db;
 export async function setupDatabase() {
     const container = await new GenericContainer('mysql')
         .withEnvironment({ MYSQL_ROOT_PASSWORD: 'root', MYSQL_DATABASE: 'test' })
+        .withCommand(['--lower_case_table_names=1'])
         .withExposedPorts(3306)
         .start();
 
@@ -55,8 +56,9 @@ export async function setupDatabase() {
         table.bigInteger('filesize').defaultTo(-1).notNullable();
         table.boolean('uploaded').defaultTo(false).notNullable();
         table.timestamp('created').defaultTo(db.fn.now()).notNullable();
-        table.integer('thumbnail').unsigned().references('id').inTable('media');
+        table.integer('thumbnail').unsigned();
         table.timestamp('updated').defaultTo(db.fn.now()).notNullable();
+        table.text('description').nullable();
     });
 
     await db.raw(`

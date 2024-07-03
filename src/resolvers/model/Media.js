@@ -14,7 +14,7 @@ export function getMediaQuery(db, user, category) {
 
 export async function getFirstMediaItemWithImageMimetypeById(db, mediaId) {
     const media = await db('Media')
-        .join('Mimetype', 'Media.mimetype_id', 'Mimetype.id')
+        .join('Mimetype', 'Media.mimetypeId', 'Mimetype.id')
         .where('Media.id', mediaId)
         .andWhere('Mimetype.category', 'IMAGE')
         .first();
@@ -29,7 +29,13 @@ export async function insertMedia(db, user, mediaAdminOnly, input, mimetypeId) {
         mimetypeId,
         thumbnail: input.thumbnail,
         userId: user.userId,
-        adminOnly: mediaAdminOnly
+        adminOnly: mediaAdminOnly,
+        filename: input.filename,
+        filesize: input.filesize,
+        uploaded: input.uploaded,
+        user_extension: input.user_extension,
+        created: db.fn.now(),
+        updated: db.fn.now()
     }).returning('id');
 }
 

@@ -7,6 +7,7 @@ import {
     getMediaCommentsByMediaId
 } from '../../../src/resolvers/model/MediaComment';
 import { describe, expect, it, beforeAll, afterAll, beforeEach } from '@jest/globals';
+import moment from "moment";
 
 let container;
 
@@ -58,8 +59,8 @@ describe('MediaComment.js integration tests', () => {
             mediaId: 1,
             userId: 1,
             comment: 'This is a test comment',
-            created: db.fn.now(),
-            updated: db.fn.now()
+            created: moment().utc().toISOString(),
+            updated: moment().utc().toISOString()
         });
 
         const comment = await getMediaCommentById(db, 1);
@@ -72,8 +73,8 @@ describe('MediaComment.js integration tests', () => {
             mediaId: 1,
             userId: 1,
             comment: 'This is a test comment',
-            created: db.fn.now(),
-            updated: db.fn.now()
+            created: moment().utc().toISOString(),
+            updated: moment().utc().toISOString()
         });
 
         await deleteMediaCommentById(db, 1);
@@ -88,13 +89,13 @@ describe('MediaComment.js integration tests', () => {
             mediaId: 1,
             userId: 1,
             comment: 'This is a test comment',
-            created: db.fn.now(),
-            updated: db.fn.now()
+            created: moment().utc().toISOString(),
+            updated: moment().utc().toISOString()
         });
 
         const updatedComment = {
             comment: 'This is an updated test comment',
-            updated: db.fn.now()
+            updated: moment().utc().toISOString()
         };
 
         await updateMediaCommentById(db, 1, updatedComment);
@@ -110,16 +111,16 @@ describe('MediaComment.js integration tests', () => {
                 mediaId: 1,
                 userId: 1,
                 comment: 'This is the first comment',
-                created: db.fn.now(),
-                updated: db.fn.now()
+                created: moment().utc().toISOString(),
+                updated: moment().utc().toISOString()
             },
             {
                 id: 2,
                 mediaId: 1,
                 userId: 2,
                 comment: 'This is the second comment',
-                created: db.fn.now(),
-                updated: db.fn.now()
+                created: moment().utc().toISOString(),
+                updated: moment().utc().toISOString()
             }
         ]);
 

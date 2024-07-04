@@ -5,8 +5,8 @@ export async function validateToken(db, utils, token) {
     if (!session) {
         throw new Error('Invalid session token');
     }
-    const now = utils.moment().utc().format('YYYY-MM-DD HH:mm:ss');
-    if (session.sessionExpireDateTime < now) {
+    const now = utils.moment().utc();
+    if (utils.moment(now).utc().isBefore(session.sessionExpireDateTime)) {
         throw new Error('Session token has expired');
     }
     return session;

@@ -22,6 +22,8 @@ const model = {
     },
     User: {
         getUserFromToken: mockGetUserFromToken,
+        updateUserAvatar: mockUpdateUserAvatar,
+        getUserById: mockGetUserById,
     },
     MediaComment: {
         insertMediaComment: mockInsertMediaComment,

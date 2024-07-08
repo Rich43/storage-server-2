@@ -73,8 +73,8 @@ export function deleteMediaById(db, id) {
     return db('Media').where('id', id).del();
 }
 
-export function addAdminOnlyRestriction(userSession, mediaQuery) {
-    if (!userSession.admin) {
+export function addAdminOnlyRestriction(adminFlag, mediaQuery) {
+    if (!adminFlag) {
         mediaQuery = mediaQuery.where('Media.adminOnly', false);
     }
     return mediaQuery;

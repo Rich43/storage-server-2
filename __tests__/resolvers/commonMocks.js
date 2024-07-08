@@ -29,9 +29,9 @@ const model = {
         getMediaById: mockGetMediaById,
         addRelatedKeywords: mockAddRelatedKeywords,
         getFirstMediaItemWithImageMimetypeById: mockGetFirstMediaItemWithImageMimetypeById,
+        deleteMediaById: mockDeleteMediaById,
     },
     MediaComment: {
-        deleteMediaById: mockDeleteMediaById,
     },
 };
 const utils = {

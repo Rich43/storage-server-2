@@ -1,5 +1,5 @@
 const createMedia = async (_, { input }, { db, model, utils, token }) => {
-    await model.Session.validateToken(db, utils, token);
+    await model.Session.validateToken(db, utils, token); // recently changed to 3 arguments
     const user = await model.User.getUserFromToken(db, token);
 
     const { adminOnly } = input;

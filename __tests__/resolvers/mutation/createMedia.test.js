@@ -1,117 +1,121 @@
-import { describe, expect, it, beforeEach, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import createMedia from '../../../src/resolvers/mutation/createMedia';
 
+// Mock dependencies
+const mockValidateToken = jest.fn();
+const mockGetUserFromToken = jest.fn();
+const mockGetMimetypeIdByType = jest.fn();
+const mockInsertMedia = jest.fn();
+const mockGetMediaById = jest.fn();
+
+const db = {}; // Mock database object
+const model = {
+    Session: {
+        validateToken: mockValidateToken,
+    },
+    User: {
+        getUserFromToken: mockGetUserFromToken,
+    },
+    Mimetype: {
+        getMimetypeIdByType: mockGetMimetypeIdByType,
+    },
+    Media: {
+        insertMedia: mockInsertMedia,
+        getMediaById: mockGetMediaById,
+    }
+};
+const utils = {}; // Mock utils object
+const token = 'mock-token'; // Mock token object
+
+const setupMocks = (isValidToken, user, mimetype, mediaId, media) => {
+    mockValidateToken.mockResolvedValue(isValidToken ? {} : Promise.reject(new Error('Invalid session token')));
+    mockGetUserFromToken.mockResolvedValue(user);
+    mockGetMimetypeIdByType.mockResolvedValue(mimetype);
+    mockInsertMedia.mockResolvedValue([mediaId]);
+    mockGetMediaById.mockResolvedValue(media);
+};
+
+const assertCommonMocks = async (input, user, expectedAdminOnlyFlag, mediaId, media) => {
+    const result = await createMedia(null, { input }, { db, model, utils, token });
+
+    expect(result).toEqual(media);
+    expect(mockValidateToken).toHaveBeenCalledWith(db, utils, token);
+    expect(mockGetUserFromToken).toHaveBeenCalledWith(db, token);
+    expect(mockGetMimetypeIdByType).toHaveBeenCalledWith(db, input.mimetype);
+    expect(mockInsertMedia).toHaveBeenCalledWith(db, user, expectedAdminOnlyFlag, input, await mockGetMimetypeIdByType.mock.results[0].value);
+    expect(mockGetMediaById).toHaveBeenCalledWith(db, mediaId);
+};
+
 describe('createMedia', () => {
-    let db, model, utils, token, context;
-    const userAdmin = { id: 1, admin: true };
-    const userNonAdmin = { id: 2, admin: false };
-    const mimetype = { id: 1 };
-
     beforeEach(() => {
-        db = {};
-        token = 'valid-token';
-
-        model = {
-            Session: {
-                validateToken: jest.fn().mockResolvedValue(true),
-            },
-            User: {
-                getUserFromToken: jest.fn(),
-            },
-            Mimetype: {
-                getMimetypeIdByType: jest.fn().mockResolvedValue(mimetype),
-            },
-            Media: {
-                insertMedia: jest.fn(),
-                getMediaById: jest.fn(),
-            },
-        };
-
-        utils = {};
-
-        context = { db, model, utils, token };
+        jest.clearAllMocks();
     });
 
-    const commonAssertions = async (input, user, mediaAdminOnly, mediaId, expectedMedia) => {
-        model.User.getUserFromToken.mockResolvedValue(user);
-        model.Media.insertMedia.mockResolvedValue([mediaId]);
-        model.Media.getMediaById.mockResolvedValue(expectedMedia);
-
-        const result = await createMedia(null, { input }, context);
-
-        expect(result).toEqual(expectedMedia);
-        expect(model.Session.validateToken).toHaveBeenCalledWith(db, token);
-        expect(model.User.getUserFromToken).toHaveBeenCalledWith(db, token);
-        expect(model.Mimetype.getMimetypeIdByType).toHaveBeenCalledWith(db, input.mimetype);
-        expect(model.Media.insertMedia).toHaveBeenCalledWith(db, user, mediaAdminOnly, input, mimetype);
-        expect(model.Media.getMediaById).toHaveBeenCalledWith(db, mediaId);
-    };
-
-    it('should create media successfully for an admin user with adminOnly set to true', async () => {
+    it('should create media successfully', async () => {
         const input = {
-            title: 'Test Title',
-            description: 'Test Description',
-            url: 'http://test.url',
-            mimetype: 'image/png',
-            thumbnail: 'http://test.thumbnail',
-            adminOnly: true
-        };
-
-        const mediaId = 1;
-        const expectedMedia = {
-            id: mediaId,
-            title: 'Test Title',
-            description: 'Test Description',
-            url: 'http://test.url',
-            mimetypeId: mimetype.id,
-            thumbnail: 'http://test.thumbnail',
-            userId: userAdmin.id,
-            adminOnly: true,
-        };
-
-        await commonAssertions(input, userAdmin, true, mediaId, expectedMedia);
-    });
-
-    it('should create media successfully for a non-admin user with adminOnly set to false', async () => {
-        const input = {
-            title: 'Test Title User',
-            description: 'Test Description User',
-            url: 'http://test.user.url',
-            mimetype: 'image/jpeg',
-            thumbnail: 'http://test.user.thumbnail',
-            adminOnly: true
-        };
-
-        const mediaId = 2;
-        const expectedMedia = {
-            id: mediaId,
-            title: 'Test Title User',
-            description: 'Test Description User',
-            url: 'http://test.user.url',
-            mimetypeId: mimetype.id,
-            thumbnail: 'http://test.user.thumbnail',
-            userId: userNonAdmin.id,
             adminOnly: false,
+            mimetype: 'image/png',
+            otherData: 'some data'
         };
+        const user = { id: 1, admin: false };
+        const mimetype = 1;
+        const mediaId = 1;
+        const media = { id: mediaId, ...input };
 
-        await commonAssertions(input, userNonAdmin, false, mediaId, expectedMedia);
+        setupMocks(true, user, mimetype, mediaId, media);
+
+        await assertCommonMocks(input, user, false, mediaId, media);
     });
 
-    it('should handle errors during media creation', async () => {
+    it('should create media with adminOnly flag for admin user', async () => {
         const input = {
-            title: 'Error Title',
-            description: 'Error Description',
-            url: 'http://error.url',
-            mimetype: 'image/gif',
-            thumbnail: 'http://error.thumbnail',
-            adminOnly: true
+            adminOnly: true,
+            mimetype: 'image/png',
+            otherData: 'some data'
+        };
+        const user = { id: 1, admin: true };
+        const mimetype = 1;
+        const mediaId = 1;
+        const media = { id: mediaId, ...input };
+
+        setupMocks(true, user, mimetype, mediaId, media);
+
+        await assertCommonMocks(input, user, true, mediaId, media);
+    });
+
+    it('should handle invalid session token', async () => {
+        const input = {
+            adminOnly: false,
+            mimetype: 'image/png',
+            otherData: 'some data'
         };
 
-        const user = { id: 3, admin: true };
+        setupMocks(false, null, null, null, null);
 
-        model.User.getUserFromToken.mockResolvedValue(user);
-        model.Media.insertMedia.mockRejectedValue(new Error('Database error'));
+        await expect(createMedia(null, { input }, { db, model, utils, token }))
+            .rejects
+            .toThrow('Invalid session token');
 
-        await expect(createMedia(null, { input }, context)).rejects.toThrow('Database error');
+        expect(mockValidateToken).toHaveBeenCalledWith(db, utils, token);
+        expect(mockGetUserFromToken).not.toHaveBeenCalled();
+        expect(mockGetMimetypeIdByType).not.toHaveBeenCalled();
+        expect(mockInsertMedia).not.toHaveBeenCalled();
+        expect(mockGetMediaById).not.toHaveBeenCalled();
+    });
+
+    it('should only allow admin to set adminOnly flag', async () => {
+        const input = {
+            adminOnly: true,
+            mimetype: 'image/png',
+            otherData: 'some data'
+        };
+        const user = { id: 1, admin: false };
+        const mimetype = 1;
+        const mediaId = 1;
+        const media = { id: mediaId, ...input, adminOnly: false };
+
+        setupMocks(true, user, mimetype, mediaId, media);
+
+        await assertCommonMocks(input, user, false, mediaId, media);
     });
 });

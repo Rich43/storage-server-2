@@ -8,6 +8,8 @@ const mockPerformFilter = jest.fn();
 const mockPerformPagination = jest.fn();
 const mockPerformSorting = jest.fn();
 const mockGetMediaById = jest.fn();
+const mockGetMimetypeIdByType = jest.fn();
+const mockUpdateMediaById = jest.fn();
 const mockGetMediaKeywords = jest.fn();
 const mockAddRelatedKeywords = jest.fn();
 const mockGetFirstMediaItemWithImageMimetypeById = jest.fn();
@@ -34,7 +36,11 @@ const model = {
         addRelatedKeywords: mockAddRelatedKeywords,
         getFirstMediaItemWithImageMimetypeById: mockGetFirstMediaItemWithImageMimetypeById,
         deleteMediaById: mockDeleteMediaById,
+        updateMediaById: mockUpdateMediaById,
     },
+    Mimetype: {
+        getMimetypeIdByType: mockGetMimetypeIdByType,
+    }
 };
 const utils = {
     performFilter: mockPerformFilter,
@@ -67,10 +73,12 @@ export {
     mockPerformPagination,
     mockPerformSorting,
     mockGetMediaById,
+    mockGetMimetypeIdByType,
     mockGetMediaKeywords,
     mockAddRelatedKeywords,
     mockGetFirstMediaItemWithImageMimetypeById,
     mockUpdateUserAvatar,
     mockGetUserById,
     mockDeleteMediaById,
+    mockUpdateMediaById,
 };

@@ -1,150 +1,84 @@
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
-import editMedia from '../../../src/resolvers/mutation/editMedia';
-import moment from 'moment';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import editMedia from "../../../src/resolvers/mutation/editMedia.js";
 
-describe('editMedia unit tests', () => {
-    let mockDb, mockModel, mockUtils, context;
+describe('editMedia', () => {
+    let mockDb, mockModel, mockUtils, mockToken;
 
     beforeEach(() => {
-        mockDb = {};
+        mockDb = {}; // Mock database object
         mockModel = {
-            Session: {
-                validateToken: jest.fn()
-            },
-            User: {
-                getUserFromToken: jest.fn()
-            },
             Media: {
+                updateMediaById: jest.fn(),
                 getMediaById: jest.fn(),
-                updateMediaById: jest.fn()
             },
-            Mimetype: {
-                getMimetypeIdByType: jest.fn()
-            }
         };
         mockUtils = {
-            moment: moment
+            validateSessionAndUser: jest.fn(),
+            getMimetypeId: jest.fn(),
+            moment: jest.fn().mockReturnValue({
+                utc: jest.fn().mockReturnValue({
+                    toISOString: jest.fn().mockReturnValue('2024-07-08T00:00:00.000Z'),
+                }),
+            }),
+            buildUpdatedMedia: jest.fn(),
         };
-        context = {
-            db: mockDb,
-            model: mockModel,
-            utils: mockUtils,
-            token: 'validtoken'
-        };
+        mockToken = 'mockToken';
     });
 
-    it('should edit media as a regular user', async () => {
+    it('should edit media successfully', async () => {
         const input = {
             id: 1,
-            title: 'Updated Title',
-            description: 'Updated Description',
-            url: 'http://updated.url',
             mimetype: 'image/png',
-            thumbnail: 2
+            // other input fields
         };
+        const user = { id: 1, name: 'Test User' };
+        const mimetypeId = 123;
+        const updatedMedia = { /* built updated media object */ };
 
-        const mockMedia = {
-            id: 1,
-            title: 'Original Title',
-            description: 'Original Description',
-            url: 'http://original.url',
-            mimetype_id: 1,
-            thumbnail: 1,
-            adminOnly: false
-        };
+        mockUtils.validateSessionAndUser.mockResolvedValue(user);
+        mockUtils.getMimetypeId.mockResolvedValue(mimetypeId);
+        mockUtils.buildUpdatedMedia.mockReturnValue(updatedMedia);
+        mockModel.Media.updateMediaById.mockResolvedValue();
+        mockModel.Media.getMediaById.mockResolvedValue(updatedMedia);
 
-        mockModel.Session.validateToken.mockResolvedValue(true);
-        mockModel.User.getUserFromToken.mockResolvedValue({ userId: 1, admin: false });
-        mockModel.Media.getMediaById.mockResolvedValue(mockMedia);
-        mockModel.Mimetype.getMimetypeIdByType.mockResolvedValue({ id: 1 });
-        mockModel.Media.getMediaById.mockResolvedValue({
-            ...mockMedia,
-            ...input,
-            updated: moment().utc().toISOString()
-        });
+        const result = await editMedia(null, { input }, { db: mockDb, model: mockModel, utils: mockUtils, token: mockToken });
 
-        const result = await editMedia(null, { input }, context);
-
-        expect(mockModel.Session.validateToken).toHaveBeenCalledWith(mockDb, 'validtoken');
-        expect(mockModel.User.getUserFromToken).toHaveBeenCalledWith(mockDb, 'validtoken');
-        expect(mockModel.Media.getMediaById).toHaveBeenCalledWith(mockDb, 1);
-        expect(mockModel.Mimetype.getMimetypeIdByType).toHaveBeenCalledWith(mockDb, 'image/png');
-        expect(mockModel.Media.updateMediaById).toHaveBeenCalledWith(mockDb, 1, expect.objectContaining({
-            title: 'Updated Title',
-            description: 'Updated Description',
-            url: 'http://updated.url',
-            mimetype_id: 1,
-            thumbnail: 2
-        }));
-        expect(result).toEqual({
-            ...mockMedia,
-            ...input,
-            updated: expect.any(String)
-        });
+        expect(mockUtils.validateSessionAndUser).toHaveBeenCalledWith(mockDb, mockModel, mockUtils, mockToken);
+        expect(mockUtils.getMimetypeId).toHaveBeenCalledWith(mockDb, mockModel, input.mimetype);
+        expect(mockUtils.buildUpdatedMedia).toHaveBeenCalledWith(input, mimetypeId, '2024-07-08T00:00:00.000Z', user);
+        expect(mockModel.Media.updateMediaById).toHaveBeenCalledWith(mockDb, input.id, updatedMedia);
+        expect(mockModel.Media.getMediaById).toHaveBeenCalledWith(mockDb, input.id);
+        expect(result).toEqual(updatedMedia);
     });
 
-    it('should edit media as an admin user', async () => {
-        const input = {
-            id: 1,
-            title: 'Updated Title',
-            description: 'Updated Description',
-            url: 'http://updated.url',
-            mimetype: 'image/png',
-            thumbnail: 2,
-            adminOnly: true
-        };
+    it('should throw an error if user validation fails', async () => {
+        mockUtils.validateSessionAndUser.mockResolvedValue(null);
 
-        const mockMedia = {
-            id: 1,
-            title: 'Original Title',
-            description: 'Original Description',
-            url: 'http://original.url',
-            mimetype_id: 1,
-            thumbnail: 1,
-            adminOnly: false
-        };
-
-        mockModel.Session.validateToken.mockResolvedValue(true);
-        mockModel.User.getUserFromToken.mockResolvedValue({ userId: 1, admin: true });
-        mockModel.Media.getMediaById.mockResolvedValue(mockMedia);
-        mockModel.Mimetype.getMimetypeIdByType.mockResolvedValue({ id: 1 });
-        mockModel.Media.getMediaById.mockResolvedValue({
-            ...mockMedia,
-            ...input,
-            updated: moment().utc().toISOString()
-        });
-
-        const result = await editMedia(null, { input }, context);
-
-        expect(mockModel.Session.validateToken).toHaveBeenCalledWith(mockDb, 'validtoken');
-        expect(mockModel.User.getUserFromToken).toHaveBeenCalledWith(mockDb, 'validtoken');
-        expect(mockModel.Media.getMediaById).toHaveBeenCalledWith(mockDb, 1);
-        expect(mockModel.Mimetype.getMimetypeIdByType).toHaveBeenCalledWith(mockDb, 'image/png');
-        expect(mockModel.Media.updateMediaById).toHaveBeenCalledWith(mockDb, 1, expect.objectContaining({
-            title: 'Updated Title',
-            description: 'Updated Description',
-            url: 'http://updated.url',
-            mimetype_id: 1,
-            thumbnail: 2,
-            adminOnly: true
-        }));
-        expect(result).toEqual({
-            ...mockMedia,
-            ...input,
-            updated: expect.any(String)
-        });
+        await expect(editMedia(null, { input: {} }, { db: mockDb, model: mockModel, utils: mockUtils, token: mockToken }))
+            .rejects
+            .toThrow('User validation failed');
     });
 
-    it('should throw an error if media not found', async () => {
-        const input = {
-            id: 1,
-            title: 'Updated Title'
-        };
+    it('should throw an error if media not found after update', async () => {
+        const input = { id: 1 };
 
-        mockModel.Session.validateToken.mockResolvedValue(true);
-        mockModel.User.getUserFromToken.mockResolvedValue({ userId: 1, admin: false });
+        mockUtils.validateSessionAndUser.mockResolvedValue({ id: 1, name: 'Test User' });
+        mockModel.Media.updateMediaById.mockResolvedValue();
         mockModel.Media.getMediaById.mockResolvedValue(null);
 
-        await expect(editMedia(null, { input }, context)).rejects.toThrow('Media not found');
+        await expect(editMedia(null, { input }, { db: mockDb, model: mockModel, utils: mockUtils, token: mockToken }))
+            .rejects
+            .toThrow('Media not found after update');
+    });
+
+    it('should handle unexpected errors', async () => {
+        const input = { id: 1 };
+        const errorMessage = 'Unexpected error';
+
+        mockUtils.validateSessionAndUser.mockRejectedValue(new Error(errorMessage));
+
+        await expect(editMedia(null, { input }, { db: mockDb, model: mockModel, utils: mockUtils, token: mockToken }))
+            .rejects
+            .toThrow(errorMessage);
     });
 });

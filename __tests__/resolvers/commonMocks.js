@@ -9,6 +9,9 @@ const mockPerformSorting = jest.fn();
 const mockGetMediaById = jest.fn();
 const mockGetMediaKeywords = jest.fn();
 const mockAddRelatedKeywords = jest.fn();
+const mockGetFirstMediaItemWithImageMimetypeById = jest.fn();
+const mockUpdateUserAvatar = jest.fn();
+const mockGetUserById = jest.fn();
 const mockDeleteMediaById = jest.fn();
 
 const db = {}; // Mock database object
@@ -18,13 +21,18 @@ const model = {
     },
     User: {
         getUserFromToken: mockGetUserFromToken,
+        updateUserAvatar: mockUpdateUserAvatar,
+        getUserById: mockGetUserById,
     },
     Media: {
         getMediaQuery: mockGetMediaQuery,
         getMediaById: mockGetMediaById,
         addRelatedKeywords: mockAddRelatedKeywords,
+        getFirstMediaItemWithImageMimetypeById: mockGetFirstMediaItemWithImageMimetypeById,
+    },
+    MediaComment: {
         deleteMediaById: mockDeleteMediaById,
-    }
+    },
 };
 const utils = {
     performFilter: mockPerformFilter,
@@ -58,5 +66,8 @@ export {
     mockGetMediaById,
     mockGetMediaKeywords,
     mockAddRelatedKeywords,
+    mockGetFirstMediaItemWithImageMimetypeById,
+    mockUpdateUserAvatar,
+    mockGetUserById,
     mockDeleteMediaById,
 };

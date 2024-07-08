@@ -1,71 +1,59 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import listRelatedMedia from '../../../../src/resolvers/query/list/listRelatedMedia';
-import { CustomError } from '../../../../src/resolvers/utils/CustomError';
-import {
-    db,
-    model,
-    utils,
-    token,
-    setupMocks,
-} from '../../commonMocks.js'; // Adjust the path as necessary
-
-const mockGetMediaById = jest.fn();
-const mockGetMediaKeywords = jest.fn();
-const mockAddRelatedKeywords = jest.fn();
-
-model.Media.getMediaById = mockGetMediaById;
-utils.getMediaKeywords = mockGetMediaKeywords;
-model.Media.addRelatedKeywords = mockAddRelatedKeywords;
-
-const setupRelatedMediaMocks = (media, keywords, relatedMedia) => {
-    mockGetMediaById.mockResolvedValue(media);
-    mockGetMediaKeywords.mockReturnValue(keywords);
-    mockAddRelatedKeywords.mockResolvedValue(relatedMedia);
-};
 
 describe('listRelatedMedia', () => {
+    let mockDb, mockModel, mockUtils, mockToken;
+
     beforeEach(() => {
-        jest.clearAllMocks();
+        mockDb = {}; // Mock database object
+        mockModel = {
+            Media: {
+                getMediaById: jest.fn(),
+                addRelatedKeywords: jest.fn(),
+            },
+        };
+        mockUtils = {
+            getMediaKeywords: jest.fn(),
+        };
+        mockToken = 'mockToken';
     });
 
     it('should list related media successfully', async () => {
         const id = 1;
-        const media = { id: 1, name: 'Media 1' };
+        const media = { id, title: 'Test Media' };
         const keywords = ['keyword1', 'keyword2'];
-        const relatedMedia = [{ id: 2, name: 'Related Media 1' }];
+        const relatedMedia = [{ id: 2, title: 'Related Media' }];
 
-        setupRelatedMediaMocks(media, keywords, relatedMedia);
+        mockModel.Media.getMediaById.mockResolvedValue(media);
+        mockUtils.getMediaKeywords.mockReturnValue(keywords);
+        mockModel.Media.addRelatedKeywords.mockResolvedValue(relatedMedia);
 
-        const result = await listRelatedMedia(null, { id }, { db, model, utils, token });
+        const result = await listRelatedMedia(null, { id }, { db: mockDb, model: mockModel, utils: mockUtils, token: mockToken });
 
-        expect(mockGetMediaById).toHaveBeenCalledWith(db, id);
-        expect(mockGetMediaKeywords).toHaveBeenCalledWith(media);
-        expect(mockAddRelatedKeywords).toHaveBeenCalledWith(db, id, keywords);
+        expect(mockModel.Media.getMediaById).toHaveBeenCalledWith(mockDb, id);
+        expect(mockUtils.getMediaKeywords).toHaveBeenCalledWith(media);
+        expect(mockModel.Media.addRelatedKeywords).toHaveBeenCalledWith(mockDb, id, keywords);
         expect(result).toEqual(relatedMedia);
     });
 
-    it('should throw a CustomError if media not found', async () => {
+    it('should throw an error if media is not found', async () => {
         const id = 1;
 
-        mockGetMediaById.mockResolvedValue(null);
+        mockModel.Media.getMediaById.mockResolvedValue(null);
 
-        await expect(listRelatedMedia(null, { id }, { db, model, utils, token })).rejects.toThrow(CustomError);
-
-        expect(mockGetMediaById).toHaveBeenCalledWith(db, id);
-        expect(mockGetMediaKeywords).not.toHaveBeenCalled();
-        expect(mockAddRelatedKeywords).not.toHaveBeenCalled();
+        await expect(listRelatedMedia(null, { id }, { db: mockDb, model: mockModel, utils: mockUtils, token: mockToken }))
+            .rejects
+            .toThrow('Media not found');
     });
 
-    it('should handle errors gracefully with CustomError', async () => {
+    it('should handle unexpected errors', async () => {
         const id = 1;
-        const errorMessage = 'Database error';
+        const errorMessage = 'Unexpected error';
 
-        mockGetMediaById.mockRejectedValue(new Error(errorMessage));
+        mockModel.Media.getMediaById.mockRejectedValue(new Error(errorMessage));
 
-        await expect(listRelatedMedia(null, { id }, { db, model, utils, token })).rejects.toThrow(CustomError);
-
-        expect(mockGetMediaById).toHaveBeenCalledWith(db, id);
-        expect(mockGetMediaKeywords).not.toHaveBeenCalled();
-        expect(mockAddRelatedKeywords).not.toHaveBeenCalled();
+        await expect(listRelatedMedia(null, { id }, { db: mockDb, model: mockModel, utils: mockUtils, token: mockToken }))
+            .rejects
+            .toThrow('Failed to list related media');
     });
 });

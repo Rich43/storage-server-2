@@ -17,7 +17,7 @@ import {
 const assertCommonMocks = async (result, expectedQuery) => {
     await expect(result).resolves.toEqual(expectedQuery);
 
-    expect(mockValidateToken).toHaveBeenCalledWith(db, token);
+    expect(mockValidateToken).toHaveBeenCalledWith(db, utils, token);
     expect(mockGetUserFromToken).toHaveBeenCalledWith(db, token);
     expect(mockGetMediaQuery).toHaveBeenCalledWith(db, expect.any(Object), 'OTHER');
     expect(mockPerformFilter).toHaveBeenCalledWith(expect.anything(), expect.anything());

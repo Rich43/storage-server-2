@@ -25,6 +25,12 @@ describe('User model integration tests', () => {
     });
 
     beforeEach(async () => {
+        await db('mimetype').del();
+
+        await db('mimetype').insert([
+            { id: 1, type: 'image/png', category: 'IMAGE' },
+            { id: 2, type: 'video/mp4', category: 'VIDEO' },
+        ]);
         await db('Session').del();
         await db('User').del();
         await db('User').insert({
@@ -136,10 +142,28 @@ describe('User model integration tests', () => {
     });
 
     it('should update user avatar', async () => {
-        await updateUserAvatar(db, utils, userId, 1);
+        // Insert a media entry
+        await db('Media').insert({
+            title: 'Test Image',
+            url: 'https://example.com/test-image.jpg',
+            filename: "test-image",
+            user_extension: 'jpg',
+            mimetypeId: 1,
+            userId: userId,
+            adminOnly: false,
+            filesize: 1000,
+            uploaded: true,
+            created: now,
+            updated: now,
+        });
+
+        const media = await db('Media').where({ title: 'Test Image' }).first();
+        const mediaId = media.id;
+
+        await updateUserAvatar(db, utils, userId, mediaId);
         const user = await getUserById(db, userId);
         expect(user).toMatchObject({
-            avatar: '1',
+            avatar: mediaId,
         });
     });
 });

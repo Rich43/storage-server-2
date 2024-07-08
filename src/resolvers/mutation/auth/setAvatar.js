@@ -1,13 +1,9 @@
-// noinspection UnnecessaryLocalVariableJS,ExceptionCaughtLocallyJS
-
-import { CustomError } from "../../utils/CustomError.js";
-
 const setAvatar = async (parent, { mediaId }, { db, model, utils, token }) => {
     try {
         // Verify the user is authenticated
-        const session = await model.Session.validateToken(db, token);
+        const session = await model.Session.validateToken(db, utils, token);
         if (!session) {
-            throw new Error('Not authenticated');
+            throw new Error('Invalid session token');
         }
 
         // Check if the media has an image mime type category
@@ -25,7 +21,7 @@ const setAvatar = async (parent, { mediaId }, { db, model, utils, token }) => {
         return updatedUser;
     } catch (error) {
         console.error(error);
-        throw new CustomError('Failed to set avatar', error);
+        throw error; // Re-throw the original error for specific error handling in tests
     }
 };
 

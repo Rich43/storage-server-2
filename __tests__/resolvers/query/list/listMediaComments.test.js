@@ -1,13 +1,15 @@
+// noinspection JSCheckFunctionSignatures
+
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import listMediaComments from '../../../../src/resolvers/query/list/listMediaComments';
 
 // Mock dependencies
-const mockDbListMediaComments = jest.fn();
+const mockGetMediaCommentsByMediaId = jest.fn();
 
 const db = {}; // Mock database object
 const model = {
     MediaComment: {
-        dbListMediaComments: mockDbListMediaComments,
+        getMediaCommentsByMediaId: mockGetMediaCommentsByMediaId,
     }
 };
 const utils = {}; // Mock utilities object if needed
@@ -22,11 +24,11 @@ describe('listMediaComments', () => {
         const mediaId = 1;
         const comments = [{ id: 1, mediaId, comment: 'Great media!' }];
 
-        mockDbListMediaComments.mockResolvedValue(comments);
+        mockGetMediaCommentsByMediaId.mockResolvedValue(comments);
 
         const result = await listMediaComments(null, { mediaId }, { db, model, utils, token });
 
-        expect(mockDbListMediaComments).toHaveBeenCalledWith(db, mediaId);
+        expect(mockGetMediaCommentsByMediaId).toHaveBeenCalledWith(db, mediaId);
         expect(result).toEqual(comments);
     });
 
@@ -34,11 +36,11 @@ describe('listMediaComments', () => {
         const mediaId = 1;
         const comments = [];
 
-        mockDbListMediaComments.mockResolvedValue(comments);
+        mockGetMediaCommentsByMediaId.mockResolvedValue(comments);
 
         const result = await listMediaComments(null, { mediaId }, { db, model, utils, token });
 
-        expect(mockDbListMediaComments).toHaveBeenCalledWith(db, mediaId);
+        expect(mockGetMediaCommentsByMediaId).toHaveBeenCalledWith(db, mediaId);
         expect(result).toEqual(comments);
     });
 
@@ -46,9 +48,9 @@ describe('listMediaComments', () => {
         const mediaId = 1;
         const errorMessage = 'Database error';
 
-        mockDbListMediaComments.mockRejectedValue(new Error(errorMessage));
+        mockGetMediaCommentsByMediaId.mockRejectedValue(new Error(errorMessage));
 
         await expect(listMediaComments(null, { mediaId }, { db, model, utils, token })).rejects.toThrow(errorMessage);
-        expect(mockDbListMediaComments).toHaveBeenCalledWith(db, mediaId);
+        expect(mockGetMediaCommentsByMediaId).toHaveBeenCalledWith(db, mediaId);
     });
 });

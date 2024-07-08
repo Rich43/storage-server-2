@@ -1,7 +1,7 @@
 // noinspection JSUnusedLocalSymbols
 
 const deleteMediaComment = async (_, { id }, { db, model, utils, token }) => {
-    await model.Session.validateToken(db, token);
+    await model.Session.validateToken(db, utils, token);
     const user = await model.User.getUserFromToken(db, token);
 
     const existingComment = await model.MediaComment.getMediaCommentById(db, id);

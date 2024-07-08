@@ -1,5 +1,7 @@
 // noinspection UnnecessaryLocalVariableJS
 
+import moment from "moment";
+
 export function getMediaQuery(db, user, category) {
     let mediaQuery = db('Media')
         .join('Mimetype', 'Media.mimetypeId', '=', 'Mimetype.id')
@@ -14,23 +16,37 @@ export function getMediaQuery(db, user, category) {
 
 export async function getFirstMediaItemWithImageMimetypeById(db, mediaId) {
     const media = await db('Media')
-        .join('Mimetype', 'Media.mimetype_id', 'Mimetype.id')
+        .join('Mimetype', 'Media.mimetypeId', 'Mimetype.id')
         .where('Media.id', mediaId)
         .andWhere('Mimetype.category', 'IMAGE')
         .first();
     return media;
 }
 
-export async function insertMedia(db, user, mediaAdminOnly, input) {
-    return await db('Media').insert({
+export async function insertMedia(db, user, mediaAdminOnly, input, mimetypeId) {
+    const mediaData = {
         title: input.title,
         description: input.description,
         url: input.url,
-        mimetypeId: await db('Mimetype').select('id').where('type', input.mimetype).first(),
+        mimetypeId,
         thumbnail: input.thumbnail,
         userId: user.userId,
-        adminOnly: mediaAdminOnly
-    }).returning('id');
+        adminOnly: mediaAdminOnly,
+        filename: input.filename,
+        filesize: input.filesize,
+        uploaded: input.uploaded,
+        user_extension: input.user_extension,
+        created: moment().utc().toISOString(),
+        updated: moment().utc().toISOString()
+    };
+
+    await db('Media').insert(mediaData);
+
+    const insertedMedia = await db('Media')
+        .where(mediaData)
+        .first();
+
+    return [insertedMedia.id];
 }
 
 export function getMediaById(db, mediaId) {
@@ -57,8 +73,8 @@ export function deleteMediaById(db, id) {
     return db('Media').where('id', id).del();
 }
 
-export function addAdminOnlyRestriction(userSession, mediaQuery) {
-    if (!userSession.admin) {
+export function addAdminOnlyRestriction(adminFlag, mediaQuery) {
+    if (!adminFlag) {
         mediaQuery = mediaQuery.where('Media.adminOnly', false);
     }
     return mediaQuery;

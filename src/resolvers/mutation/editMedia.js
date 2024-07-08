@@ -1,31 +1,37 @@
+// noinspection ExceptionCaughtLocallyJS
+
 const editMedia = async (_, { input }, { db, model, utils, token }) => {
-    await model.Session.validateToken(db, token);
-    const user = await model.User.getUserFromToken(db, token);
+    try {
+        // Validate the user session and get the user information
+        const user = await utils.validateSessionAndUser(db, model, utils, token);
+        if (!user) {
+            throw new Error('User validation failed');
+        }
 
-    const { id, title, description, url, mimetype, thumbnail, adminOnly } = input;
+        // Get the mimetype ID if mimetype is provided
+        const mimetypeId = input.mimetype ? await utils.getMimetypeId(db, model, input.mimetype) : null;
 
-    const media = await model.Media.getMediaById(db, id);
-    if (!media) {
-        throw new Error('Media not found');
+        // Get the current time in UTC format
+        const updated = utils.moment().utc().toISOString();
+
+        // Build the updated media object
+        const updatedMedia = utils.buildUpdatedMedia(input, mimetypeId, updated, user);
+
+        // Update the media record by ID
+        await model.Media.updateMediaById(db, input.id, updatedMedia);
+
+        // Retrieve and return the updated media record
+        const media = await model.Media.getMediaById(db, input.id);
+        if (!media) {
+            throw new Error('Media not found after update');
+        }
+
+        return media;
+    } catch (error) {
+        // Handle any errors that occur during the process
+        console.error('Error editing media:', error);
+        throw new Error(error.message); // Throw the specific error message
     }
-
-    const mimetypeFunc = await model.Mimetype.getMimetypeIdByType(db, mimetype);
-    const updatedMedia = {
-        ...(title && { title }),
-        ...(description && { description }),
-        ...(url && { url }),
-        ...(mimetype && { mimetype_id: mimetypeFunc.id }),
-        ...(thumbnail && { thumbnail }),
-        updated: db.fn.now()  // Set the updated column to the current timestamp
-    };
-
-    if (user.admin && adminOnly !== undefined) {
-        updatedMedia.adminOnly = adminOnly;
-    }
-
-    await model.Media.updateMediaById(db, id, updatedMedia);
-
-    return model.Media.getMediaById(db, id);
 };
 
 export default editMedia;

@@ -13,12 +13,12 @@ const registerUser = async (parent, { input }, { db, model, utils, token }) => {
         username,
         password: hashedPassword,
         admin: isFirstUser,  // first user is admin
-        created: db.fn.now(),
+        created: utils.moment().utc().toISOString(),
         avatar: null,
         activated: isFirstUser,  // first user is activated
         activation_key: utils.uuidv4(),
         banned: false,
-        updated: db.fn.now()
+        updated: utils.moment().utc().toISOString()
     };
 
     const [insertedUser] = await model.User.createNewUser(db, newUser);

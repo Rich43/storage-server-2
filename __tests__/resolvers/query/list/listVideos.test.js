@@ -12,12 +12,12 @@ import {
     mockPerformFilter,
     mockPerformPagination,
     mockPerformSorting,
-} from './commonMocks'; // Adjust the path as necessary
+} from '../../commonMocks.js'; // Adjust the path as necessary
 
 const assertCommonMocks = async (result, expectedQuery) => {
     await expect(result).resolves.toEqual(expectedQuery);
 
-    expect(mockValidateToken).toHaveBeenCalledWith(db, token);
+    expect(mockValidateToken).toHaveBeenCalledWith(db, utils, token);
     expect(mockGetUserFromToken).toHaveBeenCalledWith(db, token);
     expect(mockGetMediaQuery).toHaveBeenCalledWith(db, expect.any(Object), 'VIDEO');
     expect(mockPerformFilter).toHaveBeenCalledWith(expect.anything(), expect.anything());

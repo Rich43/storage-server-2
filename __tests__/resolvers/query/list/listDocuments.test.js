@@ -2,22 +2,26 @@ import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import listDocuments from '../../../../src/resolvers/query/list/listDocuments';
 import {
     db,
-    model,
-    utils,
-    token,
-    setupMocks,
-    mockValidateToken,
-    mockGetUserFromToken,
     mockGetMediaQuery,
+    mockGetUserFromToken,
     mockPerformFilter,
     mockPerformPagination,
     mockPerformSorting,
-} from './commonMocks'; // Adjust the path as necessary
+    mockValidateToken,
+    model,
+    setupMocks,
+    token,
+    utils
+} from '../../commonMocks.js';
 
-const assertCommonMocks = async (result, expectedQuery) => {
-    await expect(result).resolves.toEqual(expectedQuery);
+const assertCommonMocks = async (result, expectedQuery, error = null) => {
+    if (error) {
+        await expect(result).rejects.toThrow(error);
+    } else {
+        await expect(result).resolves.toEqual(expectedQuery);
+    }
 
-    expect(mockValidateToken).toHaveBeenCalledWith(db, token);
+    expect(mockValidateToken).toHaveBeenCalledWith(db, utils, token);
     expect(mockGetUserFromToken).toHaveBeenCalledWith(db, token);
     expect(mockGetMediaQuery).toHaveBeenCalledWith(db, expect.any(Object), 'DOCUMENT');
     expect(mockPerformFilter).toHaveBeenCalledWith(expect.anything(), expect.anything());
@@ -45,7 +49,7 @@ describe('listDocuments', () => {
     });
 
     it('should list documents with applied filters', async () => {
-        const filter = { name: 'Document 1' };
+        const filter = { name: 'Document' };
         const pagination = {};
         const sorting = {};
         const user = { id: 1, admin: false };
@@ -75,7 +79,7 @@ describe('listDocuments', () => {
     it('should list documents with sorting', async () => {
         const filter = {};
         const pagination = {};
-        const sorting = { field: 'name', direction: 'asc' };
+        const sorting = { field: 'name', order: 'asc' };
         const user = { id: 1, admin: false };
         const mediaQuery = [{ id: 1, name: 'Document 1' }];
 

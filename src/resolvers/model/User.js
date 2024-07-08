@@ -1,5 +1,7 @@
 // noinspection UnnecessaryLocalVariableJS
 
+import moment from "moment";
+
 export const validateUser = async (db, username, hashedPassword) => {
     return await db('User').where({ username, password: hashedPassword }).first();
 };
@@ -30,7 +32,7 @@ export async function updateActivationKey(db, userId) {
         .update({
             activated: true,
             activation_key: null,
-            updated: db.fn.now()
+            updated: moment().utc().toISOString()
         });
 }
 
@@ -43,7 +45,25 @@ export async function getUserCount(db) {
 }
 
 export async function createNewUser(db, newUser) {
-    return await db('User').insert(newUser).returning('*');
+    const userData = {
+        username: newUser.username,
+        password: newUser.password,
+        admin: newUser.admin || false,
+        avatar: newUser.avatar || null,
+        activated: newUser.activated || false,
+        activation_key: newUser.activation_key,
+        banned: newUser.banned || false,
+        created: moment().utc().toISOString(),
+        updated: moment().utc().toISOString()
+    };
+
+    await db('User').insert(userData);
+
+    const insertedUser = await db('User')
+        .where(userData)
+        .first();
+
+    return insertedUser;
 }
 
 export async function updateUserAvatar(db, userId, mediaId) {
@@ -51,6 +71,6 @@ export async function updateUserAvatar(db, userId, mediaId) {
         .where('id', userId)
         .update({
             avatar: mediaId,
-            updated: db.fn.now()
+            updated: moment().utc().toISOString()
         });
 }

@@ -4,7 +4,7 @@
   "description": "Attempt a different approach",
   "main": "index.js",
   "scripts": {
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --testPathIgnorePatterns=commonMocks.js --coverage --verbose",
     "clean": "rimraf dist",
     "start": "cd src && node index",
     "migrate:make": "npx knex migrate:make --knexfile knexfile.cjs",
@@ -39,7 +39,9 @@
     "moment": "^2.30.1",
     "mysql2": "^3.10.0",
     "natural": "^7.0.6",
+    "sqlite3": "^5.1.7",
     "stopword": "^3.0.1",
+    "testcontainers": "^10.10.0",
     "uuid": "^9.0.1",
     "winston": "^3.13.0"
   },

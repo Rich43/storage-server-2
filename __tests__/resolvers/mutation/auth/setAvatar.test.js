@@ -1,112 +1,117 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import setAvatar from '../../../../src/resolvers/mutation/auth/setAvatar';
-import { CustomError } from '../../../../src/resolvers/utils/CustomError';
+import {
+    db,
+    mockGetFirstMediaItemWithImageMimetypeById,
+    mockGetUserById,
+    mockUpdateUserAvatar,
+    mockValidateToken,
+    model,
+    token,
+    utils
+} from '../../commonMocks';
 
-// Mock dependencies
-const mockValidateToken = jest.fn();
-const mockGetFirstMediaItemWithImageMimetypeById = jest.fn();
-const mockUpdateUserAvatar = jest.fn();
-const mockGetUserById = jest.fn();
-
-const db = {}; // Mock database object
-const model = {
-    Session: {
-        validateToken: mockValidateToken,
-    },
-    Media: {
-        getFirstMediaItemWithImageMimetypeById: mockGetFirstMediaItemWithImageMimetypeById,
-    },
-    User: {
-        updateUserAvatar: mockUpdateUserAvatar,
-        getUserById: mockGetUserById,
-    },
+const setupSetAvatarMocks = (isValidToken, session, media, updatedUser, validateTokenError = null) => {
+    if (validateTokenError) {
+        mockValidateToken.mockRejectedValue(new Error(validateTokenError));
+    } else {
+        mockValidateToken.mockResolvedValue(isValidToken ? session : null);
+    }
+    mockGetFirstMediaItemWithImageMimetypeById.mockResolvedValue(media);
+    mockUpdateUserAvatar.mockResolvedValue(true);
+    mockGetUserById.mockResolvedValue(updatedUser);
 };
-const utils = {}; // Mock utilities object if needed
-const token = 'mock-token'; // Mock token object
+
+const assertSetAvatarMocks = async (result, media, updatedUser, error = null) => {
+    if (error) {
+        await expect(result).rejects.toThrow(error);
+    } else {
+        await expect(result).resolves.toEqual(updatedUser);
+    }
+
+    expect(mockValidateToken).toHaveBeenCalledWith(db, utils, token);
+
+    if (!error) {
+        expect(mockGetFirstMediaItemWithImageMimetypeById).toHaveBeenCalledWith(db, expect.any(Number));
+        expect(mockUpdateUserAvatar).toHaveBeenCalledWith(db, expect.any(Number), expect.any(Number));
+        expect(mockGetUserById).toHaveBeenCalledWith(db, expect.any(Number));
+    } else if (error.message === 'Media must have image mime type category') {
+        expect(mockGetFirstMediaItemWithImageMimetypeById).toHaveBeenCalledWith(db, expect.any(Number));
+        expect(mockUpdateUserAvatar).not.toHaveBeenCalled();
+        expect(mockGetUserById).not.toHaveBeenCalled();
+    } else if (error.message === 'Invalid session token') {
+        expect(mockGetFirstMediaItemWithImageMimetypeById).not.toHaveBeenCalled();
+        expect(mockUpdateUserAvatar).not.toHaveBeenCalled();
+        expect(mockGetUserById).not.toHaveBeenCalled();
+    } else if (error.message === 'Failed to update avatar') {
+        expect(mockGetFirstMediaItemWithImageMimetypeById).toHaveBeenCalledWith(db, expect.any(Number));
+        expect(mockUpdateUserAvatar).toHaveBeenCalledWith(db, expect.any(Number), expect.any(Number));
+        expect(mockGetUserById).not.toHaveBeenCalled();
+    }
+};
 
 describe('setAvatar', () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    it('should set user avatar successfully with valid token and mediaId', async () => {
-        const mediaId = 'valid-media-id';
+    it('should set avatar successfully', async () => {
+        const mediaId = 1;
         const session = { userId: 1 };
-        const media = { id: mediaId, mimeType: 'image/png' };
-        const updatedUser = { id: 1, username: 'validUser', avatar: mediaId };
+        const media = { id: 1, mimeType: 'image/png' };
+        const updatedUser = { id: 1, avatar: mediaId };
 
-        mockValidateToken.mockResolvedValue(session);
-        mockGetFirstMediaItemWithImageMimetypeById.mockResolvedValue(media);
-        mockUpdateUserAvatar.mockResolvedValue(true);
-        mockGetUserById.mockResolvedValue(updatedUser);
+        setupSetAvatarMocks(true, session, media, updatedUser);
 
-        const result = await setAvatar(null, { mediaId }, { db, model, utils, token });
+        const result = setAvatar(null, { mediaId }, { db, model, utils, token });
 
-        expect(mockValidateToken).toHaveBeenCalledWith(db, token);
-        expect(mockGetFirstMediaItemWithImageMimetypeById).toHaveBeenCalledWith(db, mediaId);
-        expect(mockUpdateUserAvatar).toHaveBeenCalledWith(db, session.userId, mediaId);
-        expect(mockGetUserById).toHaveBeenCalledWith(db, session.userId);
-        expect(result).toEqual(updatedUser);
+        await assertSetAvatarMocks(result, media, updatedUser);
     });
 
-    it('should throw an error if not authenticated', async () => {
-        mockValidateToken.mockResolvedValue(null);
+    it('should throw an error if media is not an image', async () => {
+        const mediaId = 1;
+        const session = { userId: 1 };
+        const media = null;
 
-        try {
-            await setAvatar(null, { mediaId: 'valid-media-id' }, { db, model, utils, token });
-        } catch (error) {
-            expect(error).toBeInstanceOf(CustomError);
-            expect(error.message).toBe('Failed to set avatar');
-            expect(error.originalError.message).toBe('Not authenticated');
-        }
+        setupSetAvatarMocks(true, session, media, null);
 
-        expect(mockValidateToken).toHaveBeenCalledWith(db, token);
-        expect(mockGetFirstMediaItemWithImageMimetypeById).not.toHaveBeenCalled();
-        expect(mockUpdateUserAvatar).not.toHaveBeenCalled();
-        expect(mockGetUserById).not.toHaveBeenCalled();
+        const result = setAvatar(null, { mediaId }, { db, model, utils, token });
+
+        await assertSetAvatarMocks(result, media, null, new Error('Media must have image mime type category'));
     });
 
-    it('should throw an error if media does not have image mime type', async () => {
-        const mediaId = 'invalid-media-id';
-        const session = { userId: 1 };
+    it('should throw an error if user is not authenticated', async () => {
+        const mediaId = 1;
 
-        mockValidateToken.mockResolvedValue(session);
-        mockGetFirstMediaItemWithImageMimetypeById.mockResolvedValue(null);
+        setupSetAvatarMocks(false, null, null, null);
 
-        try {
-            await setAvatar(null, { mediaId }, { db, model, utils, token });
-        } catch (error) {
-            expect(error).toBeInstanceOf(CustomError);
-            expect(error.message).toBe('Failed to set avatar');
-            expect(error.originalError.message).toBe('Media must have image mime type category');
-        }
+        const result = setAvatar(null, { mediaId }, { db, model, utils, token });
 
-        expect(mockValidateToken).toHaveBeenCalledWith(db, token);
-        expect(mockGetFirstMediaItemWithImageMimetypeById).toHaveBeenCalledWith(db, mediaId);
-        expect(mockUpdateUserAvatar).not.toHaveBeenCalled();
-        expect(mockGetUserById).not.toHaveBeenCalled();
+        await assertSetAvatarMocks(result, null, null, new Error('Invalid session token'));
     });
 
-    it('should handle errors during user avatar update', async () => {
-        const mediaId = 'valid-media-id';
+    it('should throw an error if updating avatar fails', async () => {
+        const mediaId = 1;
         const session = { userId: 1 };
-        const media = { id: mediaId, mimeType: 'image/png' };
+        const media = { id: 1, mimeType: 'image/png' };
+        const updatedUser = null;
 
-        mockValidateToken.mockResolvedValue(session);
-        mockGetFirstMediaItemWithImageMimetypeById.mockResolvedValue(media);
-        mockUpdateUserAvatar.mockRejectedValue(new Error('Database error'));
+        setupSetAvatarMocks(true, session, media, updatedUser);
 
-        try {
-            await setAvatar(null, { mediaId }, { db, model, utils, token });
-        } catch (error) {
-            expect(error).toBeInstanceOf(CustomError);
-            expect(error.message).toBe('Failed to set avatar');
-            expect(error.originalError.message).toBe('Database error');
-        }
+        mockUpdateUserAvatar.mockRejectedValue(new Error('Failed to update avatar'));
 
-        expect(mockValidateToken).toHaveBeenCalledWith(db, token);
-        expect(mockGetFirstMediaItemWithImageMimetypeById).toHaveBeenCalledWith(db, mediaId);
-        expect(mockUpdateUserAvatar).toHaveBeenCalledWith(db, session.userId, mediaId);
-        expect(mockGetUserById).not.toHaveBeenCalled();
+        const result = setAvatar(null, { mediaId }, { db, model, utils, token });
+
+        await assertSetAvatarMocks(result, media, null, new Error('Failed to update avatar'));
+    });
+
+    it('should throw a general error if validateToken throws an unexpected error', async () => {
+        const mediaId = 1;
+
+        setupSetAvatarMocks(false, null, null, null, 'Unexpected error');
+
+        const result = setAvatar(null, { mediaId }, { db, model, utils, token });
+
+        await assertSetAvatarMocks(result, null, null, new Error('Unexpected error'));
     });
 });

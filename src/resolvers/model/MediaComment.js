@@ -1,5 +1,9 @@
+// noinspection UnnecessaryLocalVariableJS
+
 export async function insertMediaComment(db, newComment) {
-    return await db('MediaComment').insert(newComment).returning('*');
+    const id = await db('MediaComment').insert(newComment);
+    let result = await db('MediaComment').where('id', id[0]).first();
+    return result;
 }
 
 export async function getMediaCommentById(db, id) {
@@ -14,6 +18,6 @@ export function updateMediaCommentById(db, id, updatedComment) {
     return db('MediaComment').where('id', id).update(updatedComment);
 }
 
-export function dbListMediaComments(db, mediaId) {
-    return db('MediaComment').where('media_id', mediaId);
+export function getMediaCommentsByMediaId(db, mediaId) {
+    return db('MediaComment').where('mediaId', mediaId);
 }

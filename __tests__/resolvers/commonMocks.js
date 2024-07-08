@@ -2,13 +2,20 @@ import { jest } from "@jest/globals";
 
 const mockValidateToken = jest.fn();
 const mockGetUserFromToken = jest.fn();
+const mockInsertMediaComment = jest.fn();
 const mockGetMediaQuery = jest.fn();
 const mockPerformFilter = jest.fn();
 const mockPerformPagination = jest.fn();
 const mockPerformSorting = jest.fn();
 const mockGetMediaById = jest.fn();
+const mockGetMimetypeIdByType = jest.fn();
+const mockUpdateMediaById = jest.fn();
 const mockGetMediaKeywords = jest.fn();
 const mockAddRelatedKeywords = jest.fn();
+const mockGetFirstMediaItemWithImageMimetypeById = jest.fn();
+const mockUpdateUserAvatar = jest.fn();
+const mockGetUserById = jest.fn();
+const mockDeleteMediaById = jest.fn();
 
 const db = {}; // Mock database object
 const model = {
@@ -17,11 +24,22 @@ const model = {
     },
     User: {
         getUserFromToken: mockGetUserFromToken,
+        updateUserAvatar: mockUpdateUserAvatar,
+        getUserById: mockGetUserById,
+    },
+    MediaComment: {
+        insertMediaComment: mockInsertMediaComment,
     },
     Media: {
         getMediaQuery: mockGetMediaQuery,
         getMediaById: mockGetMediaById,
         addRelatedKeywords: mockAddRelatedKeywords,
+        getFirstMediaItemWithImageMimetypeById: mockGetFirstMediaItemWithImageMimetypeById,
+        deleteMediaById: mockDeleteMediaById,
+        updateMediaById: mockUpdateMediaById,
+    },
+    Mimetype: {
+        getMimetypeIdByType: mockGetMimetypeIdByType,
     }
 };
 const utils = {
@@ -49,11 +67,18 @@ export {
     setupMocks,
     mockValidateToken,
     mockGetUserFromToken,
+    mockInsertMediaComment,
     mockGetMediaQuery,
     mockPerformFilter,
     mockPerformPagination,
     mockPerformSorting,
     mockGetMediaById,
+    mockGetMimetypeIdByType,
     mockGetMediaKeywords,
     mockAddRelatedKeywords,
+    mockGetFirstMediaItemWithImageMimetypeById,
+    mockUpdateUserAvatar,
+    mockGetUserById,
+    mockDeleteMediaById,
+    mockUpdateMediaById,
 };

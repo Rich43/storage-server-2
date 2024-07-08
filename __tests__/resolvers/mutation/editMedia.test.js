@@ -1,126 +1,84 @@
-// noinspection JSUnusedLocalSymbols,JSCheckFunctionSignatures
-
-import { beforeEach, describe, expect, it, jest } from "@jest/globals";
-import editMedia from '../../../src/resolvers/mutation/editMedia';
-
-// Mock dependencies
-const mockValidateToken = jest.fn();
-const mockGetUserFromToken = jest.fn();
-const mockGetMediaById = jest.fn();
-const mockGetMimetypeIdByType = jest.fn();
-const mockUpdateMediaById = jest.fn();
-const mockNow = jest.fn();
-
-const db = {
-    fn: {
-        now: mockNow
-    }
-}; // Mock database object
-const model = {
-    Session: {
-        validateToken: mockValidateToken,
-    },
-    User: {
-        getUserFromToken: mockGetUserFromToken,
-    },
-    Media: {
-        getMediaById: mockGetMediaById,
-        updateMediaById: mockUpdateMediaById,
-    },
-    Mimetype: {
-        getMimetypeIdByType: mockGetMimetypeIdByType,
-    }
-};
-const utils = {}; // Mock utilities object if needed
-const token = 'mock-token'; // Mock token object
-
-const commonMocks = (user, media, mimetypeFunc) => {
-    mockValidateToken.mockResolvedValue(true);
-    mockGetUserFromToken.mockResolvedValue(user);
-    mockGetMediaById.mockResolvedValue(media);
-    mockGetMimetypeIdByType.mockResolvedValue(mimetypeFunc);
-    mockNow.mockReturnValue(new Date());
-};
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import editMedia from "../../../src/resolvers/mutation/editMedia.js";
 
 describe('editMedia', () => {
+    let mockDb, mockModel, mockUtils, mockToken;
+
     beforeEach(() => {
-        jest.clearAllMocks();
+        mockDb = {}; // Mock database object
+        mockModel = {
+            Media: {
+                updateMediaById: jest.fn(),
+                getMediaById: jest.fn(),
+            },
+        };
+        mockUtils = {
+            validateSessionAndUser: jest.fn(),
+            getMimetypeId: jest.fn(),
+            moment: jest.fn().mockReturnValue({
+                utc: jest.fn().mockReturnValue({
+                    toISOString: jest.fn().mockReturnValue('2024-07-08T00:00:00.000Z'),
+                }),
+            }),
+            buildUpdatedMedia: jest.fn(),
+        };
+        mockToken = 'mockToken';
     });
 
     it('should edit media successfully', async () => {
-        const input = { id: 1, title: 'New Title', description: 'New Description', url: 'new-url', mimetype: 'image/png', thumbnail: 'new-thumbnail' };
-        const user = { id: 1, admin: true };
-        const media = { id: 1, title: 'Old Title', description: 'Old Description', url: 'old-url', mimetype_id: 1, thumbnail: 'old-thumbnail', adminOnly: false };
-        const mimetypeFunc = { id: 2 };
+        const input = {
+            id: 1,
+            mimetype: 'image/png',
+            // other input fields
+        };
+        const user = { id: 1, name: 'Test User' };
+        const mimetypeId = 123;
+        const updatedMedia = { /* built updated media object */ };
 
-        commonMocks(user, media, mimetypeFunc);
-        mockUpdateMediaById.mockResolvedValue(true);
+        mockUtils.validateSessionAndUser.mockResolvedValue(user);
+        mockUtils.getMimetypeId.mockResolvedValue(mimetypeId);
+        mockUtils.buildUpdatedMedia.mockReturnValue(updatedMedia);
+        mockModel.Media.updateMediaById.mockResolvedValue();
+        mockModel.Media.getMediaById.mockResolvedValue(updatedMedia);
 
-        const result = await editMedia(null, { input }, { db, model, utils, token });
+        const result = await editMedia(null, { input }, { db: mockDb, model: mockModel, utils: mockUtils, token: mockToken });
 
-        expect(mockValidateToken).toHaveBeenCalledWith(db, token);
-        expect(mockGetUserFromToken).toHaveBeenCalledWith(db, token);
-        expect(mockGetMediaById).toHaveBeenCalledWith(db, input.id);
-        expect(mockGetMimetypeIdByType).toHaveBeenCalledWith(db, input.mimetype);
-        expect(mockUpdateMediaById).toHaveBeenCalledWith(db, input.id, {
-            title: input.title,
-            description: input.description,
-            url: input.url,
-            mimetype_id: mimetypeFunc.id,
-            thumbnail: input.thumbnail,
-            updated: expect.any(Date)
-        });
-        expect(mockGetMediaById).toHaveBeenCalledWith(db, input.id);
+        expect(mockUtils.validateSessionAndUser).toHaveBeenCalledWith(mockDb, mockModel, mockUtils, mockToken);
+        expect(mockUtils.getMimetypeId).toHaveBeenCalledWith(mockDb, mockModel, input.mimetype);
+        expect(mockUtils.buildUpdatedMedia).toHaveBeenCalledWith(input, mimetypeId, '2024-07-08T00:00:00.000Z', user);
+        expect(mockModel.Media.updateMediaById).toHaveBeenCalledWith(mockDb, input.id, updatedMedia);
+        expect(mockModel.Media.getMediaById).toHaveBeenCalledWith(mockDb, input.id);
+        expect(result).toEqual(updatedMedia);
     });
 
-    it('should throw an error if media not found', async () => {
+    it('should throw an error if user validation fails', async () => {
+        mockUtils.validateSessionAndUser.mockResolvedValue(null);
+
+        await expect(editMedia(null, { input: {} }, { db: mockDb, model: mockModel, utils: mockUtils, token: mockToken }))
+            .rejects
+            .toThrow('User validation failed');
+    });
+
+    it('should throw an error if media not found after update', async () => {
         const input = { id: 1 };
-        const user = { id: 1, admin: true };
 
-        mockValidateToken.mockResolvedValue(true);
-        mockGetUserFromToken.mockResolvedValue(user);
-        mockGetMediaById.mockResolvedValue(null);
+        mockUtils.validateSessionAndUser.mockResolvedValue({ id: 1, name: 'Test User' });
+        mockModel.Media.updateMediaById.mockResolvedValue();
+        mockModel.Media.getMediaById.mockResolvedValue(null);
 
-        await expect(editMedia(null, { input }, { db, model, utils, token })).rejects.toThrow('Media not found');
-
-        expect(mockValidateToken).toHaveBeenCalledWith(db, token);
-        expect(mockGetUserFromToken).toHaveBeenCalledWith(db, token);
-        expect(mockGetMediaById).toHaveBeenCalledWith(db, input.id);
-        expect(mockUpdateMediaById).not.toHaveBeenCalled();
+        await expect(editMedia(null, { input }, { db: mockDb, model: mockModel, utils: mockUtils, token: mockToken }))
+            .rejects
+            .toThrow('Media not found after update');
     });
 
-    it('should update adminOnly field for admin users', async () => {
-        const input = { id: 1, adminOnly: true };
-        const user = { id: 1, admin: true };
-        const media = { id: 1, adminOnly: false };
-        const mimetypeFunc = { id: 2 };
+    it('should handle unexpected errors', async () => {
+        const input = { id: 1 };
+        const errorMessage = 'Unexpected error';
 
-        commonMocks(user, media, mimetypeFunc);
-        mockUpdateMediaById.mockResolvedValue(true);
+        mockUtils.validateSessionAndUser.mockRejectedValue(new Error(errorMessage));
 
-        const result = await editMedia(null, { input }, { db, model, utils, token });
-
-        expect(mockUpdateMediaById).toHaveBeenCalledWith(db, input.id, {
-            adminOnly: input.adminOnly,
-            updated: expect.any(Date)
-        });
-        expect(result).toEqual(media);
-    });
-
-    it('should not update adminOnly field for non-admin users', async () => {
-        const input = { id: 1, adminOnly: true };
-        const user = { id: 1, admin: false };
-        const media = { id: 1, adminOnly: false };
-        const mimetypeFunc = { id: 2 };
-
-        commonMocks(user, media, mimetypeFunc);
-        mockUpdateMediaById.mockResolvedValue(true);
-
-        const result = await editMedia(null, { input }, { db, model, utils, token });
-
-        expect(mockUpdateMediaById).toHaveBeenCalledWith(db, input.id, {
-            updated: expect.any(Date)
-        });
-        expect(result).toEqual(media);
+        await expect(editMedia(null, { input }, { db: mockDb, model: mockModel, utils: mockUtils, token: mockToken }))
+            .rejects
+            .toThrow(errorMessage);
     });
 });

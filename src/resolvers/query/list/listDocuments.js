@@ -1,5 +1,5 @@
 const listDocuments = async (_, { filter, pagination, sorting }, { db, model, utils, token }) => {
-    await model.Session.validateToken(db, token);
+    await model.Session.validateToken(db, utils, token); // recently modified to take three arguments
     const user = await model.User.getUserFromToken(db, token);
     let mediaQuery = model.Media.getMediaQuery(db, user, 'DOCUMENT');
     mediaQuery = utils.performFilter(filter, mediaQuery);

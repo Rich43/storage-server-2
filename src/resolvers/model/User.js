@@ -1,7 +1,5 @@
 // noinspection UnnecessaryLocalVariableJS
 
-import moment from "moment";
-
 export const validateUser = async (db, username, hashedPassword) => {
     return await db('User').where({ username, password: hashedPassword }).first();
 };
@@ -26,13 +24,13 @@ export async function findActivationKey(db, activationCode) {
     return user;
 }
 
-export async function updateActivationKey(db, userId) {
+export async function updateActivationKey(db, utils, userId) {
     await db('User')
         .where('id', userId)
         .update({
             activated: true,
             activation_key: null,
-            updated: moment().utc().toISOString()
+            updated: utils.moment().utc().toISOString()
         });
 }
 
@@ -44,7 +42,7 @@ export async function getUserCount(db) {
     return await db('User').count('id as count');
 }
 
-export async function createNewUser(db, newUser) {
+export async function createNewUser(db, utils, newUser) {
     const userData = {
         username: newUser.username,
         password: newUser.password,
@@ -53,8 +51,8 @@ export async function createNewUser(db, newUser) {
         activated: newUser.activated || false,
         activation_key: newUser.activation_key,
         banned: newUser.banned || false,
-        created: moment().utc().toISOString(),
-        updated: moment().utc().toISOString()
+        created: utils.moment().utc().toISOString(),
+        updated: utils.moment().utc().toISOString()
     };
 
     await db('User').insert(userData);
@@ -66,11 +64,11 @@ export async function createNewUser(db, newUser) {
     return insertedUser;
 }
 
-export async function updateUserAvatar(db, userId, mediaId) {
+export async function updateUserAvatar(db, utils, userId, mediaId) {
     await db('User')
         .where('id', userId)
         .update({
             avatar: mediaId,
-            updated: moment().utc().toISOString()
+            updated: utils.moment().utc().toISOString()
         });
 }

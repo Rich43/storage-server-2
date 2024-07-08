@@ -12,7 +12,7 @@ import {
     mockPerformFilter,
     mockPerformPagination,
     mockPerformSorting,
-} from './commonMocks'; // Adjust the path as necessary
+} from '../../commonMocks.js'; // Adjust the path as necessary
 
 const assertCommonMocks = async (result, expectedQuery) => {
     await expect(result).resolves.toEqual(expectedQuery);

@@ -9,6 +9,7 @@ const mockPerformSorting = jest.fn();
 const mockGetMediaById = jest.fn();
 const mockGetMediaKeywords = jest.fn();
 const mockAddRelatedKeywords = jest.fn();
+const mockDeleteMediaById = jest.fn();
 
 const db = {}; // Mock database object
 const model = {
@@ -22,6 +23,7 @@ const model = {
         getMediaQuery: mockGetMediaQuery,
         getMediaById: mockGetMediaById,
         addRelatedKeywords: mockAddRelatedKeywords,
+        deleteMediaById: mockDeleteMediaById,
     }
 };
 const utils = {
@@ -56,4 +58,5 @@ export {
     mockGetMediaById,
     mockGetMediaKeywords,
     mockAddRelatedKeywords,
+    mockDeleteMediaById,
 };

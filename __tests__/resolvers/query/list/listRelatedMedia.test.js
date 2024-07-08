@@ -7,7 +7,7 @@ import {
     utils,
     token,
     setupMocks,
-} from './commonMocks'; // Adjust the path as necessary
+} from '../../commonMocks.js'; // Adjust the path as necessary
 
 const mockGetMediaById = jest.fn();
 const mockGetMediaKeywords = jest.fn();

@@ -12,7 +12,7 @@ import {
     setupMocks,
     token,
     utils
-} from './commonMocks';
+} from '../../commonMocks.js';
 
 const assertCommonMocks = async (result, expectedQuery, error = null) => {
     if (error) {

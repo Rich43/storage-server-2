@@ -149,9 +149,9 @@ describe('Media.js integration tests', () => {
     });
 
     it('should add adminOnly restriction for non-admin user', async () => {
-        const userSession = { admin: false };
+        const adminFlag = false;
         let query = db('media').where('id', 1);
-        query = addAdminOnlyRestriction(userSession, query);
+        query = addAdminOnlyRestriction(adminFlag, query);
         const sql = query.toString();
         expect(sql).toContain('`Media`.`adminOnly` = false');
     });

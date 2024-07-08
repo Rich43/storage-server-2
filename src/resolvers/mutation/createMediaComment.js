@@ -1,8 +1,8 @@
 // noinspection UnnecessaryLocalVariableJS
 
 export const createMediaComment = async (_, { input }, { db, model, utils, token }) => {
-    await utils.validateToken(db, utils, token);
-    const user = await utils.getUserFromToken(db, token);
+    await model.Session.validateToken(db, utils, token);
+    const user = await model.User.getUserFromToken(db, token);
 
     const { mediaId, comment } = input;
 

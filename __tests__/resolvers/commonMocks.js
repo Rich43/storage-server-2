@@ -2,6 +2,7 @@ import { jest } from "@jest/globals";
 
 const mockValidateToken = jest.fn();
 const mockGetUserFromToken = jest.fn();
+const mockInsertMediaComment = jest.fn();
 const mockGetMediaQuery = jest.fn();
 const mockPerformFilter = jest.fn();
 const mockPerformPagination = jest.fn();
@@ -21,8 +22,9 @@ const model = {
     },
     User: {
         getUserFromToken: mockGetUserFromToken,
-        updateUserAvatar: mockUpdateUserAvatar,
-        getUserById: mockGetUserById,
+    },
+    MediaComment: {
+        insertMediaComment: mockInsertMediaComment,
     },
     Media: {
         getMediaQuery: mockGetMediaQuery,
@@ -30,8 +32,6 @@ const model = {
         addRelatedKeywords: mockAddRelatedKeywords,
         getFirstMediaItemWithImageMimetypeById: mockGetFirstMediaItemWithImageMimetypeById,
         deleteMediaById: mockDeleteMediaById,
-    },
-    MediaComment: {
     },
 };
 const utils = {
@@ -59,6 +59,7 @@ export {
     setupMocks,
     mockValidateToken,
     mockGetUserFromToken,
+    mockInsertMediaComment,
     mockGetMediaQuery,
     mockPerformFilter,
     mockPerformPagination,

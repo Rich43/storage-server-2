@@ -29,7 +29,7 @@ export async function updateActivationKey(db, utils, userId) {
         .where('id', userId)
         .update({
             activated: true,
-            activation_key: null,
+            activation_key: '',
             updated: utils.moment().utc().toISOString()
         });
 }

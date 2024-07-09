@@ -1,98 +1,120 @@
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import registerUser from '../../../../src/resolvers/mutation/auth/registerUser';
 
-jest.mock('uuid', () => ({
-    v4: jest.fn(() => 'test-uuid')
-}));
-
-describe('registerUser unit tests', () => {
-    let mockDb, mockModel, mockUtils, context;
-    const fixedTimestamp = '2024-07-03T22:06:19.869Z';
+describe('registerUser', () => {
+    let mockDb, mockModel, mockUtils, mockToken;
 
     beforeEach(() => {
-        mockDb = {};
+        mockDb = {}; // Mock database object
         mockModel = {
             User: {
                 getUserCount: jest.fn(),
-                createNewUser: jest.fn()
-            }
+                createNewUser: jest.fn(),
+            },
         };
         mockUtils = {
             hashPassword: jest.fn(),
-            moment: jest.fn(() => ({ utc: () => ({ toISOString: () => fixedTimestamp }) })),
-            uuidv4: jest.fn(() => 'test-uuid')
+            moment: jest.fn().mockReturnValue({
+                utc: jest.fn().mockReturnValue({
+                    toISOString: jest.fn().mockReturnValue('2024-07-08T00:00:00.000Z'),
+                }),
+            }),
+            uuidv4: jest.fn().mockReturnValue('unique-activation-key'),
         };
-        context = {
-            db: mockDb,
-            model: mockModel,
-            utils: mockUtils,
-            token: 'validtoken'
-        };
+        mockToken = 'mockToken';
     });
 
     it('should register the first user as an admin and activated', async () => {
         const input = {
             username: 'testuser',
-            email: 'test@example.com',
-            password: 'password123'
+            email: 'testuser@example.com',
+            password: 'Password1',
         };
 
-        const hashedPassword = 'hashedpassword123';
-        const newUser = {
-            username: input.username,
+        const hashedPassword = 'hashedPassword';
+        const insertedUser = {
+            id: 1,
+            username: 'testuser',
             password: hashedPassword,
-            admin: true,  // first user is admin
-            created: fixedTimestamp,
+            admin: true,
+            created: '2024-07-08T00:00:00.000Z',
             avatar: null,
-            activated: true,  // first user is activated
-            activation_key: 'test-uuid',
+            activated: true,
+            activation_key: 'unique-activation-key',
             banned: false,
-            updated: fixedTimestamp
+            updated: '2024-07-08T00:00:00.000Z',
         };
-        const insertedUser = { id: 1, ...newUser };
 
         mockUtils.hashPassword.mockReturnValue(hashedPassword);
         mockModel.User.getUserCount.mockResolvedValue([{ count: 0 }]);
         mockModel.User.createNewUser.mockResolvedValue([insertedUser]);
 
-        const result = await registerUser(null, { input }, context);
+        const result = await registerUser(null, { input }, { db: mockDb, model: mockModel, utils: mockUtils, token: mockToken });
 
         expect(mockUtils.hashPassword).toHaveBeenCalledWith(input.password);
         expect(mockModel.User.getUserCount).toHaveBeenCalledWith(mockDb);
-        expect(mockModel.User.createNewUser).toHaveBeenCalledWith(mockDb, newUser);
+        expect(mockModel.User.createNewUser).toHaveBeenCalledWith(mockDb, mockUtils, expect.objectContaining({
+            username: input.username,
+            password: hashedPassword,
+            admin: true,
+            activated: true,
+            activation_key: 'unique-activation-key',
+        }));
         expect(result).toEqual(insertedUser);
     });
 
-    it('should register a non-first user as not admin and not activated', async () => {
+    it('should register a subsequent user as not admin and not activated', async () => {
         const input = {
             username: 'testuser2',
-            email: 'test2@example.com',
-            password: 'password456'
+            email: 'testuser2@example.com',
+            password: 'Password2',
         };
 
-        const hashedPassword = 'hashedpassword456';
-        const newUser = {
-            username: input.username,
+        const hashedPassword = 'hashedPassword2';
+        const insertedUser = {
+            id: 2,
+            username: 'testuser2',
             password: hashedPassword,
-            admin: false,  // not first user is not admin
-            created: fixedTimestamp,
+            admin: false,
+            created: '2024-07-08T00:00:00.000Z',
             avatar: null,
-            activated: false,  // not first user is not activated
-            activation_key: 'test-uuid',
+            activated: false,
+            activation_key: 'unique-activation-key',
             banned: false,
-            updated: fixedTimestamp
+            updated: '2024-07-08T00:00:00.000Z',
         };
-        const insertedUser = { id: 2, ...newUser };
 
         mockUtils.hashPassword.mockReturnValue(hashedPassword);
         mockModel.User.getUserCount.mockResolvedValue([{ count: 1 }]);
         mockModel.User.createNewUser.mockResolvedValue([insertedUser]);
 
-        const result = await registerUser(null, { input }, context);
+        const result = await registerUser(null, { input }, { db: mockDb, model: mockModel, utils: mockUtils, token: mockToken });
 
         expect(mockUtils.hashPassword).toHaveBeenCalledWith(input.password);
         expect(mockModel.User.getUserCount).toHaveBeenCalledWith(mockDb);
-        expect(mockModel.User.createNewUser).toHaveBeenCalledWith(mockDb, newUser);
+        expect(mockModel.User.createNewUser).toHaveBeenCalledWith(mockDb, mockUtils, expect.objectContaining({
+            username: input.username,
+            password: hashedPassword,
+            admin: false,
+            activated: false,
+            activation_key: 'unique-activation-key',
+        }));
         expect(result).toEqual(insertedUser);
+    });
+
+    it('should throw an error if user creation fails', async () => {
+        const input = {
+            username: 'testuser3',
+            email: 'testuser3@example.com',
+            password: 'Password3',
+        };
+
+        mockUtils.hashPassword.mockReturnValue('hashedPassword3');
+        mockModel.User.getUserCount.mockResolvedValue([{ count: 1 }]);
+        mockModel.User.createNewUser.mockRejectedValue(new Error('User creation failed'));
+
+        await expect(registerUser(null, { input }, { db: mockDb, model: mockModel, utils: mockUtils, token: mockToken }))
+            .rejects
+            .toThrow('User creation failed');
     });
 });

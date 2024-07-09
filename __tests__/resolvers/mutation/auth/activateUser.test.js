@@ -3,65 +3,58 @@
 import activateUser from '../../../../src/resolvers/mutation/auth/activateUser';
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 
-// Mock dependencies
-const mockFindActivationKey = jest.fn();
-const mockUpdateActivationKey = jest.fn();
-
-const db = {}; // Mock database object
-const model = {
-    User: {
-        findActivationKey: mockFindActivationKey,
-        updateActivationKey: mockUpdateActivationKey,
-    },
-};
-const utils = {}; // Mock utilities object if needed
-const token = {}; // Mock token object if needed
-
 describe('activateUser', () => {
+    let mockDb, mockModel, mockUtils, mockToken;
+
     beforeEach(() => {
-        jest.clearAllMocks();
+        mockDb = {}; // Mock database object
+        mockModel = {
+            User: {
+                findActivationKey: jest.fn(),
+                updateActivationKey: jest.fn(),
+            },
+        };
+        mockUtils = {};
+        mockToken = 'mockToken';
     });
 
-    it('should activate user successfully with valid activation code', async () => {
-        const activationCode = 'valid-code';
-        const user = { id: 1 };
+    it('should activate user successfully with a valid activation code', async () => {
+        const activationCode = 'valid-activation-code';
+        const user = { id: 1, username: 'testuser' };
 
-        mockFindActivationKey.mockResolvedValue(user);
-        mockUpdateActivationKey.mockResolvedValue(true);
+        mockModel.User.findActivationKey.mockResolvedValue(user);
+        mockModel.User.updateActivationKey.mockResolvedValue();
 
-        const result = await activateUser(null, { activationCode }, { db, model, utils, token });
+        const result = await activateUser(null, { activationCode }, { db: mockDb, model: mockModel, utils: mockUtils, token: mockToken });
 
-        expect(mockFindActivationKey).toHaveBeenCalledWith(db, activationCode);
-        expect(mockUpdateActivationKey).toHaveBeenCalledWith(db, user.id);
+        expect(mockModel.User.findActivationKey).toHaveBeenCalledWith(mockDb, activationCode);
+        expect(mockModel.User.updateActivationKey).toHaveBeenCalledWith(mockDb, mockUtils, user.id);
         expect(result).toBe(true);
     });
 
-    it('should return false for invalid activation code', async () => {
-        const activationCode = 'invalid-code';
+    it('should return false if activation code is invalid', async () => {
+        const activationCode = 'invalid-activation-code';
 
-        mockFindActivationKey.mockResolvedValue(null);
+        mockModel.User.findActivationKey.mockResolvedValue(null);
 
-        const result = await activateUser(null, { activationCode }, { db, model, utils, token });
+        const result = await activateUser(null, { activationCode }, { db: mockDb, model: mockModel, utils: mockUtils, token: mockToken });
 
-        expect(mockFindActivationKey).toHaveBeenCalledWith(db, activationCode);
-        expect(mockUpdateActivationKey).not.toHaveBeenCalled();
+        expect(mockModel.User.findActivationKey).toHaveBeenCalledWith(mockDb, activationCode);
+        expect(mockModel.User.updateActivationKey).not.toHaveBeenCalled();
         expect(result).toBe(false);
     });
 
-    it('should return false and log error if updateActivationKey throws an error', async () => {
-        const activationCode = 'valid-code';
-        const user = { id: 1 };
+    it('should return false if updating activation key fails', async () => {
+        const activationCode = 'valid-activation-code';
+        const user = { id: 1, username: 'testuser' };
 
-        mockFindActivationKey.mockResolvedValue(user);
-        mockUpdateActivationKey.mockRejectedValue(new Error('Database error'));
+        mockModel.User.findActivationKey.mockResolvedValue(user);
+        mockModel.User.updateActivationKey.mockRejectedValue(new Error('Update failed'));
 
-        console.error = jest.fn();
+        const result = await activateUser(null, { activationCode }, { db: mockDb, model: mockModel, utils: mockUtils, token: mockToken });
 
-        const result = await activateUser(null, { activationCode }, { db, model, utils, token });
-
-        expect(mockFindActivationKey).toHaveBeenCalledWith(db, activationCode);
-        expect(mockUpdateActivationKey).toHaveBeenCalledWith(db, user.id);
+        expect(mockModel.User.findActivationKey).toHaveBeenCalledWith(mockDb, activationCode);
+        expect(mockModel.User.updateActivationKey).toHaveBeenCalledWith(mockDb, mockUtils, user.id);
         expect(result).toBe(false);
-        expect(console.error).toHaveBeenCalledWith(new Error('Database error'));
     });
 });

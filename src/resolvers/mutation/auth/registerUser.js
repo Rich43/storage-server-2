@@ -21,7 +21,7 @@ const registerUser = async (parent, { input }, { db, model, utils, token }) => {
         updated: utils.moment().utc().toISOString()
     };
 
-    const [insertedUser] = await model.User.createNewUser(db, newUser);
+    const [insertedUser] = await model.User.createNewUser(db, utils, newUser);
 
     return insertedUser;
 };

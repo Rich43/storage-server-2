@@ -14,7 +14,7 @@ const setAvatar = async (parent, { mediaId }, { db, model, utils, token }) => {
         }
 
         // Update the user's avatar
-        await model.User.updateUserAvatar(db, session.userId, mediaId);
+        await model.User.updateUserAvatar(db, utils, session.userId, mediaId);
 
         const updatedUser = await model.User.getUserById(db, session.userId);
 

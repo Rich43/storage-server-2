@@ -6,7 +6,7 @@ const activateUser = async (parent, { activationCode }, { db, model, utils, toke
             // noinspection ExceptionCaughtLocallyJS
             throw new Error('Invalid activation code');
         }
-        await model.User.updateActivationKey(db, user.id);
+        await model.User.updateActivationKey(db, utils, user.id);
 
         return true;
     } catch (error) {

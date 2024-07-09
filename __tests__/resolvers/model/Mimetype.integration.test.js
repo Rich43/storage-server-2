@@ -1,6 +1,6 @@
-import { setupDatabase, cleanupDatabase, db } from '../../../setupTestDatabase';
+import { cleanupDatabase, db, setupDatabase } from '../../../setupTestDatabase';
 import { getMimetypeIdByType } from '../../../src/resolvers/model/Mimetype';
-import { describe, expect, it, beforeAll, afterAll, beforeEach } from '@jest/globals';
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from '@jest/globals';
 
 let container;
 

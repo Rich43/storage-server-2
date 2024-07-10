@@ -55,6 +55,22 @@ const resolvers = {
         createLikeDislike,
         deleteLikeDislike,
         updateLikeDislike,
+    },
+    Media: {
+        likes: async (parent, args, { db, model }) => {
+            if (parent.id && db && model) {
+                return model.MediaLikesDislikes.getLikeCountByMediaId(db, parent.id);
+            } else {
+                return 0;
+            }
+        },
+        dislikes: async (parent, args, { db, model }) => {
+            if (parent.id && db && model) {
+                return model.MediaLikesDislikes.getDislikeCountByMediaId(db, parent.id);
+            } else {
+                return 0;
+            }
+        }
     }
 };
 

@@ -133,9 +133,9 @@ export async function setupDatabase() {
         table.increments('id').primary();
         table.integer('mediaId').unsigned().notNullable();
         table.integer('userId').unsigned().notNullable();
-        table.enu('action', ['like', 'dislike']).notNullable();
-        table.timestamp('created').defaultTo(knex.fn.now());
-        table.timestamp('updated').defaultTo(knex.fn.now());
+        table.enu('action', ['LIKE', 'DISLIKE']).notNullable();
+        table.string('created').notNullable();
+        table.string('updated').notNullable();
 
         table.foreign('mediaId').references('id').inTable('media').onDelete('CASCADE');
         table.foreign('userId').references('id').inTable('user').onDelete('CASCADE');

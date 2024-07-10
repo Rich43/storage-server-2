@@ -64,7 +64,6 @@ type Session {
     updated: String
 }
 
-# Enum to represent like or dislike action
 enum LikeDislikeAction {
     LIKE
     DISLIKE
@@ -97,7 +96,6 @@ type MediaComment {
     updated: String!
 }
 
-# Define the LikeDislike type
 type LikeDislike {
     id: ID!
     userId: ID!
@@ -107,7 +105,6 @@ type LikeDislike {
     updatedAt: String!
 }
 
-# Input types for creating and updating LikeDislike
 input CreateLikeDislikeInput {
     mediaId: ID!
     action: LikeDislikeAction!
@@ -162,6 +159,11 @@ input EditMediaInput {
 }
 
 type Query {
+    lists: ListQueries
+    gets: GetQueries
+}
+
+type ListQueries {
     listMedia(filter: MediaFilter, pagination: Pagination, sorting: Sorting): [Media]
     listVideos(filter: MediaFilter, pagination: Pagination, sorting: Sorting): [Media]
     listMusic(filter: MediaFilter, pagination: Pagination, sorting: Sorting): [Media]
@@ -170,24 +172,39 @@ type Query {
     listDocuments(filter: MediaFilter, pagination: Pagination, sorting: Sorting): [Media]
     listOtherFiles(filter: MediaFilter, pagination: Pagination, sorting: Sorting): [Media]
     listMimeTypes(filter: MimeTypeFilter, pagination: Pagination, sorting: Sorting): [MimeType]
-    getMediaById(id: ID!): Media
     listRelatedMedia(id: ID!): [Media]
-    listMediaComments(mediaId: ID!): [MediaComment]  # Add the new listMediaComments query
+    listMediaComments(mediaId: ID!): [MediaComment]
+}
+
+type GetQueries {
+    getMediaById(id: ID!): Media
     getLikesByUser(userId: ID!): [LikeDislike!]!
     getDislikesByUser(userId: ID!): [LikeDislike!]!
 }
 
 type Mutation {
-    refreshSession: Session
+    media: MediaMutations
+    auth: AuthMutations
+    likes: LikeMutations
+}
+
+type MediaMutations {
     createMedia(input: CreateMediaInput!): Media!
     editMedia(input: EditMediaInput!): Media!
     deleteMedia(id: ID!): Boolean!
+}
+
+type AuthMutations {
     loginUser(username: String!, password: String!): Session
     logoutUser: Boolean!
+    refreshSession: Session
     registerUser(input: RegisterUserInput!): User!
     activateUser(activationCode: String!): Boolean!
     editUser(input: EditUserInput!): User!
     setAvatar(mediaId: ID!): User!
+}
+
+type LikeMutations {
     createLikeDislike(input: CreateLikeDislikeInput!): LikeDislike!
     updateLikeDislike(input: UpdateLikeDislikeInput!): LikeDislike!
     deleteLikeDislike(id: ID!): Boolean!

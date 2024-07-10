@@ -61,6 +61,7 @@ export async function setupDatabase() {
         table.integer('thumbnail').unsigned();
         table.string('updated', 255).notNullable();
         table.text('description').nullable();
+        table.bigInteger('view_count').defaultTo(0).notNullable();
     });
 
     await db.raw(`
@@ -126,6 +127,20 @@ export async function setupDatabase() {
 
         table.foreign('mediaId').references('id').inTable('media');
         table.foreign('userId').references('id').inTable('user');
+    });
+
+    await db.schema.createTable('media_likes_dislikes', function(table) {
+        table.increments('id').primary();
+        table.integer('mediaId').unsigned().notNullable();
+        table.integer('userId').unsigned().notNullable();
+        table.enu('action', ['like', 'dislike']).notNullable();
+        table.timestamp('created').defaultTo(knex.fn.now());
+        table.timestamp('updated').defaultTo(knex.fn.now());
+
+        table.foreign('mediaId').references('id').inTable('media').onDelete('CASCADE');
+        table.foreign('userId').references('id').inTable('user').onDelete('CASCADE');
+
+        table.unique(['mediaId', 'userId']);
     });
 
     return { container, db };

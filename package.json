@@ -4,7 +4,7 @@
   "description": "Attempt a different approach",
   "main": "index.js",
   "scripts": {
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --testPathIgnorePatterns=commonMocks.js --coverage --verbose",
+    "test": "jest --testPathIgnorePatterns=commonMocks.js --coverage --verbose",
     "clean": "rimraf dist",
     "start": "cd src && node index",
     "migrate:make": "npx knex migrate:make --knexfile knexfile.cjs",
@@ -17,10 +17,12 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@babel/preset-env": "^7.24.7",
     "@jest/globals": "^29.7.0",
     "@types/express": "^4.17.21",
     "@types/mysql": "^2.15.26",
     "@types/node": "^20.12.12",
+    "babel-jest": "^29.7.0",
     "jest": "^29.7.0",
     "jest-mock": "^29.7.0",
     "rimraf": "^5.0.7"

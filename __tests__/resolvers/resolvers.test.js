@@ -1,11 +1,7 @@
 import resolvers from '../../src/resolvers/index';
-import { getDislikeCountByMediaId, getLikeCountByMediaId } from '../../src/resolvers/model/MediaLikesDislikes';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 
-jest.mock('../../src/resolvers/model/MediaLikesDislikes', () => ({
-    getLikeCountByMediaId: jest.fn(),
-    getDislikeCountByMediaId: jest.fn()
-}));
+const { getLikeCountByMediaId, getDislikeCountByMediaId } = jest.requireMock('../../src/resolvers/model/MediaLikesDislikes');
 
 describe('Media Resolvers', () => {
     let db;

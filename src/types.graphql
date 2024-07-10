@@ -1,0 +1,164 @@
+enum Category {
+    IMAGE
+    VIDEO
+    AUDIO
+    DOCUMENT
+    OTHER
+}
+
+type User {
+    id: ID!
+    username: String!
+    email: String!
+    avatar: Media
+    created: String!
+    updated: String
+    activated: Boolean!
+    banned: Boolean!
+    likedMedia: [LikeDislike!]!
+    dislikedMedia: [LikeDislike!]!
+}
+
+input EditUserInput {
+    id: ID!
+    username: String
+    email: String
+    password: String
+}
+
+input RegisterUserInput {
+    username: String!
+    email: String!
+    password: String!
+}
+
+type MimeType {
+    id: ID!
+    type: String!
+    category: Category!
+    extensions: [String]
+    preferred_extension: String!
+}
+
+input MimeTypeFilter {
+    type: String
+    category: Category
+    extension: String
+    preferred_extension: String
+}
+
+type Session {
+    userId: ID!
+    sessionId: ID!
+    user: User!
+    avatarPicture: String
+    sessionToken: String!
+    sessionExpireDateTime: String!
+    admin: Boolean!
+    created: String!
+    updated: String
+}
+
+enum LikeDislikeAction {
+    LIKE
+    DISLIKE
+}
+
+type Media {
+    id: ID!
+    title: String!
+    description: String
+    url: String!
+    mimetype: String!
+    thumbnail: Media
+    userId: ID!
+    adminOnly: Boolean!
+    uploaded: Boolean!
+    created: String!
+    updated: String
+    fileSize: Int!
+    view_count: Int!
+    likes: Int!
+    dislikes: Int!
+}
+
+type MediaComment {
+    id: ID!
+    mediaId: ID!
+    userId: ID!
+    comment: String!
+    created: String!
+    updated: String!
+}
+
+type LikeDislike {
+    id: ID!
+    userId: ID!
+    mediaId: ID!
+    action: LikeDislikeAction!
+    createdAt: String!
+    updatedAt: String!
+}
+
+input CreateLikeDislikeInput {
+    mediaId: ID!
+    action: LikeDislikeAction!
+}
+
+input UpdateLikeDislikeInput {
+    id: ID!
+    action: LikeDislikeAction!
+}
+
+type Album {
+    id: ID!
+    title: String!
+    media: [Media]
+    userId: ID!
+    created: String!
+    updated: String
+}
+
+input MediaFilter {
+    title: String
+    mimetype: String
+    userId: Int
+}
+
+input Pagination {
+    page: Int!
+    limit: Int!
+}
+
+input Sorting {
+    field: String!
+    order: String!
+}
+
+input CreateMediaInput {
+    title: String!
+    url: String!
+    mimetype: String!
+    thumbnail: String
+    adminOnly: Boolean
+}
+
+input EditMediaInput {
+    id: ID!
+    title: String
+    description: String
+    url: String
+    mimetype: String
+    thumbnail: String
+    adminOnly: Boolean
+}
+
+input CreateMediaCommentInput {
+    mediaId: ID!
+    comment: String!
+}
+
+input EditMediaCommentInput {
+    id: ID!
+    comment: String!
+}

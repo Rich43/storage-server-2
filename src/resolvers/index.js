@@ -16,9 +16,6 @@ import activateUser from "./mutation/auth/activateUser.js";
 import setAvatar from "./mutation/auth/setAvatar.js";
 import listRelatedMedia from "./query/list/listRelatedMedia.js";
 import listMediaComments from "./query/list/listMediaComments.js";
-import createMediaComment from "./mutation/createMediaComment.js";
-import editMediaComment from "./mutation/editMediaComment.js";
-import deleteMediaComment from "./mutation/deleteMediaComment.js";
 import getDislikesByUser from "./query/get/getDislikesByUser.js";
 import getLikesByUser from "./query/get/getLikesByUser.js";
 import createLikeDislike from "./mutation/create/createLikeDislike.js";
@@ -27,34 +24,41 @@ import updateLikeDislike from "./mutation/update/updateLikeDislike.js";
 
 const resolvers = {
     Query: {
-        listVideos,
-        listMusic,
-        listAlbums,
-        listPictures,
-        listDocuments,
-        listOtherFiles,
-        getMediaById,
-        getDislikesByUser,
-        getLikesByUser,
-        listRelatedMedia,
-        listMediaComments,
+        lists: {
+            listAlbums,
+            listMusic,
+            listPictures,
+            listVideos,
+            listDocuments,
+            listOtherFiles,
+            listRelatedMedia,
+            listMediaComments,
+        },
+        gets: {
+            getMediaById,
+            getLikesByUser,
+            getDislikesByUser,
+        },
     },
     Mutation: {
-        createMedia,
-        editMedia,
-        deleteMedia,
-        loginUser,
-        logoutUser,
-        refreshSession,
-        registerUser,
-        activateUser,
-        setAvatar,
-        createMediaComment,
-        editMediaComment,
-        deleteMediaComment,
-        createLikeDislike,
-        deleteLikeDislike,
-        updateLikeDislike,
+        media: {
+            createMedia,
+            editMedia,
+            deleteMedia,
+        },
+        auth: {
+            loginUser,
+            logoutUser,
+            refreshSession,
+            registerUser,
+            activateUser,
+            setAvatar,
+        },
+        likes: {
+            createLikeDislike,
+            updateLikeDislike,
+            deleteLikeDislike,
+        },
     },
     Media: {
         likes: async (parent, args, { db, model }) => {

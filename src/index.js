@@ -1,8 +1,6 @@
 import express from 'express';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
-import { readFileSync } from 'fs';
-import { gql } from 'graphql-tag';
 import db from './db.js';
 import bodyParser from 'body-parser';
 import { logger, requestLogger } from './logger.js';
@@ -10,9 +8,18 @@ import { sessionCleanupMiddleware } from "./middleware.js";
 import resolvers from "./resolvers/index.js";
 import model from "./resolvers/model/index.js";
 import { __ALL__ } from "./resolvers/utils/utils.js";
+import { loadFilesSync } from "@graphql-tools/load-files";
+import { mergeTypeDefs } from '@graphql-tools/merge';
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+// Get the directory name of the current module file
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Load schema
-const typeDefs = gql(readFileSync('schema.graphql', 'utf8'));
+const typesArray = loadFilesSync(`${__dirname}/**/*.graphql`);
+const typeDefs = mergeTypeDefs(typesArray);
 
 // Initialize the Express application
 const app = express();

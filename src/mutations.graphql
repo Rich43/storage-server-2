@@ -1,0 +1,30 @@
+type Mutation {
+    media: MediaMutations
+    auth: AuthMutations
+    likes: LikeMutations
+}
+
+type MediaMutations {
+    createMedia(input: CreateMediaInput!): Media!
+    editMedia(input: EditMediaInput!): Media!
+    deleteMedia(id: ID!): Boolean!
+    createMediaComment(input: CreateMediaCommentInput!): MediaComment!
+    editMediaComment(input: EditMediaCommentInput!): MediaComment!
+    deleteMediaComment(id: ID!): Boolean!
+}
+
+type AuthMutations {
+    loginUser(username: String!, password: String!): Session
+    logoutUser: Boolean!
+    refreshSession: Session
+    registerUser(input: RegisterUserInput!): User!
+    activateUser(activationCode: String!): Boolean!
+    editUser(input: EditUserInput!): User!
+    setAvatar(mediaId: ID!): User!
+}
+
+type LikeMutations {
+    createLikeDislike(input: CreateLikeDislikeInput!): LikeDislike!
+    updateLikeDislike(input: UpdateLikeDislikeInput!): LikeDislike!
+    deleteLikeDislike(id: ID!): Boolean!
+}

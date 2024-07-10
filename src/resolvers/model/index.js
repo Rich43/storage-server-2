@@ -10,24 +10,29 @@ import {
 } from "./User.js";
 import {
     createSession,
-    deleteSession, getAdminFlagFromSession,
+    deleteSession,
+    getAdminFlagFromSession,
     getSessionById,
     updateSessionWithNewTokenAndExpiryDate,
     validateToken
 } from "./Session.js";
 import {
+    addAdminOnlyRestriction,
+    addRelatedKeywords,
+    bumpMediaViewCount,
     deleteMediaById,
     getFirstMediaItemWithImageMimetypeById,
+    getMediaByAlbumIdJoiningOnAlbumMediaAndMimetype,
     getMediaById,
-    getMediaByIdJoiningOntoMimeType, getMediaByAlbumIdJoiningOnAlbumMediaAndMimetype,
+    getMediaByIdJoiningOntoMimeType,
     getMediaQuery,
     insertMedia,
-    addAdminOnlyRestriction, addRelatedKeywords, updateMediaById,
+    updateMediaById,
 } from "./Media.js";
 import {
-    getMediaCommentsByMediaId,
     deleteMediaCommentById,
     getMediaCommentById,
+    getMediaCommentsByMediaId,
     insertMediaComment,
     updateMediaCommentById
 } from "./MediaComment.js";
@@ -64,6 +69,7 @@ export default {
         addAdminOnlyRestriction,
         addRelatedKeywords,
         updateMediaById,
+        bumpMediaViewCount,
     },
     MediaComment: {
         insertMediaComment,

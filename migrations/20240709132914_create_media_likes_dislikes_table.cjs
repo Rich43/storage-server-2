@@ -7,8 +7,8 @@ exports.up = function(knex) {
         table.string('created').notNullable();
         table.string('updated').notNullable();
 
-        table.foreign('mediaId').references('id').inTable('media').onDelete('CASCADE');
-        table.foreign('userId').references('id').inTable('user').onDelete('CASCADE');
+        table.foreign('mediaId').references('id').inTable('media');
+        table.foreign('userId').references('id').inTable('user');
 
         table.unique(['mediaId', 'userId']);
     });

@@ -74,7 +74,7 @@ export async function updateUserAvatar(db, utils, userId, mediaId) {
 }
 
 export async function updateUser(db, utils, userId, updateFields) {
-    const allowedFields = ['username', 'email', 'password', 'avatar', 'activated', 'banned', 'updated']; // List of allowed fields
+    const allowedFields = ['username', 'email', 'password']; // List of allowed fields
     const fieldsToUpdate = {};
 
     for (const key of Object.keys(updateFields)) {

@@ -86,6 +86,7 @@ export async function setupDatabase() {
         table.string('activation_key', 36).notNullable();
         table.boolean('banned').defaultTo(false).notNullable();
         table.string('updated', 255).notNullable();
+        table.string('email', 255).notNullable().unique();
     });
 
     await db.schema.createTable('album', (table) => {

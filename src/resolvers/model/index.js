@@ -41,6 +41,7 @@ import { getMimetypeIdByType } from "./Mimetype.js";
 import {
     createLikeDislike,
     deleteLikeDislike,
+    getAnyLikeDislikeById,
     getDislikeCountByMediaId,
     getDislikesByMediaId,
     getDislikesByUserId,
@@ -106,5 +107,6 @@ export default {
         deleteLikeDislike,
         getLikeCountByMediaId,
         getDislikeCountByMediaId,
+        getAnyLikeDislikeById,
     }
 };

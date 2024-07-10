@@ -12,7 +12,7 @@ enum Category {
 }
 
 type User {
-    id: Int!
+    id: ID!
     username: String!
     email: String!
     avatar: Media
@@ -25,7 +25,7 @@ type User {
 }
 
 input EditUserInput {
-    id: Int!
+    id: ID!
     username: String
     email: String
     password: String
@@ -38,7 +38,7 @@ input RegisterUserInput {
 }
 
 type MimeType {
-    id: Int!
+    id: ID!
     type: String!
     category: Category!
     extensions: [String]
@@ -53,8 +53,8 @@ input MimeTypeFilter {
 }
 
 type Session {
-    userId: Int!
-    sessionId: Int!
+    userId: ID!
+    sessionId: ID!
     user: User!
     avatarPicture: String
     sessionToken: String!
@@ -71,13 +71,13 @@ enum LikeDislikeAction {
 }
 
 type Media {
-    id: Int!
+    id: ID!
     title: String!
     description: String
     url: String!
     mimetype: String!
     thumbnail: Media
-    userId: Int!
+    userId: ID!
     adminOnly: Boolean!
     uploaded: Boolean!
     created: String!
@@ -90,8 +90,8 @@ type Media {
 
 type MediaComment {
     id: ID!
-    media_id: Int!
-    user_id: Int!
+    mediaId: ID!
+    userId: ID!
     comment: String!
     created: String!
     updated: String!
@@ -119,10 +119,10 @@ input UpdateLikeDislikeInput {
 }
 
 type Album {
-    id: Int!
+    id: ID!
     title: String!
     media: [Media]
-    userId: Int!
+    userId: ID!
     created: String!
     updated: String
 }
@@ -152,7 +152,7 @@ input CreateMediaInput {
 }
 
 input EditMediaInput {
-    id: Int!
+    id: ID!
     title: String
     description: String
     url: String
@@ -170,9 +170,9 @@ type Query {
     listDocuments(filter: MediaFilter, pagination: Pagination, sorting: Sorting): [Media]
     listOtherFiles(filter: MediaFilter, pagination: Pagination, sorting: Sorting): [Media]
     listMimeTypes(filter: MimeTypeFilter, pagination: Pagination, sorting: Sorting): [MimeType]
-    getMediaById(id: Int!): Media
-    listRelatedMedia(id: Int!): [Media]
-    listMediaComments(mediaId: Int!): [MediaComment]  # Add the new listMediaComments query
+    getMediaById(id: ID!): Media
+    listRelatedMedia(id: ID!): [Media]
+    listMediaComments(mediaId: ID!): [MediaComment]  # Add the new listMediaComments query
     getLikesByUser(userId: ID!): [LikeDislike!]!
     getDislikesByUser(userId: ID!): [LikeDislike!]!
 }
@@ -181,13 +181,13 @@ type Mutation {
     refreshSession: Session
     createMedia(input: CreateMediaInput!): Media!
     editMedia(input: EditMediaInput!): Media!
-    deleteMedia(id: Int!): Boolean!
+    deleteMedia(id: ID!): Boolean!
     loginUser(username: String!, password: String!): Session
     logoutUser: Boolean!
     registerUser(input: RegisterUserInput!): User!
     activateUser(activationCode: String!): Boolean!
     editUser(input: EditUserInput!): User!
-    setAvatar(mediaId: Int!): User!
+    setAvatar(mediaId: ID!): User!
     createLikeDislike(input: CreateLikeDislikeInput!): LikeDislike!
     updateLikeDislike(input: UpdateLikeDislikeInput!): LikeDislike!
     deleteLikeDislike(id: ID!): Boolean!

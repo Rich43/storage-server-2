@@ -52,3 +52,7 @@ export function getDislikeCountByMediaId(db, mediaId) {
         .where('action', 'DISLIKE')
         .count();
 }
+
+export function getAnyLikeDislikeById(db, id) {
+    return db('media_likes_dislikes').where({ id }).first();
+}

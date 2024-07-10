@@ -19,6 +19,11 @@ import listMediaComments from "./query/list/listMediaComments.js";
 import createMediaComment from "./mutation/createMediaComment.js";
 import editMediaComment from "./mutation/editMediaComment.js";
 import deleteMediaComment from "./mutation/deleteMediaComment.js";
+import getDislikesByUser from "./query/get/getDislikesByUser.js";
+import getLikesByUser from "./query/get/getLikesByUser.js";
+import createLikeDislike from "./mutation/create/createLikeDislike.js";
+import deleteLikeDislike from "./mutation/delete/deleteLikeDislike.js";
+import updateLikeDislike from "./mutation/update/updateLikeDislike.js";
 
 const resolvers = {
     Query: {
@@ -29,6 +34,8 @@ const resolvers = {
         listDocuments,
         listOtherFiles,
         getMediaById,
+        getDislikesByUser,
+        getLikesByUser,
         listRelatedMedia,
         listMediaComments,
     },
@@ -45,6 +52,9 @@ const resolvers = {
         createMediaComment,
         editMediaComment,
         deleteMediaComment,
+        createLikeDislike,
+        deleteLikeDislike,
+        updateLikeDislike,
     }
 };
 

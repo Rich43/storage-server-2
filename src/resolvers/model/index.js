@@ -38,6 +38,17 @@ import {
 } from "./MediaComment.js";
 import { filterAlbum, getAllAlbums } from "./Album.js";
 import { getMimetypeIdByType } from "./Mimetype.js";
+import {
+    createLikeDislike,
+    deleteLikeDislike,
+    getDislikeCountByMediaId,
+    getDislikesByMediaId,
+    getDislikesByUserId,
+    getLikeCountByMediaId,
+    getLikesByMediaId,
+    getLikesByUserId,
+    updateLikeDislike
+} from "./MediaLikesDislikes.js";
 
 export default {
     User: {
@@ -84,5 +95,16 @@ export default {
     },
     Mimetype: {
         getMimetypeIdByType,
+    },
+    MediaLikesDislikes: {
+        getLikesByMediaId,
+        getDislikesByMediaId,
+        getLikesByUserId,
+        getDislikesByUserId,
+        createLikeDislike,
+        updateLikeDislike,
+        deleteLikeDislike,
+        getLikeCountByMediaId,
+        getDislikeCountByMediaId,
     }
 };

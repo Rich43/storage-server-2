@@ -1,25 +1,25 @@
 export function getLikesByMediaId(db, mediaId) {
     return db('Media_Likes_Dislikes')
         .where('mediaId', mediaId)
-        .where('like', 'LIKE');
+        .where('action', 'LIKE');
 }
 
 export function getDislikesByMediaId(db, mediaId) {
     return db('Media_Likes_Dislikes')
         .where('mediaId', mediaId)
-        .where('like', 'DISLIKE');
+        .where('action', 'DISLIKE');
 }
 
 export function getLikesByUserId(db, userId) {
     return db('Media_Likes_Dislikes')
         .where('userId', userId)
-        .where('like', 'LIKE');
+        .where('action', 'LIKE');
 }
 
 export function getDislikesByUserId(db, userId) {
     return db('Media_Likes_Dislikes')
         .where('userId', userId)
-        .where('like', 'DISLIKE');
+        .where('action', 'DISLIKE');
 }
 
 export async function createLikeDislike(db, input) {
@@ -42,13 +42,13 @@ export async function deleteLikeDislike(db, id) {
 export function getLikeCountByMediaId(db, mediaId) {
     return db('media_likes_dislikes')
         .where('mediaId', mediaId)
-        .where('like', 'LIKE')
+        .where('action', 'LIKE')
         .count();
 }
 
 export function getDislikeCountByMediaId(db, mediaId) {
     return db('media_likes_dislikes')
         .where('mediaId', mediaId)
-        .where('like', 'DISLIKE')
+        .where('action', 'DISLIKE')
         .count();
 }

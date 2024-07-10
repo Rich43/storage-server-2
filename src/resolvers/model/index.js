@@ -5,6 +5,7 @@ import {
     getUserCount,
     getUserFromToken,
     updateActivationKey,
+    updateUser,
     updateUserAvatar,
     validateUser
 } from "./User.js";
@@ -61,6 +62,7 @@ export default {
         getUserCount,
         createNewUser,
         updateUserAvatar,
+        updateUser,
     },
     Session: {
         validateToken,

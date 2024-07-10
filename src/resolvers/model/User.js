@@ -72,3 +72,23 @@ export async function updateUserAvatar(db, utils, userId, mediaId) {
             updated: utils.moment().utc().toISOString()
         });
 }
+
+export async function updateUser(db, utils, userId, updateFields) {
+    const allowedFields = ['username', 'email', 'password', 'avatar', 'activated', 'banned', 'updated']; // List of allowed fields
+    const fieldsToUpdate = {};
+
+    for (const key of Object.keys(updateFields)) {
+        if (allowedFields.includes(key)) {
+            fieldsToUpdate[key] = updateFields[key];
+        }
+    }
+
+    // Always update the 'updated' field
+    fieldsToUpdate.updated = utils.moment().utc().toISOString();
+
+    if (Object.keys(fieldsToUpdate).length > 0) {
+        await db('User')
+            .where('id', userId)
+            .update(fieldsToUpdate);
+    }
+}

@@ -12,6 +12,8 @@ const getMediaById = async (_, { id }, { db, model, utils, token }) => {
         throw new Error('You do not have permission to view this media');
     }
 
+    await model.Media.bumpMediaViewCount(db, id);
+
     return media;
 };
 

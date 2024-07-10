@@ -36,6 +36,7 @@ export async function insertMedia(db, user, mediaAdminOnly, input, mimetypeId) {
         filesize: input.filesize,
         uploaded: input.uploaded,
         user_extension: input.user_extension,
+        view_count: 0,
         created: moment().utc().toISOString(),
         updated: moment().utc().toISOString()
     };
@@ -91,4 +92,8 @@ export function addRelatedKeywords(db, id, keywords) {
 
 export function updateMediaById(db, id, updatedMedia) {
     return db('Media').where('id', id).update(updatedMedia);
+}
+
+export function bumpMediaViewCount(db, id) {
+    return db('Media').where('id', id).increment('view_count');
 }

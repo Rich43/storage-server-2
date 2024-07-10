@@ -10,29 +10,46 @@ import {
 } from "./User.js";
 import {
     createSession,
-    deleteSession, getAdminFlagFromSession,
+    deleteSession,
+    getAdminFlagFromSession,
     getSessionById,
     updateSessionWithNewTokenAndExpiryDate,
     validateToken
 } from "./Session.js";
 import {
+    addAdminOnlyRestriction,
+    addRelatedKeywords,
+    bumpMediaViewCount,
     deleteMediaById,
     getFirstMediaItemWithImageMimetypeById,
+    getMediaByAlbumIdJoiningOnAlbumMediaAndMimetype,
     getMediaById,
-    getMediaByIdJoiningOntoMimeType, getMediaByAlbumIdJoiningOnAlbumMediaAndMimetype,
+    getMediaByIdJoiningOntoMimeType,
     getMediaQuery,
     insertMedia,
-    addAdminOnlyRestriction, addRelatedKeywords, updateMediaById,
+    updateMediaById,
 } from "./Media.js";
 import {
-    getMediaCommentsByMediaId,
     deleteMediaCommentById,
     getMediaCommentById,
+    getMediaCommentsByMediaId,
     insertMediaComment,
     updateMediaCommentById
 } from "./MediaComment.js";
 import { filterAlbum, getAllAlbums } from "./Album.js";
 import { getMimetypeIdByType } from "./Mimetype.js";
+import {
+    createLikeDislike,
+    deleteLikeDislike,
+    getAnyLikeDislikeById,
+    getDislikeCountByMediaId,
+    getDislikesByMediaId,
+    getDislikesByUserId,
+    getLikeCountByMediaId,
+    getLikesByMediaId,
+    getLikesByUserId,
+    updateLikeDislike
+} from "./MediaLikesDislikes.js";
 
 export default {
     User: {
@@ -64,6 +81,7 @@ export default {
         addAdminOnlyRestriction,
         addRelatedKeywords,
         updateMediaById,
+        bumpMediaViewCount,
     },
     MediaComment: {
         insertMediaComment,
@@ -78,5 +96,17 @@ export default {
     },
     Mimetype: {
         getMimetypeIdByType,
+    },
+    MediaLikesDislikes: {
+        getLikesByMediaId,
+        getDislikesByMediaId,
+        getLikesByUserId,
+        getDislikesByUserId,
+        createLikeDislike,
+        updateLikeDislike,
+        deleteLikeDislike,
+        getLikeCountByMediaId,
+        getDislikeCountByMediaId,
+        getAnyLikeDislikeById,
     }
 };

@@ -7,6 +7,7 @@ import getMediaById from '../../../src/resolvers/query/getMediaById';
 const mockValidateToken = jest.fn();
 const mockGetUserFromToken = jest.fn();
 const mockGetMediaByIdJoiningOntoMimeType = jest.fn();
+const mockBumpMediaViewCount = jest.fn();
 
 const db = {}; // Mock database object
 const model = {
@@ -18,6 +19,7 @@ const model = {
     },
     Media: {
         getMediaByIdJoiningOntoMimeType: mockGetMediaByIdJoiningOntoMimeType,
+        bumpMediaViewCount: mockBumpMediaViewCount,
     }
 };
 const utils = {}; // Mock utils object
@@ -27,6 +29,7 @@ const setupMocks = (isValidToken, user, media) => {
     mockValidateToken.mockResolvedValue(isValidToken ? {} : Promise.reject(new Error('Invalid session token')));
     mockGetUserFromToken.mockResolvedValue(user);
     mockGetMediaByIdJoiningOntoMimeType.mockResolvedValue(media);
+    mockBumpMediaViewCount.mockResolvedValue(0);
 };
 
 const assertCommonMocks = async (result, user, media, id, error = null) => {

@@ -1,17 +1,17 @@
-import { setupDatabase, cleanupDatabase, db } from '../../../setupTestDatabase';
+import { cleanupDatabase, db, setupDatabase } from '../../../setupTestDatabase';
 import {
-    getMediaQuery,
-    getFirstMediaItemWithImageMimetypeById,
-    insertMedia,
-    getMediaById,
-    getMediaByIdJoiningOntoMimeType,
-    getMediaByAlbumIdJoiningOnAlbumMediaAndMimetype,
-    deleteMediaById,
     addAdminOnlyRestriction,
     addRelatedKeywords,
+    deleteMediaById,
+    getFirstMediaItemWithImageMimetypeById,
+    getMediaByAlbumIdJoiningOnAlbumMediaAndMimetype,
+    getMediaById,
+    getMediaByIdJoiningOntoMimeType,
+    getMediaQuery,
+    insertMedia,
     updateMediaById
 } from '../../../src/resolvers/model/Media';
-import { describe, expect, it, beforeAll, afterAll, beforeEach } from '@jest/globals';
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from '@jest/globals';
 import moment from "moment";
 
 let container;
@@ -40,8 +40,8 @@ describe('Media.js integration tests', () => {
         ]);
 
         await db('user').insert([
-            { id: 1, username: 'testuser', password: 'password', admin: false, activation_key: 'key', created: today, updated: today },
-            { id: 2, username: 'adminuser', password: 'password', admin: true, activation_key: 'key', created: today, updated: today }
+            { id: 1, username: 'testuser', password: 'password', email: 'fred@example.com', admin: false, activation_key: 'key', created: today, updated: today },
+            { id: 2, username: 'adminuser', password: 'password', email: 'bob@monkhouse.com', admin: true, activation_key: 'key', created: today, updated: today }
         ]);
     });
 

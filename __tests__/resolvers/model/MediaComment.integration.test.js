@@ -1,12 +1,12 @@
-import { setupDatabase, cleanupDatabase, db } from '../../../setupTestDatabase';
+import { cleanupDatabase, db, setupDatabase } from '../../../setupTestDatabase';
 import {
-    insertMediaComment,
-    getMediaCommentById,
     deleteMediaCommentById,
-    updateMediaCommentById,
-    getMediaCommentsByMediaId
+    getMediaCommentById,
+    getMediaCommentsByMediaId,
+    insertMediaComment,
+    updateMediaCommentById
 } from '../../../src/resolvers/model/MediaComment';
-import { describe, expect, it, beforeAll, afterAll, beforeEach } from '@jest/globals';
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from '@jest/globals';
 import moment from "moment";
 
 let container;
@@ -34,8 +34,8 @@ describe('MediaComment.js integration tests', () => {
         ]);
 
         await db('User').insert([
-            { id: 1, username: 'testuser', password: 'password', admin: false, activation_key: 'key', created: today, updated: today },
-            { id: 2, username: 'adminuser', password: 'password', admin: true, activation_key: 'key', created: today, updated: today }
+            { id: 1, username: 'testuser', password: 'password', email: 'frank@example.com', admin: false, activation_key: 'key', created: today, updated: today },
+            { id: 2, username: 'adminuser', password: 'password', email: 'jessica@example.com', admin: true, activation_key: 'key', created: today, updated: today }
         ]);
 
         await db('Media').insert([

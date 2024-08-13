@@ -38,8 +38,8 @@ beforeEach(async () => {
     ]);
 
     await db('user').insert([
-        { id: 1, username: 'testuser', password: 'password', admin: false, activation_key: 'key', created: today, updated: today },
-        { id: 2, username: 'adminuser', password: 'password', admin: true, activation_key: 'key', created: today, updated: today }
+        { id: 1, username: 'testuser', password: 'password', email: 'fred@example.com', admin: false, activation_key: 'key', created: today, updated: today },
+        { id: 2, username: 'adminuser', password: 'password', email: 'bob@monkhouse.com', admin: true, activation_key: 'key', created: today, updated: today }
     ]);
 
     await db('media').insert({

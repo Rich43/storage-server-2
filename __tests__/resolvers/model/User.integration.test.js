@@ -36,6 +36,7 @@ describe('User model integration tests', () => {
         await db('User').insert({
             username: 'testuser',
             password: 'hashedPassword',
+            email: 'jane@example.com',
             admin: false,
             avatar: null,
             activated: false,
@@ -123,6 +124,7 @@ describe('User model integration tests', () => {
         const newUser = {
             username: 'newuser',
             password: 'newPassword',
+            email: 'blah@example.com',
             admin: false,
             avatar: null,
             activated: false,

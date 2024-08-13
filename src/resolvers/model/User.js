@@ -46,6 +46,7 @@ export async function createNewUser(db, utils, newUser) {
     const userData = {
         username: newUser.username,
         password: newUser.password,
+        email: newUser.email,
         admin: newUser.admin || false,
         avatar: newUser.avatar || null,
         activated: newUser.activated || false,

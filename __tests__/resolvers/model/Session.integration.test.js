@@ -28,6 +28,7 @@ describe('Session management integration tests', () => {
         await db('User').insert({
             username: 'testuser',
             password: 'Password1',
+            email: 'joe@example.com',
             created: now,
             updated: now,
             activation_key: '',

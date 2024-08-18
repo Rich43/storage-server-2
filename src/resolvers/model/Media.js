@@ -35,6 +35,7 @@ export async function insertMedia(db, user, mediaAdminOnly, input, mimetypeId) {
         filename: input.filename,
         filesize: input.filesize,
         uploaded: input.uploaded,
+        uploadedDate: input.uploadedDate,
         user_extension: input.user_extension,
         view_count: 0,
         created: moment().utc().toISOString(),

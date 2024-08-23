@@ -57,6 +57,7 @@ export async function setupDatabase() {
         table.string('user_extension', 255).defaultTo('');
         table.bigInteger('filesize').defaultTo(-1).notNullable();
         table.boolean('uploaded').defaultTo(false).notNullable();
+        table.string('uploadedDate').defaultTo('').nullable();
         table.string('created', 255).notNullable();
         table.integer('thumbnail').unsigned();
         table.string('updated', 255).notNullable();

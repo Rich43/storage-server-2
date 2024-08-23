@@ -82,16 +82,6 @@ describe('Media.js integration tests', () => {
 
     it('should insert media and return the id', async () => {
         let today = moment().utc().toISOString();
-        await db('media').insert({
-            id: 1,
-            title: 'Test Image',
-            url: 'http://example.com/image.png',
-            userId: 1,
-            mimetypeId: 1,
-            filename: 'testfile.png',
-            created: today,
-            updated: today
-        });
 
         const user = { userId: 1, admin: false };
         const input = {
@@ -103,6 +93,7 @@ describe('Media.js integration tests', () => {
             filename: 'testfile',
             filesize: 1000,
             uploaded: true,
+            uploadedDate: today,
             user_extension: '.png'
         };
         const mediaAdminOnly = false;

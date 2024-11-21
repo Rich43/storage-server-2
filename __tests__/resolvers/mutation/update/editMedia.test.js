@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
-import editMedia from "../../../src/resolvers/mutation/editMedia.js";
+import editMedia from "../../../../src/resolvers/mutation/update/editMedia.js";
 
 describe('editMedia', () => {
     let mockDb, mockModel, mockUtils, mockToken;

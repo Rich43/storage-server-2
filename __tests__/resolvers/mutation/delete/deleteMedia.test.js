@@ -1,8 +1,8 @@
 // noinspection JSCheckFunctionSignatures
 
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
-import deleteMedia from '../../../src/resolvers/mutation/deleteMedia';
-import { db, model, utils, token, setupMocks, mockValidateToken, mockGetUserFromToken, mockGetMediaById, mockDeleteMediaById } from '../commonMocks';
+import deleteMedia from '../../../../src/resolvers/mutation/delete/deleteMedia.js';
+import { db, model, utils, token, mockValidateToken, mockGetUserFromToken, mockGetMediaById, mockDeleteMediaById } from '../../commonMocks.js';
 
 const setupDeleteMediaMocks = (isValidToken, user, media) => {
     mockValidateToken.mockResolvedValue(isValidToken ? {} : Promise.reject(new Error('Invalid session token')));

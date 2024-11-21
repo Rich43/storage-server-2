@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
-import createMediaComment from '../../../src/resolvers/mutation/createMediaComment';
+import createMediaComment from '../../../../src/resolvers/mutation/create/createMediaComment.js';
 import {
     db,
     mockGetUserFromToken,
@@ -8,7 +8,7 @@ import {
     model,
     token,
     utils
-} from '../commonMocks';
+} from '../../commonMocks.js';
 
 describe('createMediaComment', () => {
     const input = { mediaId: 1, comment: 'Great media!' };

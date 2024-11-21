@@ -1,7 +1,7 @@
 // noinspection JSCheckFunctionSignatures
 
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
-import getMediaById from '../../../src/resolvers/query/getMediaById';
+import getMediaById from '../../../../src/resolvers/query/get/getMediaById.js';
 
 // Mock dependencies
 const mockValidateToken = jest.fn();

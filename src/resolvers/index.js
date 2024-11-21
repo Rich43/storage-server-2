@@ -4,7 +4,7 @@ import listPictures from './query/list/listPictures.js';
 import listVideos from './query/list/listVideos.js';
 import listDocuments from './query/list/listDocuments.js';
 import listOtherFiles from './query/list/listOtherFiles.js';
-import getMediaById from './query/getMediaById.js';
+import getMediaById from './query/get/getMediaById.js';
 import loginUser from './mutation/auth/loginUser.js';
 import logoutUser from './mutation/auth/logoutUser.js';
 import refreshSession from './mutation/auth/refreshSession.js';
@@ -21,18 +21,21 @@ import getLikesByUser from "./query/get/getLikesByUser.js";
 import createLikeDislike from "./mutation/create/createLikeDislike.js";
 import deleteLikeDislike from "./mutation/delete/deleteLikeDislike.js";
 import updateLikeDislike from "./mutation/update/updateLikeDislike.js";
+import listMimeTypes from "./query/list/listMimeTypes.js";
+import editUser from "./mutation/auth/editUser.js";
 
 const resolvers = {
     Query: {
         lists: {
             listAlbums,
-            listMusic,
-            listPictures,
-            listVideos,
             listDocuments,
-            listOtherFiles,
-            listRelatedMedia,
             listMediaComments,
+            listMimeTypes,
+            listMusic,
+            listOtherFiles,
+            listPictures,
+            listRelatedMedia,
+            listVideos,
         },
         gets: {
             getMediaById,
@@ -47,11 +50,12 @@ const resolvers = {
             deleteMedia,
         },
         auth: {
+            activateUser,
+            editUser,
             loginUser,
             logoutUser,
             refreshSession,
             registerUser,
-            activateUser,
             setAvatar,
         },
         likes: {

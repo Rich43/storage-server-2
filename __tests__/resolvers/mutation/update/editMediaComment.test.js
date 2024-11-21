@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
-import editMediaComment from '../../../src/resolvers/mutation/editMediaComment';
+import editMediaComment from '../../../../src/resolvers/mutation/update/editMediaComment.js';
 
 describe('editMediaComment', () => {
     let mockDb, mockModel, mockUtils, mockToken;

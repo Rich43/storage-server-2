@@ -1,7 +1,7 @@
 // noinspection JSCheckFunctionSignatures,JSIgnoredPromiseFromCall
 
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
-import deleteMediaComment from '../../../src/resolvers/mutation/deleteMediaComment';
+import deleteMediaComment from '../../../../src/resolvers/mutation/delete/deleteMediaComment.js';
 
 // Mock dependencies
 const mockValidateToken = jest.fn();

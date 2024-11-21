@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
-import createMedia from '../../../src/resolvers/mutation/createMedia';
+import createMedia from '../../../../src/resolvers/mutation/create/createMedia.js';
 
 // Mock dependencies
 const mockValidateToken = jest.fn();

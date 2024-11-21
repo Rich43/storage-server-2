@@ -23,12 +23,14 @@ import deleteLikeDislike from "./mutation/delete/deleteLikeDislike.js";
 import updateLikeDislike from "./mutation/update/updateLikeDislike.js";
 import listMimeTypes from "./query/list/listMimeTypes.js";
 import editUser from "./mutation/auth/editUser.js";
+import listMedia from "./query/list/listMedia.js";
 
 const resolvers = {
     Query: {
         lists: {
             listAlbums,
             listDocuments,
+            listMedia,
             listMediaComments,
             listMimeTypes,
             listMusic,

@@ -5,8 +5,12 @@ import moment from "moment";
 export function getMediaQuery(db, user, category) {
     let mediaQuery = db('Media')
         .join('Mimetype', 'Media.mimetypeId', '=', 'Mimetype.id')
-        .where('Mimetype.category', category)
         .select('Media.*', 'Mimetype.type as mimetype');
+
+    // Apply category filter only if category is provided
+    if (category) {
+        mediaQuery = mediaQuery.where('Mimetype.category', category);
+    }
 
     if (!user.admin) {
         mediaQuery = mediaQuery.where('Media.adminOnly', false);

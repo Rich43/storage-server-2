@@ -1,7 +1,6 @@
 export const validateSessionAndUser = async (db, model, utils, token) => {
     await model.Session.validateToken(db, utils, token);
-    const user = await model.User.getUserFromToken(db, token);
-    return user;
+    return await model.User.getUserFromToken(db, token);
 };
 
 export const getMimetypeId = async (db, model, mimetype) => {
@@ -17,7 +16,7 @@ export const buildUpdatedMedia = (input, mimetypeId, updated, user) => {
         ...(description && { description }),
         ...(url && { url }),
         ...(mimetypeId && { mimetype_id: mimetypeId }),
-        ...(thumbnail && { thumbnail })
+        ...(thumbnail && { thumbnail }),
     };
 
     if (user.admin && adminOnly !== undefined) {

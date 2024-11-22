@@ -4,14 +4,14 @@ import { expressMiddleware } from '@apollo/server/express4';
 import db from './db.js';
 import bodyParser from 'body-parser';
 import { logger, requestLogger } from './logger.js';
-import { sessionCleanupMiddleware } from "./middleware.js";
-import resolvers from "./resolvers/index.js";
-import model from "./resolvers/model/index.js";
-import { __ALL__ } from "./resolvers/utils/utils.js";
-import { loadFilesSync } from "@graphql-tools/load-files";
+import { sessionCleanupMiddleware } from './middleware.js';
+import resolvers from './resolvers/index.js';
+import model from './resolvers/model/index.js';
+import { __ALL__ } from './resolvers/utils/utils.js';
+import { loadFilesSync } from '@graphql-tools/load-files';
 import { mergeTypeDefs } from '@graphql-tools/merge';
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 // Get the directory name of the current module file
 const __filename = fileURLToPath(import.meta.url);
@@ -35,7 +35,12 @@ app.use(bodyParser.json());
 
 // Define the context to include the database connection and other context-related information
 const context = ({ req }) => {
-    const token = req.headers.authorization.trim().toLowerCase().replaceAll(" ", "").replaceAll("bearer", "") || '';
+    const token =
+        req.headers.authorization
+            .trim()
+            .toLowerCase()
+            .replaceAll(' ', '')
+            .replaceAll('bearer', '') || '';
     return { db, model, __ALL__, token };
 };
 
@@ -46,18 +51,23 @@ const server = new ApolloServer({
 });
 
 // Start the Apollo server
-await server.start();
+async function main() {
+    await server.start();
+}
 
-// Apply the Apollo GraphQL middleware and set the path to /graphql
-app.use('/graphql', expressMiddleware(server, { context }));
+main().then(() => {
+    // Apply the Apollo GraphQL middleware and set the path to /graphql
+    // noinspection JSCheckFunctionSignatures
+    app.use('/graphql', expressMiddleware(server, { context }));
 
-// Define a default route
-app.get('/', (req, res) => {
-    res.send('Hello, this is the GraphQL API server.');
-});
+    // Define a default route
+    app.get('/', (req, res) => {
+        res.send('Hello, this is the GraphQL API server.');
+    });
 
-// Start the Express server
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-    logger.info(`🚀 Server ready at http://localhost:${PORT}/graphql`);
+    // Start the Express server
+    const PORT = process.env.PORT || 4000;
+    app.listen(PORT, () => {
+        logger.info(`🚀 Server ready at http://localhost:${PORT}/graphql`);
+    });
 });

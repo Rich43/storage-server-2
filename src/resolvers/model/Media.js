@@ -1,6 +1,6 @@
 // noinspection UnnecessaryLocalVariableJS
 
-import moment from "moment";
+import moment from 'moment';
 
 export function getMediaQuery(db, user, category) {
     let mediaQuery = db('Media')
@@ -43,14 +43,12 @@ export async function insertMedia(db, user, mediaAdminOnly, input, mimetypeId) {
         user_extension: input.user_extension,
         view_count: 0,
         created: moment().utc().toISOString(),
-        updated: moment().utc().toISOString()
+        updated: moment().utc().toISOString(),
     };
 
     await db('Media').insert(mediaData);
 
-    const insertedMedia = await db('Media')
-        .where(mediaData)
-        .first();
+    const insertedMedia = await db('Media').where(mediaData).first();
 
     return [insertedMedia.id];
 }
@@ -88,8 +86,9 @@ export function addAdminOnlyRestriction(adminFlag, mediaQuery) {
 
 export function addRelatedKeywords(db, id, keywords) {
     const query = db('Media').where('id', '!=', id);
-    keywords.forEach(keyword => {
-        query.orWhere('title', 'like', `%${keyword}%`)
+    keywords.forEach((keyword) => {
+        query
+            .orWhere('title', 'like', `%${keyword}%`)
             .orWhere('description', 'like', `%${keyword}%`);
     });
     return query;

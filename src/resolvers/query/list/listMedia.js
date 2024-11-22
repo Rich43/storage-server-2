@@ -1,4 +1,8 @@
-const listMedia = async (_, { filter, pagination, sorting }, { db, model, utils, token }) => {
+const listMedia = async (
+    _,
+    { filter, pagination, sorting },
+    { db, model, utils, token },
+) => {
     // Validate the token to ensure the user is authenticated
     await model.Session.validateToken(db, utils, token);
 

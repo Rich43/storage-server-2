@@ -1,23 +1,26 @@
 import { defineConfig } from "cypress";
-import * as preprocessor from "@badeball/cypress-cucumber-preprocessor";
 import createBundler from "@bahmutov/cypress-esbuild-preprocessor";
+import { addCucumberPreprocessorPlugin } from "@badeball/cypress-cucumber-preprocessor";
+import { createEsbuildPlugin } from "@badeball/cypress-cucumber-preprocessor/esbuild";
 
 export default defineConfig({
     e2e: {
-        specPattern: "cypress/integration/**/*.feature", // Matches your feature file location
-        setupNodeEvents: async (on, config) => {
-            // Add the Cucumber preprocessor plugin
-            await preprocessor.addCucumberPreprocessorPlugin(on, config);
+        specPattern: "**/*.feature",
+        async setupNodeEvents(
+            on,
+            config
+        ) {
+            // This is required for the preprocessor to be able to generate JSON reports after each run, and more,
+            await addCucumberPreprocessorPlugin(on, config);
 
-            // Add the ESBuild preprocessor for parsing .feature files
             on(
                 "file:preprocessor",
                 createBundler({
-                    plugins: [preprocessor.createEsbuildPlugin(config)],
+                    plugins: [createEsbuildPlugin(config)],
                 })
             );
 
-            // Return the updated config object
+            // Make sure to return the config object as it might have been modified by the plugin.
             return config;
         },
     },

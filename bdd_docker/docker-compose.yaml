@@ -1,0 +1,11 @@
+version: "3.8"
+services:
+  db:
+    image: mysql:latest
+    container_name: bdd_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: test
+    ports:
+      - "3306:3306"
+    command: --default-authentication-plugin=mysql_native_password

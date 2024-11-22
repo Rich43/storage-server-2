@@ -1,14 +1,13 @@
-const { defineConfig } = require("cypress");
-const preprocessor = require("@badeball/cypress-cucumber-preprocessor");
-const createBundler = require("@bahmutov/cypress-esbuild-preprocessor");
-const addCucumberPreprocessorPlugin = preprocessor.addCucumberPreprocessorPlugin;
+import { defineConfig } from "cypress";
+import * as preprocessor from "@badeball/cypress-cucumber-preprocessor";
+import createBundler from "@bahmutov/cypress-esbuild-preprocessor";
 
-module.exports = defineConfig({
+export default defineConfig({
     e2e: {
         specPattern: "cypress/integration/**/*.feature", // Matches your feature file location
         setupNodeEvents: async (on, config) => {
             // Add the Cucumber preprocessor plugin
-            await addCucumberPreprocessorPlugin(on, config);
+            await preprocessor.addCucumberPreprocessorPlugin(on, config);
 
             // Add the ESBuild preprocessor for parsing .feature files
             on(

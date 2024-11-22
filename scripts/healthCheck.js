@@ -4,7 +4,7 @@ const MAX_RETRIES = 10; // Maximum attempts
 const DELAY_MS = 1000; // Delay between attempts
 
 const healthCheck = async () => {
-    const url = "http://localhost:3000/health"; // Adjust to your server's health endpoint
+    const url = "http://localhost:4000/health"; // Adjust to your server's health endpoint
     let attempts = 0;
 
     while (attempts < MAX_RETRIES) {

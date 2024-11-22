@@ -52,6 +52,7 @@
   },
   "dependencies": {
     "@apollo/server": "^4.11.2",
+    "@bahmutov/cypress-esbuild-preprocessor": "^2.2.3",
     "@graphql-tools/load-files": "^7.0.0",
     "@graphql-tools/merge": "^9.0.4",
     "@graphql-tools/schema": "^10.0.4",

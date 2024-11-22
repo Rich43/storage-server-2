@@ -1,4 +1,4 @@
-// noinspection UnnecessaryLocalVariableJS,ExceptionCaughtLocallyJS
+// noinspection ExceptionCaughtLocallyJS
 
 const listRelatedMedia = async (
     parent,
@@ -9,7 +9,6 @@ const listRelatedMedia = async (
         await model.Session.validateToken(db, utils, token);
         // Get the media item by ID
         const media = await model.Media.getMediaById(db, id);
-
         if (!media) {
             throw new Error('Media not found');
         }
@@ -18,8 +17,7 @@ const listRelatedMedia = async (
         const query = model.Media.addRelatedKeywords(db, id, keywords);
 
         // Execute the query and return the results
-        const relatedMedia = await query;
-        return relatedMedia;
+        return await query.select('*');
     } catch (error) {
         console.error('Failed to list related media:', error);
         if (error.message === 'Media not found') {

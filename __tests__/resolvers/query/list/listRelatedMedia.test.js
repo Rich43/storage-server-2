@@ -11,6 +11,9 @@ describe('listRelatedMedia', () => {
                 getMediaById: jest.fn(),
                 addRelatedKeywords: jest.fn(),
             },
+            Session: {
+                validateToken: jest.fn().mockResolvedValue(true), // Mock token validation
+            },
         };
         mockUtils = {
             getMediaKeywords: jest.fn(),
@@ -26,7 +29,9 @@ describe('listRelatedMedia', () => {
 
         mockModel.Media.getMediaById.mockResolvedValue(media);
         mockUtils.getMediaKeywords.mockReturnValue(keywords);
-        mockModel.Media.addRelatedKeywords.mockResolvedValue(relatedMedia);
+        mockModel.Media.addRelatedKeywords.mockReturnValue({
+            select: jest.fn().mockResolvedValue(relatedMedia), // Simulate query execution
+        });
 
         const result = await listRelatedMedia(null, { id }, { db: mockDb, model: mockModel, utils: mockUtils, token: mockToken });
 

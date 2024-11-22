@@ -1,14 +1,7 @@
-const listAlbums = async (
-    _,
-    { filter, pagination, sorting },
-    { db, model, utils, token },
-) => {
+const listAlbums = async (_, { filter, pagination, sorting }, { db, model, utils, token }) => {
     try {
         await model.Session.validateToken(db, utils, token); // this now takes 3 arguments
-        const adminFlag = await model.Session.getAdminFlagFromSession(
-            db,
-            token,
-        ); // this now returns a boolean
+        const adminFlag = await model.Session.getAdminFlagFromSession(db, token); // this now returns a boolean
 
         let albumQuery = model.Album.getAllAlbums(db);
         albumQuery = model.Album.filterAlbum(filter, albumQuery);
@@ -18,15 +11,8 @@ const listAlbums = async (
         const albums = await albumQuery;
 
         for (const album of albums) {
-            let mediaQuery =
-                model.Media.getMediaByAlbumIdJoiningOnAlbumMediaAndMimetype(
-                    db,
-                    album,
-                );
-            mediaQuery = model.Media.addAdminOnlyRestriction(
-                adminFlag,
-                mediaQuery,
-            ); // modified to accept adminFlag as a boolean
+            let mediaQuery = model.Media.getMediaByAlbumIdJoiningOnAlbumMediaAndMimetype(db, album);
+            mediaQuery = model.Media.addAdminOnlyRestriction(adminFlag, mediaQuery); // modified to accept adminFlag as a boolean
             album.media = await mediaQuery;
         }
 

@@ -1,5 +1,3 @@
-// noinspection ExceptionCaughtLocallyJS
-
 const setAvatar = async (parent, { mediaId }, { db, model, utils, token }) => {
     try {
         // Verify the user is authenticated
@@ -9,10 +7,7 @@ const setAvatar = async (parent, { mediaId }, { db, model, utils, token }) => {
         }
 
         // Check if the media has an image mime type category
-        const media = await model.Media.getFirstMediaItemWithImageMimetypeById(
-            db,
-            mediaId,
-        );
+        const media = await model.Media.getFirstMediaItemWithImageMimetypeById(db, mediaId);
 
         if (!media) {
             throw new Error('Media must have image mime type category');
@@ -21,7 +16,9 @@ const setAvatar = async (parent, { mediaId }, { db, model, utils, token }) => {
         // Update the user's avatar
         await model.User.updateUserAvatar(db, utils, session.userId, mediaId);
 
-        return await model.User.getUserById(db, session.userId);
+        const updatedUser = await model.User.getUserById(db, session.userId);
+
+        return updatedUser;
     } catch (error) {
         console.error(error);
         throw error; // Re-throw the original error for specific error handling in tests

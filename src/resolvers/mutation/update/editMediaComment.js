@@ -6,10 +6,7 @@ const editMediaComment = async (_, { input }, { db, model, utils, token }) => {
 
     const { id, comment } = input;
 
-    const existingComment = await model.MediaComment.getMediaCommentById(
-        db,
-        id,
-    );
+    const existingComment = await model.MediaComment.getMediaCommentById(db, id);
     if (!existingComment) {
         throw new Error('Comment not found');
     }
@@ -20,7 +17,7 @@ const editMediaComment = async (_, { input }, { db, model, utils, token }) => {
 
     const updatedComment = {
         comment,
-        updated: utils.moment().utc().toISOString(),
+        updated: utils.moment().utc().toISOString()
     };
 
     await model.MediaComment.updateMediaCommentById(db, id, updatedComment);

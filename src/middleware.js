@@ -2,10 +2,7 @@ import moment from 'moment';
 
 async function removeExpiredSessions(db) {
     const now = moment().utc().format('YYYY-MM-DD HH:mm:ss');
-    const futureLimit = moment()
-        .add(2, 'hours')
-        .utc()
-        .format('YYYY-MM-DD HH:mm:ss');
+    const futureLimit = moment().add(2, 'hours').utc().format('YYYY-MM-DD HH:mm:ss');
 
     // Remove expired sessions and sessions that are more than 2 hours into the future
     await db('Session')

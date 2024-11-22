@@ -4,10 +4,7 @@ const deleteMediaComment = async (_, { id }, { db, model, utils, token }) => {
     await model.Session.validateToken(db, utils, token);
     const user = await model.User.getUserFromToken(db, token);
 
-    const existingComment = await model.MediaComment.getMediaCommentById(
-        db,
-        id,
-    );
+    const existingComment = await model.MediaComment.getMediaCommentById(db, id);
     if (!existingComment) {
         throw new Error('Comment not found');
     }

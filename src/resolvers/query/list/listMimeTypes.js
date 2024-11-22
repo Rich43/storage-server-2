@@ -1,8 +1,4 @@
-const listMimeTypes = async (
-    _,
-    { filter, pagination, sorting },
-    { db, model, utils, token },
-) => {
+const listMimeTypes = async (_, { filter, pagination, sorting }, { db, model, utils, token }) => {
     // Validate token
     await model.Session.validateToken(db, utils, token);
 

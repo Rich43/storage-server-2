@@ -1,9 +1,7 @@
 // noinspection UnnecessaryLocalVariableJS
 
 export const validateUser = async (db, username, hashedPassword) => {
-    return await db('User')
-        .where({ username, password: hashedPassword })
-        .first();
+    return await db('User').where({ username, password: hashedPassword }).first();
 };
 
 export async function getUserFromToken(db, token) {
@@ -27,15 +25,17 @@ export async function findActivationKey(db, activationCode) {
 }
 
 export async function updateActivationKey(db, utils, userId) {
-    await db('User').where('id', userId).update({
-        activated: true,
-        activation_key: '',
-        updated: utils.moment().utc().toISOString(),
-    });
+    await db('User')
+        .where('id', userId)
+        .update({
+            activated: true,
+            activation_key: '',
+            updated: utils.moment().utc().toISOString()
+        });
 }
 
 export async function getUserById(db, userId) {
-    return await db('User').where({ id: userId }).first();
+    return await db('User').where({id: userId}).first();
 }
 
 export async function getUserCount(db) {
@@ -53,21 +53,25 @@ export async function createNewUser(db, utils, newUser) {
         activation_key: newUser.activation_key,
         banned: newUser.banned || false,
         created: utils.moment().utc().toISOString(),
-        updated: utils.moment().utc().toISOString(),
+        updated: utils.moment().utc().toISOString()
     };
 
     await db('User').insert(userData);
 
-    const insertedUser = await db('User').where(userData).first();
+    const insertedUser = await db('User')
+        .where(userData)
+        .first();
 
     return insertedUser;
 }
 
 export async function updateUserAvatar(db, utils, userId, mediaId) {
-    await db('User').where('id', userId).update({
-        avatar: mediaId,
-        updated: utils.moment().utc().toISOString(),
-    });
+    await db('User')
+        .where('id', userId)
+        .update({
+            avatar: mediaId,
+            updated: utils.moment().utc().toISOString()
+        });
 }
 
 export async function updateUser(db, utils, userId, updateFields) {
@@ -84,6 +88,8 @@ export async function updateUser(db, utils, userId, updateFields) {
     fieldsToUpdate.updated = utils.moment().utc().toISOString();
 
     if (Object.keys(fieldsToUpdate).length > 0) {
-        await db('User').where('id', userId).update(fieldsToUpdate);
+        await db('User')
+            .where('id', userId)
+            .update(fieldsToUpdate);
     }
 }

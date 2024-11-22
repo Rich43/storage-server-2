@@ -1,8 +1,4 @@
-const activateUser = async (
-    parent,
-    { activationCode },
-    { db, model, utils },
-) => {
+const activateUser = async (parent, { activationCode }, { db, model, utils, token }) => {
     try {
         const user = await model.User.findActivationKey(db, activationCode);
 

@@ -6,8 +6,17 @@ const createMedia = async (_, { input }, { db, model, utils, token }) => {
 
     // Only admins can set adminOnly to true
     const mediaAdminOnly = !!(user.admin && adminOnly);
-    const mimetype = await model.Mimetype.getMimetypeIdByType(db, input.mimetype);
-    const [mediaId] = await model.Media.insertMedia(db, user, mediaAdminOnly, input, mimetype);
+    const mimetype = await model.Mimetype.getMimetypeIdByType(
+        db,
+        input.mimetype,
+    );
+    const [mediaId] = await model.Media.insertMedia(
+        db,
+        user,
+        mediaAdminOnly,
+        input,
+        mimetype,
+    );
 
     return model.Media.getMediaById(db, mediaId);
 };

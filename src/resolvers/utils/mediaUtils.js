@@ -1,7 +1,7 @@
 // noinspection UnnecessaryLocalVariableJS
 
-import natural from "natural";
-import { removeStopwords } from "stopword";
+import natural from 'natural';
+import { removeStopwords } from 'stopword';
 
 export function getMediaKeywords(media) {
     const text = `${media.title || ''} ${media.description || ''}`.trim();
@@ -15,7 +15,11 @@ export function getMediaKeywords(media) {
 export function performFilter(filter, mediaQuery) {
     if (filter) {
         if (filter.title) {
-            mediaQuery = mediaQuery.where('Media.title', 'like', `%${filter.title}%`);
+            mediaQuery = mediaQuery.where(
+                'Media.title',
+                'like',
+                `%${filter.title}%`,
+            );
         }
         if (filter.mimetype) {
             mediaQuery = mediaQuery.where('Mimetype.type', filter.mimetype);

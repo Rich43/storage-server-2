@@ -1,7 +1,12 @@
 // noinspection UnnecessaryLocalVariableJS,ExceptionCaughtLocallyJS
 
-const listRelatedMedia = async (parent, { id }, { db, model, utils, token }) => {
+const listRelatedMedia = async (
+    parent,
+    { id },
+    { db, model, utils, token },
+) => {
     try {
+        await model.Session.validateToken(db, utils, token);
         // Get the media item by ID
         const media = await model.Media.getMediaById(db, id);
 

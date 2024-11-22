@@ -10,7 +10,13 @@ export async function validateToken(db, utils, token) {
     return session;
 }
 
-export async function createSession(db, utils, userId, sessionToken, sessionExpireDateTimeFormatted) {
+export async function createSession(
+    db,
+    utils,
+    userId,
+    sessionToken,
+    sessionExpireDateTimeFormatted,
+) {
     const currentTime = utils.moment().utc().toISOString();
     const sessionData = {
         userId,
@@ -22,9 +28,7 @@ export async function createSession(db, utils, userId, sessionToken, sessionExpi
 
     await db('Session').insert(sessionData);
 
-    const insertedSession = await db('Session')
-        .where(sessionData)
-        .first();
+    const insertedSession = await db('Session').where(sessionData).first();
 
     return insertedSession.id;
 }
@@ -38,14 +42,22 @@ export async function getSessionById(db, sessionId) {
 }
 
 export async function deleteSession(db, token) {
-    const deletedCount = await db('Session').where({ sessionToken: token }).del();
+    const deletedCount = await db('Session')
+        .where({ sessionToken: token })
+        .del();
     if (deletedCount === 0) {
         throw new Error('Session token not found for deletion');
     }
     return deletedCount;
 }
 
-export async function updateSessionWithNewTokenAndExpiryDate(db, utils, token, newSessionToken, sessionExpireDateTimeFormatted) {
+export async function updateSessionWithNewTokenAndExpiryDate(
+    db,
+    utils,
+    token,
+    newSessionToken,
+    sessionExpireDateTimeFormatted,
+) {
     const currentTime = utils.moment().utc().toISOString();
     const updateCount = await db('Session')
         .where({ sessionToken: token })
@@ -56,7 +68,9 @@ export async function updateSessionWithNewTokenAndExpiryDate(db, utils, token, n
         });
 
     if (updateCount === 0) {
-        throw new Error('Failed to update session token, original token not found');
+        throw new Error(
+            'Failed to update session token, original token not found',
+        );
     }
     return updateCount;
 }

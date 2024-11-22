@@ -1,4 +1,8 @@
-const listVideos = async (_, { filter, pagination, sorting }, { db, model, utils, token }) => {
+const listVideos = async (
+    _,
+    { filter, pagination, sorting },
+    { db, model, utils, token },
+) => {
     await model.Session.validateToken(db, utils, token);
     const user = await model.User.getUserFromToken(db, token);
     let mediaQuery = model.Media.getMediaQuery(db, user, 'VIDEO');

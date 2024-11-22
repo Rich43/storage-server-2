@@ -7,16 +7,16 @@ import {
     updateActivationKey,
     updateUser,
     updateUserAvatar,
-    validateUser
-} from "./User.js";
+    validateUser,
+} from './User.js';
 import {
     createSession,
     deleteSession,
     getAdminFlagFromSession,
     getSessionById,
     updateSessionWithNewTokenAndExpiryDate,
-    validateToken
-} from "./Session.js";
+    validateToken,
+} from './Session.js';
 import {
     addAdminOnlyRestriction,
     addRelatedKeywords,
@@ -29,16 +29,16 @@ import {
     getMediaQuery,
     insertMedia,
     updateMediaById,
-} from "./Media.js";
+} from './Media.js';
 import {
     deleteMediaCommentById,
     getMediaCommentById,
     getMediaCommentsByMediaId,
     insertMediaComment,
-    updateMediaCommentById
-} from "./MediaComment.js";
-import { filterAlbum, getAllAlbums } from "./Album.js";
-import { getMimetypeIdByType } from "./Mimetype.js";
+    updateMediaCommentById,
+} from './MediaComment.js';
+import { filterAlbum, getAllAlbums } from './Album.js';
+import { getMimetypeIdByType } from './Mimetype.js';
 import {
     createLikeDislike,
     deleteLikeDislike,
@@ -49,8 +49,8 @@ import {
     getLikeCountByMediaId,
     getLikesByMediaId,
     getLikesByUserId,
-    updateLikeDislike
-} from "./MediaLikesDislikes.js";
+    updateLikeDislike,
+} from './MediaLikesDislikes.js';
 
 export default {
     User: {
@@ -110,5 +110,5 @@ export default {
         getLikeCountByMediaId,
         getDislikeCountByMediaId,
         getAnyLikeDislikeById,
-    }
+    },
 };

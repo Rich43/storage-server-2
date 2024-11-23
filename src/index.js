@@ -35,12 +35,13 @@ app.use(bodyParser.json());
 
 // Define the context to include the database connection and other context-related information
 const context = ({ req }) => {
-    const token =
-        req.headers.authorization
-            .trim()
-            .toLowerCase()
-            .replaceAll(' ', '')
-            .replaceAll('bearer', '') || '';
+    const token = req.headers.authorization
+        ? req.headers.authorization
+              .trim()
+              .toLowerCase()
+              .replaceAll(' ', '')
+              .replaceAll('bearer', '') || ''
+        : undefined;
     return { db, model, __ALL__, token };
 };
 
@@ -48,6 +49,7 @@ const context = ({ req }) => {
 const server = new ApolloServer({
     typeDefs,
     resolvers,
+    introspection: true,
 });
 
 // Start the Apollo server
@@ -59,6 +61,23 @@ main().then(() => {
     // Apply the Apollo GraphQL middleware and set the path to /graphql
     // noinspection JSCheckFunctionSignatures
     app.use('/graphql', expressMiddleware(server, { context }));
+
+    app.get('/health', async (req, res) => {
+        try {
+            // Perform a lightweight query to ensure the database is reachable
+            await db.raw('SELECT 1');
+            res.status(200).json({
+                status: 'ok',
+                message: 'Server and database are healthy',
+            });
+        } catch (error) {
+            logger.error('Database health check failed:', error);
+            res.status(500).json({
+                status: 'error',
+                message: 'Database connection failed',
+            });
+        }
+    });
 
     // Define a default route
     app.get('/', (req, res) => {

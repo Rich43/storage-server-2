@@ -1,5 +1,5 @@
 import { describe, expect, it, jest } from '@jest/globals';
-import { getMediaKeywords, performFilter, performPagination, performSorting } from '../../../src/resolvers/utils/mediaUtils';
+import { extractKeywords, getMediaKeywords, performFilter, performPagination, performSorting } from '../../../src/resolvers/utils/mediaUtils';
 
 describe('mediaUtils.js integration tests', () => {
     describe('getMediaKeywords', () => {
@@ -11,7 +11,7 @@ describe('mediaUtils.js integration tests', () => {
 
             const keywords = getMediaKeywords(media);
 
-            expect(keywords).toEqual(["sample", "title", "description", "media", "content"]);
+            expect(keywords).toEqual(["sampl", "titl", "descript", "media", "content"]);
         });
 
         it('should handle empty title and description', () => {
@@ -82,6 +82,17 @@ describe('mediaUtils.js integration tests', () => {
             expect(mockQuery.where).toHaveBeenCalledWith('Media.title', 'like', `%example%`);
             expect(mockQuery.where).toHaveBeenCalledWith('Mimetype.type', 'image/png');
             expect(mockQuery.where).toHaveBeenCalledWith('Media.userId', 123);
+            expect(result).toBe(mockQuery);
+        });
+
+        it('should apply search filter to the query', () => {
+            const filter = { search: "Running quickly" };
+            const mockQuery = { where: jest.fn().mockReturnThis() };
+
+            const result = performFilter(filter, mockQuery);
+
+            const keywords = extractKeywords(filter.search);
+            expect(mockQuery.where).toHaveBeenCalledTimes(keywords.length);
             expect(result).toBe(mockQuery);
         });
 

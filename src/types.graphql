@@ -124,6 +124,7 @@ input MediaFilter {
     title: String
     mimetype: String
     userId: Int
+    search: String
 }
 
 input Pagination {

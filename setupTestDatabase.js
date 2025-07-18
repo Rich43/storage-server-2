@@ -5,26 +5,43 @@ import knex from 'knex';
 
 let db;
 
+function useTestcontainers() {
+    return process.env.USE_TESTCONTAINERS !== 'false';
+}
+
 export async function setupDatabase() {
-    const container = await new GenericContainer('mysql')
-        .withEnvironment({ MYSQL_ROOT_PASSWORD: 'root', MYSQL_DATABASE: 'test' })
-        .withCommand(['--lower_case_table_names=1'])
-        .withExposedPorts(3306)
-        .start();
+    let container;
 
-    const port = container.getMappedPort(3306);
-    const host = container.getHost();
+    if (useTestcontainers()) {
+        container = await new GenericContainer('mysql')
+            .withEnvironment({ MYSQL_ROOT_PASSWORD: 'root', MYSQL_DATABASE: 'test' })
+            .withCommand(['--lower_case_table_names=1'])
+            .withExposedPorts(3306)
+            .start();
 
-    db = knex({
-        client: 'mysql2',
-        connection: {
-            host,
-            port,
-            user: 'root',
-            password: 'root',
-            database: 'test'
-        }
-    });
+        const port = container.getMappedPort(3306);
+        const host = container.getHost();
+
+        db = knex({
+            client: 'mysql2',
+            connection: {
+                host,
+                port,
+                user: 'root',
+                password: 'root',
+                database: 'test'
+            }
+        });
+    } else {
+        container = { stop: async () => {} };
+        db = knex({
+            client: 'sqlite3',
+            connection: {
+                filename: ':memory:'
+            },
+            useNullAsDefault: true
+        });
+    }
 
     await db.schema.createTable('knex_migrations', (table) => {
         table.increments('id').primary();
@@ -65,16 +82,27 @@ export async function setupDatabase() {
         table.bigInteger('view_count').defaultTo(0).notNullable();
     });
 
-    await db.raw(`
-        CREATE TRIGGER validate_filename
-        BEFORE INSERT ON media
-        FOR EACH ROW
-        BEGIN
-            IF LENGTH(NEW.filename) < 1 THEN
-                SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Filename must be at least 1 character long.';
-            END IF;
-        END;
-    `);
+    if (useTestcontainers()) {
+        await db.raw(`
+            CREATE TRIGGER validate_filename
+            BEFORE INSERT ON media
+            FOR EACH ROW
+            BEGIN
+                IF LENGTH(NEW.filename) < 1 THEN
+                    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Filename must be at least 1 character long.';
+                END IF;
+            END;
+        `);
+    } else {
+        await db.raw(`
+            CREATE TRIGGER validate_filename
+            BEFORE INSERT ON media
+            WHEN LENGTH(NEW.filename) < 1
+            BEGIN
+                SELECT RAISE(FAIL, 'Filename must be at least 1 character long.');
+            END;
+        `);
+    }
 
     await db.schema.createTable('user', (table) => {
         table.increments('id').primary();
@@ -149,7 +177,9 @@ export async function setupDatabase() {
 }
 
 export async function cleanupDatabase() {
-    await db.destroy();
+    if (db) {
+        await db.destroy();
+    }
 }
 
 export { db };

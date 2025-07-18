@@ -23,6 +23,15 @@ npm test     # run unit tests
 npm run lint # run ESLint
 ```
 
+To run the integration tests without Docker, set `USE_TESTCONTAINERS=false` when
+invoking the test script:
+
+```bash
+USE_TESTCONTAINERS=false npm test
+```
+
+Docker is still required when `USE_TESTCONTAINERS=true` (the default).
+
 The server listens on `http://localhost:4000/graphql` by default. You can query
 the GraphQL endpoint using any standard GraphQL client.
 
